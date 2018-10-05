@@ -21,13 +21,21 @@ mv ./lib/db.template.js ./lib/db.js
 USE gedit or vi(m) or other text editor to write ./lib/db.js
 
 var mysql = require('mysql');
+
 var db = mysql.createConnection({
+
   host:'[localhost]', <-
+  
   user:'[username]', <-
+  
   password:'[password]', <-
+  
   database:'[dbname]' <-
+  
 });
+
 db.connect();
+
 module.exports = db;
 
 DEBUG=ddib:* npm start
