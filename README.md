@@ -8,7 +8,7 @@ nodejs 8.x
 npm
 mysql
 
-git clone ~~~~~
+git clone https://github.com/KyungjeCho/test_ddib_backend.git
 
 cd test_ddib_backend
 
@@ -18,7 +18,7 @@ npm install
 
 mv ./lib/db.template.js ./lib/db.js
 
-use gedit or vi(m) or text editor to write db.js
+USE gedit or vi(m) or other text editor to write ./lib/db.js
 
 var mysql = require('mysql');
 var db = mysql.createConnection({
