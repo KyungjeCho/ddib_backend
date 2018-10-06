@@ -52,22 +52,6 @@ router.post('/supplier', function(req, res, next){
   })
 })
 
-router.get('/supplier/:supplierId', function(req, res, next) {
-  
-  db.query(`SELECT * FROM supplier WHERE sid = ?;`,[req.params.supplierId], function(error, supplier){
-    if (error)
-      throw error;
-
-    var supplier_json = {};
-    supplier_json['ID'] = supplier[0].sid;
-    supplier_json['password'] = supplier[0].passwd;
-    supplier_json['rname'] = supplier[0].rname;
-    supplier_json['address'] = supplier[0].address;
-    supplier_json['dlprice'] = supplier[0].dlpress;
-    res.send(supplier_json);
-  })
-})
-
 router.get('/category', function(req, res, next){
 
   db.query('SELECT * FROM category;', function(error, categorys){
