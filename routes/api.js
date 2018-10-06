@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -10,24 +11,50 @@ router.get('/', function(req, res, next) {
   res.send(hello);
 });
 
-router.get('/customer/:customerId', function(req, res, next) {
-  
-  db.query(`SELECT * FROM customer WHERE cid = '${req.params.customerId}';`, function(error, customer){
+router.post('/customer', function(req, res, next){
+  var post = req.body;
+  var id = post.cid;
+  var passwd = post.passwd;
+
+  db.query(`SELECT * FROM customer WHERE cid = ? AND passwd = ?;`, [id, passwd], function(error, customer) {
     if (error)
       throw error;
     
-    var customer_json = {};
-    customer_json['ID'] = customer[0].cid;
-    customer_json['password'] = customer[0].passwd;
-    customer_json['name'] = customer[0].name;
-    customer_json['address'] = customer[0].address;
+    var customer_json = {
+      ID: customer[0].cid,
+      passwd: customer[0].passwd,
+      name: customer[0].name,
+      address: customer[0].address
+    }
+
     res.send(customer_json);
+  })
+})
+
+router.post('/supplier', function(req, res, next){
+  var post = req.body;
+  var id = post.sid;
+  var passwd = post.passwd;
+
+  db.query(`SELECT * FROM supplier WHERE sid = ? AND passwd = ?;`, [id, passwd], function(error, supplier) {
+    if (error)
+      throw error;
+
+    var supplier_json = {
+      ID: supplier[0].sid,
+      passwd: supplier[0].passwd,
+      rname: supplier[0].rname,
+      address: supplier[0].address,
+      dlprice: supplier[0].dlprice
+    }
+
+    res.send(supplier_json);
   })
 })
 
 router.get('/supplier/:supplierId', function(req, res, next) {
   
-  db.query(`SELECT * FROM supplier WHERE sid = '${req.params.supplierId}';`, function(error, supplier){
+  db.query(`SELECT * FROM supplier WHERE sid = ?;`,[req.params.supplierId], function(error, supplier){
     if (error)
       throw error;
 
@@ -64,5 +91,7 @@ router.get('/category', function(req, res, next){
     res.json(category_json);
   })
 })
+
+
 module.exports = router;
 
