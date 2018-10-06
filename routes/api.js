@@ -76,6 +76,21 @@ router.get('/category', function(req, res, next){
   })
 })
 
+router.post('/wtb', function(req, res, next){
+  var post = req.body;
+  var cid = post.cid;
+  var cateid = post.cateid;
+  var min_price = post.min_price;
+  var max_price = post.max_price;
+
+  db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
+  [cid, cateid, min_price, max_price], function(error, result){
+    if (error)
+      throw error;
+    
+    res.send("Success");
+  })
+})
 
 module.exports = router;
 
