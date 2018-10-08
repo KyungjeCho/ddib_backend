@@ -88,7 +88,7 @@ router.post('/wtb', function(req, res, next){
     if (error)
       throw error;
     
-    res.send("Success");
+    res.send(result);
   })
 })
 
