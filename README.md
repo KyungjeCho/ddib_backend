@@ -47,6 +47,15 @@ enter localhost:3000/api
 
 test localhost:3000/api/category
 
+## API
+
+### **/category** 
+- *Method : GET* 
+- URL : [server-name]/api/category 
+- Return : json file including all category
+- Example : { results: [{ID: ,name: }, ...]}  
+
 ## Slack
 
 ddib-backend.slack.com
+
