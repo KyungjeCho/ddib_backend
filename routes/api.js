@@ -1,3 +1,6 @@
+// API 코드
+// Author : KJ
+// 2018.10.12
 var express = require('express');
 var bodyParser = require('body-parser')
 
@@ -53,6 +56,10 @@ router.post('/supplier', function(req, res, next){
   })
 })
 
+// Category API
+// Method : GET
+// URL : /api/category
+// 모든 카테고리를 반환하는 API
 router.get('/category', function(req, res, next){
 
   db.query('SELECT * FROM category;', function(error, categorys){
@@ -77,6 +84,11 @@ router.get('/category', function(req, res, next){
   })
 })
 
+// Want_to_buy API
+// Method : POST
+// Parameters : cid, cateid, min_price, max_price
+// URL : /api/wtb
+// 삽니다 등록 api
 router.post('/wtb', function(req, res, next){
   var post = req.body;
   var cid = "";
