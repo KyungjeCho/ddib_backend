@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
+var auth = require('../lib/auth')
 
 var router = express.Router();
 
@@ -78,10 +79,20 @@ router.get('/category', function(req, res, next){
 
 router.post('/wtb', function(req, res, next){
   var post = req.body;
-  var cid = post.cid;
+  var cid = "";
   var cateid = post.cateid;
   var min_price = post.min_price;
   var max_price = post.max_price;
+
+  console.log(req.session)
+
+  if(!auth.isOwner(req, res)){
+    res.send("Pls login!");
+    return false;
+  }
+  else {
+    cid = req.session.is_id;
+  }
 
   db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
   [cid, cateid, min_price, max_price], function(error, result){
