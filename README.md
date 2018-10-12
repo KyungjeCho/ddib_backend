@@ -91,6 +91,12 @@ enter [localhost]:3000/api
 - Return : "Logout!"
 - Example : Logout!
 
+### **/wtb**
+- *Method : GET*
+- URL : [server-name]/api/wtb
+- Return : json file including user wtb table information or "Pls login!"
+- Example : { results: [{cateID: , cateName: , minPrice: , maxPrice: }, ...]}
+
 ## Slack
 
 ddib-backend.slack.com
