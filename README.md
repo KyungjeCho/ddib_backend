@@ -37,17 +37,17 @@ npm install
 ```
 cp ./lib/db.template.js ./lib/db.js
 ```
-gedit이나 vi(m) 이나 다른 ide를 가지고 ./lib/db.js 파일을 수정한다.
+gedit이나 vi(m) 이나 다른 ide로 ./lib/db.js 파일을 수정한다.
 
 USE gedit or vi(m) or other text editor to write ./lib/db.js
 ```
 var mysql = require('mysql');
 
-var db = mysql.createConnection({ <br />
-  host:'[localhost]', <- 데이터베이스 서버 입력<br /> 
-  user:'[username]', <- 데이터베이스 유저 입력<br />
-  password:'[password]', <- 데이터베이스 비밀번호 입력<br />
-  database:'[dbname]' <- ddib 입력<br />
+var db = mysql.createConnection({ 
+  host:'[localhost]', <- 데이터베이스 서버 입력
+  user:'[username]', <- 데이터베이스 유저 입력
+  password:'[password]', <- 데이터베이스 비밀번호 입력
+  database:'[dbname]' <- ddib 입력
 });
 
 db.connect();
