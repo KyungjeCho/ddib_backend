@@ -103,5 +103,48 @@ router.post('/wtb', function(req, res, next){
   })
 })
 
+// Want To Buy API
+// Method : GET
+// URL : /api/wtb
+// Return : 유저의 삽니다 목록 or "Pls login!"
+// 유저의 삽니다 목록 API
+router.get('/wtb', function(req, res, next){
+  var cid = "";
+
+  if(!auth.isOwner(req, res)){
+    res.send("Pls login!");
+    return false;
+  }
+  else {
+    cid = req.session.is_id;
+  }
+
+  // wtb 테이블과 category 테이블을 조인하여 카테고리 이름을 얻는다.
+  // HACK: 조인문은 느리다. 일단 인덱스를 걸었지만 더 빠르게 구현하기
+  db.query(`SELECT wtb.*, cate.name FROM want_to_buy wtb INNER JOIN category cate ON wtb.cateid = cate.cateid WHERE wtb.cid = ?;`,
+  [cid], function(error, wtbs){
+    if (error)
+      throw error;
+
+    var wtb_json = {};
+    var results = [];
+      
+    var i = 0;
+    while (i < wtbs.length)
+    {
+      results[i] = {
+        cateID : wtbs[i].cateid,
+        cateName : wtbs[i].name,
+        minPrice : wtbs[i].min_price,
+        maxPrice : wtbs[i].max_price
+      }
+      i++;
+    }
+
+    wtb_json['results'] = results;
+    res.json(wtb_json);
+  })
+})
+
 module.exports = router;
 
