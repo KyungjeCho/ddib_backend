@@ -78,6 +78,19 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/login/customer**
+- *Method : POST*
+- Parameter : cid=[customer_id]&passwd=[password]
+- URL : [server-name]/auth/login/customer
+- Return : false(already logined) or "Welcome!"(Success) or "Who?"(Access denied)
+- Example : Welcome!
+
+### **/logout/customer**
+- *Method : GET*
+- URL : [server-name]/auth/logout/customer
+- Return : "Logout!"
+- Example : Logout!
+
 ## Slack
 
 ddib-backend.slack.com
