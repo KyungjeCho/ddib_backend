@@ -97,6 +97,13 @@ enter [localhost]:3000/api
 - Return : json file including user wtb table information or "Pls login!"
 - Example : { results: [{cateID: , cateName: , minPrice: , maxPrice: }, ...]}
 
+### **/wtb**
+- *Method : POST*
+- Parameter : cateid=[category_id]&min_price=[minimum price]&max_price=[maximum price]
+- URL : [server-name]/api/wtb
+- Return : select results or "Pls login!"
+- Example : results
+
 ## Slack
 
 ddib-backend.slack.com
