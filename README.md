@@ -31,10 +31,10 @@ USE gedit or vi(m) or other text editor to write ./lib/db.js
 var mysql = require('mysql');
 
 var db = mysql.createConnection({ <br />
-  host:'[localhost]', <br />
-  user:'[username]', <br />
-  password:'[password]',<br />
-  database:'[dbname]'<br />
+  host:'[localhost]', <- input your db host <br /> 
+  user:'[username]', <- input your db user name<br />
+  password:'[password]', <- input your db password <br />
+  database:'[dbname]' <- and we use ddib db. <br />
 });
 
 db.connect();
