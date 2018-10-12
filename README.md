@@ -55,7 +55,14 @@ db.connect();
 module.exports = db;
 ```
 서버 시작하기 위해 돌린다. window cmd로는 DEBUG=를 할 수 없다.
+```
 DEBUG=ddib:* npm start
+```
+혹은, 만약 코드를 새로 고칠때마다 서버에 적용하고 싶으면 nodemon 패키지를 다운로드 받고 실행한다.
+```
+npm install -g nodemon 
+nodemon bin/www
+```
 
 입력한 서버로 들어간다.
 enter [localhost]:3000/api
