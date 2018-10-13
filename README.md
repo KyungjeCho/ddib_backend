@@ -78,6 +78,12 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/upload/item**
+- *Method : POST*
+- Parameter : userfile=imagefile
+- URL : [server-name]/upload/item
+- Return : image file
+
 ## Slack
 
 ddib-backend.slack.com
