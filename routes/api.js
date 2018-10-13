@@ -1,6 +1,11 @@
 // API 코드
 // Author : KJ
 // 2018.10.12
+//
+// Item detail API 추가 
+// Author : KJ
+// Modified-Date: 2018.10.12
+
 var express = require('express');
 var bodyParser = require('body-parser')
 
@@ -112,6 +117,36 @@ router.post('/wtb', function(req, res, next){
       throw error;
     
     res.send(result);
+  })
+})
+
+// Item Detail Page API
+// Method : GET
+router.get('/item/detail/:itemID', function(req, res, next) {
+  var itemId = req.params.itemID;
+  var itemDetailJson = {};
+  db.query(`SELECT * FROM item WHERE iid = ?;`, [itemId], function(error, item) {
+    if (error)
+      throw error;
+    if (item.length == 0){
+      res.send("Item dont exist!");
+      return false;
+    }
+
+    itemDetailJson['iid'] = item[0].iid;
+    itemDetailJson['itemName'] = item[0].name;
+    itemDetailJson['rawPrice'] = item[0].rawprice;
+    itemDetailJson['salePrice'] = item[0].salerice;
+    itemDetailJson['context'] = item[0].context;
+    itemDetailJson['views'] = item[0].views;
+    itemDetailJson['startTime'] = item[0].starttime;
+    itemDetailJson['endTime'] = item[0].endtime;
+    itemDetailJson['deliverable'] = item[0].deliverable;
+    itemDetailJson['supplierId'] = item[0].sid;
+    itemDetailJson['categoryId'] = item[0].cateid;
+    itemDetailJson['imagePath'] = item[0].image;
+
+    res.json(itemDetailJson);
   })
 })
 
