@@ -81,3 +81,4 @@ typings/
 lib/db.js
 lib/session.js
 sessions/*
+public/images/*
