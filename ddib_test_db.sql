@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `ddib` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `ddib`;
 -- MySQL dump 10.13  Distrib 5.7.23, for Linux (x86_64)
 --
 -- Host: localhost    Database: ddib
@@ -112,6 +114,7 @@ CREATE TABLE `favorites` (
 
 LOCK TABLES `favorites` WRITE;
 /*!40000 ALTER TABLE `favorites` DISABLE KEYS */;
+INSERT INTO `favorites` VALUES ('010-1423-2222','010-2323-5643'),('010-3333-2222','010-2323-5643'),('010-1111-2222','010-4456-2222'),('010-1423-2222','010-4456-2222'),('010-1111-2222','010-4563-2222'),('010-5555-4444','010-4563-2222'),('010-1423-2222','010-6767-4444'),('010-5555-4444','010-6767-4444'),('010-3333-2222','010-8888-3333'),('010-5555-4444','010-8888-3333'),('010-1111-2222','010-9999-2222'),('010-3333-2222','010-9999-2222');
 /*!40000 ALTER TABLE `favorites` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +126,7 @@ DROP TABLE IF EXISTS `item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item` (
-  `iid` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `iid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sid` varchar(15) DEFAULT NULL,
   `name` varchar(30) DEFAULT NULL,
   `cateid` int(11) unsigned DEFAULT NULL,
@@ -131,7 +134,7 @@ CREATE TABLE `item` (
   `saleprice` int(11) unsigned DEFAULT NULL,
   `context` longtext,
   `image` varchar(20) DEFAULT NULL,
-  `views` int(11) unsigned DEFAULT NULL,
+  `views` int(11) unsigned DEFAULT '0',
   `starttime` datetime DEFAULT NULL,
   `endtime` datetime DEFAULT NULL,
   `deliverable` tinyint(1) DEFAULT NULL COMMENT '배달 가능 불가능',
@@ -140,7 +143,7 @@ CREATE TABLE `item` (
   KEY `cateid_idx` (`cateid`),
   CONSTRAINT `item_category` FOREIGN KEY (`cateid`) REFERENCES `category` (`cateid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `item_supplier` FOREIGN KEY (`sid`) REFERENCES `supplier` (`sid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,6 +152,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
+INSERT INTO `item` VALUES (1,'010-9999-2222','순대국',1,6000,4000,'할머니가 만드는 엄청 맛있는 순대국','순대국.jpg',0,'2018-10-04 18:00:00','2018-10-04 20:00:00',0),(2,'010-9999-2222','얼큰버섯순대국',1,7000,4500,'얼큰한 버섯 순대국','얼큰버섯순대국.jpg',0,'2018-10-04 18:00:00','2018-10-04 20:00:00',0),(3,'010-9999-2222','영양순대국',1,7000,4500,'영양 순대국','영양순대국.jpg',0,'2018-10-04 18:00:00','2018-10-04 20:00:00',0),(4,'010-8888-3333','설농탕',1,7000,4500,'맛있는 설농탕','설농탕.jpg',0,'2018-10-04 18:00:00','2018-10-04 20:00:00',1);
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,18 +164,16 @@ DROP TABLE IF EXISTS `order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `order` (
-  `oid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `cid` varchar(15) DEFAULT NULL,
-  `orderdate` datetime DEFAULT NULL,
+  `oid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `iid` bigint(20) unsigned DEFAULT NULL,
   `amount` int(11) unsigned DEFAULT NULL,
   `orderstate` varchar(15) DEFAULT NULL,
-  `payment` varchar(20) DEFAULT NULL,
-  `time` int(11) DEFAULT NULL COMMENT '소요 시',
+  `time` int(11) DEFAULT NULL COMMENT '소요 시간',
+  `gid` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`oid`),
   KEY `iid_idx` (`iid`),
-  KEY `fk_order_customer_idx` (`cid`),
-  CONSTRAINT `fk_order_customer` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `fk_order_1_idx` (`gid`),
+  CONSTRAINT `fk_order_1` FOREIGN KEY (`gid`) REFERENCES `order_group` (`gid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `order_item` FOREIGN KEY (`iid`) REFERENCES `item` (`iid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -183,6 +185,33 @@ CREATE TABLE `order` (
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_group`
+--
+
+DROP TABLE IF EXISTS `order_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `order_group` (
+  `gid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cid` varchar(15) DEFAULT NULL,
+  `orderdate` datetime DEFAULT NULL,
+  `payment` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`gid`),
+  KEY `fk_order_group_1_idx` (`cid`),
+  CONSTRAINT `fk_order_group_1` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_group`
+--
+
+LOCK TABLES `order_group` WRITE;
+/*!40000 ALTER TABLE `order_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `order_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -283,14 +312,15 @@ CREATE TABLE `want_to_buy` (
   `wid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `cid` varchar(15) DEFAULT NULL,
   `cateid` int(11) unsigned DEFAULT NULL,
-  `price` int(10) unsigned DEFAULT NULL,
+  `min_price` int(10) unsigned DEFAULT NULL,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `max_price` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`wid`),
   KEY `wtb_category_idx` (`cateid`),
   KEY `fk_want_to_buy_customer_idx` (`cid`),
   CONSTRAINT `fk_want_to_buy_customer` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `wtb_category` FOREIGN KEY (`cateid`) REFERENCES `category` (`cateid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='삽니다!';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='삽니다!';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -299,6 +329,7 @@ CREATE TABLE `want_to_buy` (
 
 LOCK TABLES `want_to_buy` WRITE;
 /*!40000 ALTER TABLE `want_to_buy` DISABLE KEYS */;
+INSERT INTO `want_to_buy` VALUES (1,'010-1111-2222',2,3000,'2018-10-07 02:20:00',15000),(2,'010-1111-2222',1,10000,'2018-10-12 17:33:39',16000);
 /*!40000 ALTER TABLE `want_to_buy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -339,4 +370,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-06  1:57:34
+-- Dump completed on 2018-10-19 12:22:34
