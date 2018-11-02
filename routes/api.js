@@ -115,6 +115,7 @@ router.post('/wtb', function(req, res, next){
 // URL : /api/alarm
 // 알람 서비스 
 // HACK : cid 유저가 틀릴 경우 false를 출력하지 않고 전날 제일 많이 팔린 제품을 출력한다.
+// TODO : session or token 으로 인증, GET 메소드로 변경, params 삭제
 
 router.post('/alarm', function(req, res, next) {
   var post = req.body;
