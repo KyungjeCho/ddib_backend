@@ -1,15 +1,13 @@
-CREATE DATABASE  IF NOT EXISTS `ddib` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
-USE `ddib`;
--- MySQL dump 10.13  Distrib 8.0.13, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.24, for Linux (x86_64)
 --
 -- Host: localhost    Database: ddib
 -- ------------------------------------------------------
--- Server version	8.0.13
+-- Server version	5.7.24-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8 ;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,7 +21,7 @@ USE `ddib`;
 
 DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `category` (
   `cateid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(15) DEFAULT NULL,
@@ -47,7 +45,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `customer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `customer` (
   `cid` varchar(15) NOT NULL COMMENT 'customer phone number',
   `passwd` varchar(20) DEFAULT NULL,
@@ -73,7 +71,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `faq`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `faq` (
   `fid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `question` varchar(45) DEFAULT NULL,
@@ -97,7 +95,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `favorites`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `favorites` (
   `cid` varchar(15) NOT NULL,
   `sid` varchar(15) NOT NULL,
@@ -124,7 +122,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item` (
   `iid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sid` varchar(15) DEFAULT NULL,
@@ -162,7 +160,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `order` (
   `oid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `iid` bigint(20) unsigned DEFAULT NULL,
@@ -193,7 +191,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `order_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `order_group` (
   `gid` bigint(20) unsigned NOT NULL,
   `cid` varchar(15) DEFAULT NULL,
@@ -221,7 +219,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `review`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `review` (
   `rid` bigint(20) unsigned NOT NULL,
   `cid` varchar(15) DEFAULT NULL,
@@ -252,7 +250,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `shopping_cart`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shopping_cart` (
   `scid` bigint(20) unsigned NOT NULL,
   `cid` varchar(15) DEFAULT NULL,
@@ -281,7 +279,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `supplier`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `supplier` (
   `sid` varchar(15) NOT NULL DEFAULT '' COMMENT 'supplier phone number',
   `passwd` varchar(20) DEFAULT NULL,
@@ -309,12 +307,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `supplier_sell_count`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `supplier_sell_count` (
   `sid` varchar(15) DEFAULT NULL COMMENT '판매자의 id',
   `sellcount` int(11) DEFAULT NULL COMMENT '판매 개수',
   `date` date DEFAULT NULL COMMENT '날짜'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='음식점의 판매 개수를 기록합니다.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='음식점의 판매 개수를 기록합니다.';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -332,7 +330,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `want_to_buy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `want_to_buy` (
   `wid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `cid` varchar(15) DEFAULT NULL,
@@ -364,7 +362,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `wishlist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wishlist` (
   `wlid` int(10) unsigned NOT NULL,
   `cid` varchar(15) DEFAULT NULL,
@@ -395,4 +393,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-02 15:10:17
+-- Dump completed on 2018-11-02 15:21:48
