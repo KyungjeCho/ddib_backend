@@ -79,8 +79,8 @@ router.get('/category', function(req, res, next){
       i++;
     }
 
-    category_json['results'] = results;
-    res.json(category_json);
+    //category_json['results'] = results;
+    res.json(results);
   })
 })
 
@@ -96,14 +96,12 @@ router.post('/wtb', function(req, res, next){
   var min_price = post.min_price;
   var max_price = post.max_price;
 
-  console.log(req.session)
-
-  if(!auth.isOwner(req, res)){
+  if(!req.user){
     res.send("Pls login!");
     return false;
   }
   else {
-    cid = req.session.is_id;
+    cid = req.user.cid;
   }
 
   db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
