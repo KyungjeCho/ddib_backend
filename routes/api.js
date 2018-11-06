@@ -1,11 +1,21 @@
 // API 코드
 // Author : KJ
 // 2018.10.12
+//
+// Modified Date : 2018.11.02
+// Author : KJ
+// 알람 서비스 api 작성
+//
+// Modified Date : 2018.11.06
+// Author : KJ
+// add sign_up api 
+
 var express = require('express');
 var bodyParser = require('body-parser')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
+var auth = require('../lib/auth')
 
 var router = express.Router();
 
@@ -13,6 +23,74 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.send(hello);
 });
+
+// Sign Up API
+// Method : POST
+// URL : /api/sign_up/customer
+// 회원가입 API
+router.post('/sign_up/customer', function(req, res, next) {
+  var post = req.body;
+  var cid = post.cid;
+  var passwd = post.passwd;
+  var name = post.name;
+  var address = post.address;
+  var latitude = post.latitude;
+  var longitude = post.longitude;
+
+  var result = {};
+  result['success'] = false;
+
+  if (!(cid && passwd)) {
+    res.json(result);
+    return false;
+  }
+
+  var idError = false;
+  var passwdError = false;
+
+  // 1. 아이디 중복 체크
+  db.query('SELECT * FROM customer WHERE cid = ?;', [cid], function(error, user){
+
+    if (error) {
+      throw error;
+    }
+    
+    if (user.length <= 0) {
+
+      // 2. 아이디 패스워드 유효 체크 
+      
+      var regID = /^\d{3}-\d{3,4}-\d{4}$/;
+      var regPasswd = /^[a-z0-9_]{8,20}$/; 
+
+      if (!regID.test(cid)){
+        idError = true;
+      }
+      if (!regPasswd.test(passwd)) {
+        passwdError = true;
+      }
+      if (idError || passwdError) {
+        result['idError'] = idError;
+        result['passwdError'] = passwdError;
+
+        res.send(result);
+        return false;
+      }
+      
+      // TODO : 비밀번호 암호화
+      db.query(`INSERT INTO customer 
+      (cid, passwd, name, address, latitude, longitude) VALUES 
+      (?, ?, ?, ?, ?, ?);`, [cid, passwd, name, address, latitude, longitude],
+      function(error, user){
+        if (error) {
+          throw errror;
+        }
+        result['success'] = true;
+        res.json(result);
+      });
+
+    }
+  })
+})
 
 router.post('/customer', function(req, res, next){
   var post = req.body;
@@ -78,8 +156,8 @@ router.get('/category', function(req, res, next){
       i++;
     }
 
-    category_json['results'] = results;
-    res.json(category_json);
+    //category_json['results'] = results;
+    res.json(results);
   })
 })
 
@@ -90,10 +168,18 @@ router.get('/category', function(req, res, next){
 // 삽니다 등록 api
 router.post('/wtb', function(req, res, next){
   var post = req.body;
-  var cid = post.cid;
+  var cid = "";
   var cateid = post.cateid;
   var min_price = post.min_price;
   var max_price = post.max_price;
+
+  if(!req.user){
+    res.send("Pls login!");
+    return false;
+  }
+  else {
+    cid = req.user.cid;
+  }
 
   db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
   [cid, cateid, min_price, max_price], function(error, result){
@@ -102,6 +188,73 @@ router.post('/wtb', function(req, res, next){
     
     res.send(result);
   })
+})
+
+// Alarm API
+// Method : POST
+// Parameters : cid
+// URL : /api/alarm
+// 알람 서비스 
+// HACK : cid 유저가 틀릴 경우 false를 출력하지 않고 전날 제일 많이 팔린 제품을 출력한다.
+// TODO : session or token 으로 인증, GET 메소드로 변경, params 삭제
+
+router.post('/alarm', function(req, res, next) {
+  var post = req.body;
+  var cid = post.cid;
+
+  // 안드로이드로 보낼 json 객체 선언
+  var item = {};
+  item['success'] = false;
+
+  // 먼저 유저가 제일 많이 구매한 제품의 정보 찾는 데이터베이스 쿼리
+  db.query(`select D.* from (SELECT 
+    iid, sum(amount) as sum_amount, max(orderdate) as max_orderdate
+FROM
+    (SELECT 
+    *
+FROM
+    order_group
+WHERE
+    cid = ?) A
+INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, max_orderdate desc) C inner join item D on C.iid = D.iid limit 1;`, [cid], function(error, items) {
+  if (error)
+    throw error;
+  // 구매한 적이 있을 경우
+  if (items.length > 0) {
+
+    item['success'] = true;
+    item['id'] = items[0].iid;
+    item['sid'] = items[0].sid;
+    item['name'] = items[0].name; 
+
+    res.json(item);
+  }
+  // 구매한 적이 없는 경우
+  else {
+
+    // 최근 제일 많이 팔린 제품 찾는 데이터베이스 쿼리
+    db.query(`select D.* from (select date(orderdate) as orderdate_date, iid, sum(amount) from
+    \`order\` A inner join order_group B on A.gid = B.gid group by orderdate_date, iid order by 1 desc, 3 desc limit 1) C inner join item D on C.iid = D.iid;`, function(error, items) {
+      if (error)
+        throw error;
+      
+      if (items.length > 0)
+      {
+        item['success'] = true;
+        item['id'] = items[0].iid;
+        item['sid'] = items[0].sid;
+        item['name'] = items[0].name; 
+        
+        res.json(item);
+      }
+
+      // 실패할 경우
+      else {
+        res.json(item);
+      }
+    })
+  }
+})
 })
 
 module.exports = router;
