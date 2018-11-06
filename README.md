@@ -98,6 +98,13 @@ enter [localhost]:3000/api
 - Example : { results: [{ID: ,name: }, ...]}  
 
 
+### **/sign_up/customer** 
+- *Method : POST* 
+- Params : cid, passwd, name, address, latitude, longitude
+- URL : [server-name]/api/sign_up/customer 
+- Return : json file 
+- Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
+
 ### **/login/customer**
 - *Method : POST*
 - Parameter : cid=[customer_id]&passwd=[password]

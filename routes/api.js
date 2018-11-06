@@ -5,6 +5,10 @@
 // Modified Date : 2018.11.02
 // Author : KJ
 // 알람 서비스 api 작성
+//
+// Modified Date : 2018.11.06
+// Author : KJ
+// add sign_up api 
 
 var express = require('express');
 var bodyParser = require('body-parser')
@@ -19,6 +23,74 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.send(hello);
 });
+
+// Sign Up API
+// Method : POST
+// URL : /api/sign_up/customer
+// 회원가입 API
+router.post('/sign_up/customer', function(req, res, next) {
+  var post = req.body;
+  var cid = post.cid;
+  var passwd = post.passwd;
+  var name = post.name;
+  var address = post.address;
+  var latitude = post.latitude;
+  var longitude = post.longitude;
+
+  var result = {};
+  result['success'] = false;
+
+  if (!(cid && passwd)) {
+    res.json(result);
+    return false;
+  }
+
+  var idError = false;
+  var passwdError = false;
+
+  // 1. 아이디 중복 체크
+  db.query('SELECT * FROM customer WHERE cid = ?;', [cid], function(error, user){
+
+    if (error) {
+      throw error;
+    }
+    
+    if (user.length <= 0) {
+
+      // 2. 아이디 패스워드 유효 체크 
+      
+      var regID = /^\d{3}-\d{3,4}-\d{4}$/;
+      var regPasswd = /^[a-z0-9_]{8,20}$/; 
+
+      if (!regID.test(cid)){
+        idError = true;
+      }
+      if (!regPasswd.test(passwd)) {
+        passwdError = true;
+      }
+      if (idError || passwdError) {
+        result['idError'] = idError;
+        result['passwdError'] = passwdError;
+
+        res.send(result);
+        return false;
+      }
+      
+      // TODO : 비밀번호 암호화
+      db.query(`INSERT INTO customer 
+      (cid, passwd, name, address, latitude, longitude) VALUES 
+      (?, ?, ?, ?, ?, ?);`, [cid, passwd, name, address, latitude, longitude],
+      function(error, user){
+        if (error) {
+          throw errror;
+        }
+        result['success'] = true;
+        res.json(result);
+      });
+
+    }
+  })
+})
 
 router.post('/customer', function(req, res, next){
   var post = req.body;
