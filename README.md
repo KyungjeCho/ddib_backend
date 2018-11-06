@@ -54,6 +54,25 @@ db.connect();
 
 module.exports = db;
 ```
+```
+cp ./lib/session.template.js ./lib/session.js
+```
+gedit이나 vi(m) 이나 다른 ide로 ./lib/session.js 파일을 수정한다.
+
+USE gedit or vi(m) or other text editor to write ./lib/session.js
+```
+var session = require('express-session')
+var FileStore = require('session-file-store')(session)
+
+module.exports = session({
+    secret: '', <- 원하는 세션 값을 넣는다
+    resave: false,
+    saveUninitialized: true,
+    store: new FileStore(), //HACK: We should use mysql db.
+    cookie: { maxAge: 600000}
+});
+```
+
 서버 시작하기 위해 돌린다. window cmd로는 DEBUG=를 할 수 없다.
 ```
 DEBUG=ddib:* npm start
@@ -77,6 +96,20 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/category 
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
+
+
+### **/login/customer**
+- *Method : POST*
+- Parameter : cid=[customer_id]&passwd=[password]
+- URL : [server-name]/auth/login/customer
+- Return : {message : , token : ,} or {message :}
+- Example : Welcome!
+
+### **/logout/customer**
+- *Method : GET*
+- URL : [server-name]/auth/logout/customer
+- Return : "Logout!"
+- Example : Logout!
 
 ### **/alarm** 
 - *Method : POST* 

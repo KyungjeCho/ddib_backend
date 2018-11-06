@@ -11,6 +11,7 @@ var bodyParser = require('body-parser')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
+var auth = require('../lib/auth')
 
 var router = express.Router();
 
@@ -83,8 +84,8 @@ router.get('/category', function(req, res, next){
       i++;
     }
 
-    category_json['results'] = results;
-    res.json(category_json);
+    //category_json['results'] = results;
+    res.json(results);
   })
 })
 
@@ -95,10 +96,18 @@ router.get('/category', function(req, res, next){
 // 삽니다 등록 api
 router.post('/wtb', function(req, res, next){
   var post = req.body;
-  var cid = post.cid;
+  var cid = "";
   var cateid = post.cateid;
   var min_price = post.min_price;
   var max_price = post.max_price;
+
+  if(!req.user){
+    res.send("Pls login!");
+    return false;
+  }
+  else {
+    cid = req.user.cid;
+  }
 
   db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
   [cid, cateid, min_price, max_price], function(error, result){

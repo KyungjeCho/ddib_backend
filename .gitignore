@@ -80,5 +80,6 @@ typings/
 
 lib/db.js
 lib/session.js
+lib/passport.js
 sessions/*
 public/images/*
