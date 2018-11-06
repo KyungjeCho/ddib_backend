@@ -97,11 +97,12 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+
 ### **/login/customer**
 - *Method : POST*
 - Parameter : cid=[customer_id]&passwd=[password]
 - URL : [server-name]/auth/login/customer
-- Return : false(already logined) or "Welcome!"(Success) or "Who?"(Access denied)
+- Return : {message : , token : ,} or {message :}
 - Example : Welcome!
 
 ### **/logout/customer**
@@ -109,6 +110,13 @@ enter [localhost]:3000/api
 - URL : [server-name]/auth/logout/customer
 - Return : "Logout!"
 - Example : Logout!
+
+### **/alarm** 
+- *Method : POST* 
+- Params : cid
+- URL : [server-name]/api/alarm
+- Return : json file including an item that the customer bought the most
+- Example : { success : true, id : 1, sid : '010-9999-1111', name : '순대국' } or { success : false } 
 
 ## Slack
 
