@@ -111,8 +111,8 @@ enter [localhost]:3000/api
 - *Method : POST*
 - Parameter : cid=[customer_id]&passwd=[password]
 - URL : [server-name]/auth/login/customer
-- Return : {message : , token : ,} or {message :}
-- Example : Welcome!
+- Return : {success : true, token : '[random_string]'} or {success : false, error : true }
+- Example : {success : true, token : '[random_string]'} or {success : false, error : true }
 
 ### **/logout/customer**
 - *Method : GET*

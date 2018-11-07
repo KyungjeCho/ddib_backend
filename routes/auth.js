@@ -55,21 +55,29 @@ router.use(bodyParser.urlencoded({
 }));
 
 router.post("/login/customer", function(req, res) {
+  var result = {
+    success : false
+  };
+
   if(req.body.cid && req.body.passwd){
     var name = req.body.cid;
     var password = req.body.passwd;
+  } else {
+    result['empty_params'] = true;
+    res.json(result);
   }
   // usually this would be a database call:
 
   db.query('SELECT * FROM customer WHERE cid = ?;', [name], function(error, user) {
     if (error) {
-      res.status(501).send({message:"Server Error"});
+      result['error'] = true;
+      res.status(501).send(result);
       return false;
     }
 
-    if( ! user ){
-      message = {message:"no such user found"}
-      res.status(401).send(message);
+    if(user.length <= 0){
+      result['error'] = true;
+      res.status(401).send(result);
       return false;
     }
   
@@ -77,9 +85,12 @@ router.post("/login/customer", function(req, res) {
       // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
       var payload = {id: user[0].cid};
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
-      res.json({message: "ok", token: token});
+      result['token'] = token;
+      result['success'] = true;
+      res.json(result);
     } else {
-      res.status(401).json({message:"passwords did not match"});
+      result['error'] = true;
+      res.status(401).json(result);
     }
   });
 });
