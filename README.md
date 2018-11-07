@@ -34,8 +34,10 @@ npm install로 코드에서 요구하는 미들웨어를 설치한다.
 npm install
 ```
 데이터베이스 템플릿을 이용하여 데이터베이스 코드를 작성한다.
+비밀번호 암호화 키를 작성하기 위해 passwordSecrete.js를 만들어 사용자가 암호화 키를 입력한다.
 ```
 cp ./lib/db.template.js ./lib/db.js
+cp ./lib/passwordSecret.template.js ./lib/passwordSecret.js 
 ```
 gedit이나 vi(m) 이나 다른 ide로 ./lib/db.js 파일을 수정한다.
 
@@ -55,24 +57,24 @@ db.connect();
 module.exports = db;
 ```
 ```
-cp ./lib/session.template.js ./lib/session.js
-```
-gedit이나 vi(m) 이나 다른 ide로 ./lib/session.js 파일을 수정한다.
+var CryptoPasswd = {
+    secret : '', // <- 암호화 키 입력
+    create : function(password){
+      const encrypted = crypto.createHmac('sha1', this.secret)
+                              .update(password)
+                              .digest('base64')
+      return encrypted;
+    },
+    verify : function(encrypted_password, password) {
+      const encrypted = crypto.createHmac('sha1', this.secret)
+                              .update(password)
+                              .digest('base64')
+      return encrypted === encrypted_password;
+    }
+  }
 
-USE gedit or vi(m) or other text editor to write ./lib/session.js
+module.exports = CryptoPasswd;
 ```
-var session = require('express-session')
-var FileStore = require('session-file-store')(session)
-
-module.exports = session({
-    secret: '', <- 원하는 세션 값을 넣는다
-    resave: false,
-    saveUninitialized: true,
-    store: new FileStore(), //HACK: We should use mysql db.
-    cookie: { maxAge: 600000}
-});
-```
-
 서버 시작하기 위해 돌린다. window cmd로는 DEBUG=를 할 수 없다.
 ```
 DEBUG=ddib:* npm start

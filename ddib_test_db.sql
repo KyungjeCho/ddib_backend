@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `ddib` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `ddib`;
 -- MySQL dump 10.13  Distrib 5.7.24, for Linux (x86_64)
 --
 -- Host: localhost    Database: ddib
@@ -48,7 +50,7 @@ DROP TABLE IF EXISTS `customer`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `customer` (
   `cid` varchar(15) NOT NULL COMMENT 'customer phone number',
-  `passwd` varchar(20) DEFAULT NULL,
+  `passwd` varchar(40) DEFAULT NULL,
   `name` varchar(20) DEFAULT NULL,
   `address` varchar(30) DEFAULT NULL,
   `latitude` decimal(10,8) DEFAULT NULL,
@@ -63,7 +65,9 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES ('010-1111-1111','test','test','test',1.00000000,1.00000000),('010-1111-2222','password','조경제','서울특별시 성북구 12341234',NULL,NULL),('010-1423-2222','Dubak','김석희','서울특별시 마포구 12341234',NULL,NULL),('010-2222-3333','mypassword','john','경기도 구로시 12341234',NULL,NULL),('010-2323-2222','androidgood','김정아','대구광역시 중구 12341234',NULL,NULL),('010-3333-2222','mysqlgood','윤인성','대전광역시 중구 12341234',NULL,NULL),('010-4444-2222','hohomypassword','유재석','강원도 태백시 12341234',NULL,NULL),('010-5555-4444','12345678','박성훈','서울특별시 광진구 12341234',NULL,NULL);
+
+INSERT INTO `customer` VALUES ('010-1111-1111','test','test','test',1.00000000,1.00000000),('010-1111-2222','password','조경제','서울특별시 성북구 12341234',NULL,NULL),('010-1423-2222','Dubak','김석희','서울특별시 마포구 12341234',NULL,NULL),('010-2222-3333','mypassword','john','경기도 구로시 12341234',NULL,NULL),('010-2323-2222','androidgood','김정아','대구광역시 중구 12341234',NULL,NULL),('010-3333-2222','mysqlgood','윤인성','대전광역시 중구 12341234',NULL,NULL),('010-4444-2222','hohomypassword','유재석','강원도 태백시 12341234',NULL,NULL),('010-5555-4444','12345678','박성훈','서울특별시 광진구 12341234',NULL,NULL),('111-1111-1122','Ha4DiMgbjNA+uB+9IK9+MmFLbjM=','test','test',1.00000000,1.00000000);
+
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -396,4 +400,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-06 20:56:44
+-- Dump completed on 2018-11-07 14:15:23

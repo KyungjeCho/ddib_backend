@@ -9,13 +9,22 @@
 // Modified Date : 2018.11.06
 // Author : KJ
 // add sign_up api 
+//
+// Modified Date : 2018.11.07
+// Author : KJ
+// 비밀번호 암호화 추가
+
 
 var express = require('express');
 var bodyParser = require('body-parser')
 
+
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
+var CryptoPasswd = require('../lib/passwordSecret');
+
 var auth = require('../lib/auth')
+
 
 var router = express.Router();
 
@@ -77,6 +86,8 @@ router.post('/sign_up/customer', function(req, res, next) {
       }
       
       // TODO : 비밀번호 암호화
+      passwd = CryptoPasswd.create(passwd);
+      
       db.query(`INSERT INTO customer 
       (cid, passwd, name, address, latitude, longitude) VALUES 
       (?, ?, ?, ?, ?, ?);`, [cid, passwd, name, address, latitude, longitude],
