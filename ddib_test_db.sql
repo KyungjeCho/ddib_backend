@@ -65,7 +65,9 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+
 INSERT INTO `customer` VALUES ('010-1111-1111','test','test','test',1.00000000,1.00000000),('010-1111-2222','password','조경제','서울특별시 성북구 12341234',NULL,NULL),('010-1423-2222','Dubak','김석희','서울특별시 마포구 12341234',NULL,NULL),('010-2222-3333','mypassword','john','경기도 구로시 12341234',NULL,NULL),('010-2323-2222','androidgood','김정아','대구광역시 중구 12341234',NULL,NULL),('010-3333-2222','mysqlgood','윤인성','대전광역시 중구 12341234',NULL,NULL),('010-4444-2222','hohomypassword','유재석','강원도 태백시 12341234',NULL,NULL),('010-5555-4444','12345678','박성훈','서울특별시 광진구 12341234',NULL,NULL),('111-1111-1122','Ha4DiMgbjNA+uB+9IK9+MmFLbjM=','test','test',1.00000000,1.00000000);
+
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
