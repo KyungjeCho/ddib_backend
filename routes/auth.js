@@ -1,10 +1,18 @@
-// TODO : We should change parts of session to passport.
+// 인증에 관한 코드
+// Author : KJ
+// ..
+//
+// Author : KJ
+// Modified Date : 2018.11.07
+// 비밀번호 암호화 추가
+
 var express = require('express');
 var bodyParser = require('body-parser')
 var jwt = require('jsonwebtoken');
 
 var db = require('../lib/db')
 var jwtOptions = require('../lib/passport')
+var CryptoPasswd = require('../lib/passwordSecret')
 
 var router = express.Router();
 
@@ -45,7 +53,7 @@ router.post("/login/customer", function(req, res) {
   }
   // usually this would be a database call:
 
-  db.query('SELECT * FROM customer WHERE cid = ? AND passwd = ?', [name, password], function(error, user) {
+  db.query('SELECT * FROM customer WHERE cid = ?;', [name], function(error, user) {
     if (error) {
       res.status(501).send({message:"Server Error"});
       return false;
@@ -57,7 +65,7 @@ router.post("/login/customer", function(req, res) {
       return false;
     }
   
-    if(user[0].passwd === password) {
+    if(CryptoPasswd.verify(user[0].passwd,password)) {
       // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
       var payload = {id: user[0].cid};
       var token = jwt.sign(payload, jwtOptions.secretOrKey);

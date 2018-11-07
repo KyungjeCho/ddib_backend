@@ -57,7 +57,6 @@ db.connect();
 module.exports = db;
 ```
 ```
-<<<<<<< HEAD
 var CryptoPasswd = {
     secret : '', // <- 암호화 키 입력
     create : function(password){
@@ -74,29 +73,8 @@ var CryptoPasswd = {
     }
   }
 
-
 module.exports = CryptoPasswd;
 ```
-=======
-cp ./lib/session.template.js ./lib/session.js
-```
-gedit이나 vi(m) 이나 다른 ide로 ./lib/session.js 파일을 수정한다.
-
-USE gedit or vi(m) or other text editor to write ./lib/session.js
-```
-var session = require('express-session')
-var FileStore = require('session-file-store')(session)
-
-module.exports = session({
-    secret: '', <- 원하는 세션 값을 넣는다
-    resave: false,
-    saveUninitialized: true,
-    store: new FileStore(), //HACK: We should use mysql db.
-    cookie: { maxAge: 600000}
-});
-```
-
->>>>>>> origin/issue-2-sign-up
 서버 시작하기 위해 돌린다. window cmd로는 DEBUG=를 할 수 없다.
 ```
 DEBUG=ddib:* npm start
