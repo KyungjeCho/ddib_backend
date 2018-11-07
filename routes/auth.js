@@ -67,7 +67,7 @@ router.post("/login/customer", function(req, res) {
       return false;
     }
 
-    if( ! user ){
+    if( user <= 0){
       message = {message:"no such user found"}
       res.status(401).send(message);
       return false;

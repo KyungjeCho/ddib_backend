@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -266,6 +266,40 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
     })
   }
 })
+})
+
+// FAQ POST API
+// Method : POST
+// Parameters : token, question, answer
+// URL : /api/faq
+// FAQ 등록 api
+router.post('/faq', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var question = post.question;
+  var answer = post.answer;
+
+  var result = {
+    success : false
+  }
+
+  // 권한 admin
+  if(req.user.permission !== 'admin'){
+    result['permssion'] = false;
+    res.json(result);
+    return false;
+  }
+
+  db.query(`INSERT INTO faq (question, answer) VALUES (? ,?);`,
+  [question, answer], function(error, results){
+    if (error) {
+      result['error'] = true;
+      res.status(501).send(result);
+      return false;
+    }
+
+    result['success'] = true;
+    res.send(result);
+  })
 })
 
 module.exports = router;

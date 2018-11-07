@@ -99,6 +99,11 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/faq** 
+- *Method : POST* 
+- URL : [server-name]/api/faq 
+- Return : success check
+- Example : { success : true } or Unantherized or { success : false }
 
 ### **/sign_up/customer** 
 - *Method : POST* 
