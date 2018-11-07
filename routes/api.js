@@ -93,7 +93,7 @@ router.post('/sign_up/customer', function(req, res, next) {
       (?, ?, ?, ?, ?, ?);`, [cid, passwd, name, address, latitude, longitude],
       function(error, user){
         if (error) {
-          throw errror;
+          res.json(result);
         }
         result['success'] = true;
         res.json(result);
