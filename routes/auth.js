@@ -27,10 +27,18 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
 
   db.query('SELECT * FROM customer WHERE cid = ?', [jwt_payload.id], function(error, user) {
     if (error) {
-      tnext(null, false);
+      next(null, false);
     }
     if (user) {
-      next(null, user[0].cid);
+      var user_info = {
+        id : user[0].cid,
+          name : user[0].name,
+          permission : "customer"
+      }
+      if (user[0].cid === '999-9999-9999') {
+        user_info['permission'] = 'admin';
+      }
+      next(null, user_info);
     } else {
       next(null, false);
     }
