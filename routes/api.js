@@ -94,6 +94,7 @@ router.post('/sign_up/customer', function(req, res, next) {
       function(error, user){
         if (error) {
           res.json(result);
+          return false;
         }
         result['success'] = true;
         res.json(result);
