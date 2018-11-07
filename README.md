@@ -101,6 +101,7 @@ enter [localhost]:3000/api
 
 ### **/faq** 
 - *Method : POST* 
+- Params : token, question, answer
 - URL : [server-name]/api/faq 
 - Return : success check
 - Example : { success : true } or Unantherized or { success : false }
