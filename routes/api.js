@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -143,6 +143,59 @@ router.post('/supplier', function(req, res, next){
     res.send(supplier_json);
   })
 })
+
+// Order history API
+// Method : GET
+// URL : /api/order_history
+// 고객의 주문 내역 제공 api
+router.get("/order_history", passport.authenticate('jwt', { session: false }), function(req, res){
+  var cid = "";
+
+  var result = {
+    success : false
+  }
+  if (! (req.user.permission === 'customer' ||
+          req.user.permision === 'admin')) {
+    res.send(result);
+    return false; 
+  } else {
+    cid = req.user.id;
+  }
+  
+  db.query(`SELECT 
+  A.*, B.oid, B.iid, B.amount, B.orderstate, B.\`time\`
+FROM
+  (SELECT 
+      *
+  FROM
+      ddib.order_group
+  WHERE
+      cid = ?) A
+      INNER JOIN
+  ddib.\`order\` B ON A.gid = B.gid
+ORDER BY orderdate DESC;`, [cid], function(error, results) {
+    if (error) {
+      res.status(501).json(result);
+    }
+
+    var orders = [];
+
+    for (var i = 0; i < results.length; i++){
+      orders[i] = {
+        gid : results[i].gid,
+        cid : results[i].cid,
+        order_date : results[i].order_date,
+        payment : results[i].payment,
+        oid : results[i].oid,
+        iid : results[i].iid,
+        order_state : results[i].orderstate,
+        time : results[i].time
+      };
+    }
+
+    res.json(orders);
+  })
+});
 
 // Category API
 // Method : GET
