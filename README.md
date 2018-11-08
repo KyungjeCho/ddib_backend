@@ -99,12 +99,19 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/order_history** 
+- *Method : GET* 
+- URL : [server-name]/api/order_history 
+- Return : json file including user's order history
+- Example : { success : false } or [{ gid : , cid : , order_date : payment : , oid : , iid : , amount : , order_state : , time : }]
+
 ### **/category** 
 - *Method : POST* 
 - Params : name, token
 - URL : [server-name]/api/category 
 - Return : Success : true or false
 - Example : { success : true } or Unauthorized  or { success : false }
+
 
 ### **/sign_up/customer** 
 - *Method : POST* 
@@ -117,8 +124,8 @@ enter [localhost]:3000/api
 - *Method : POST*
 - Parameter : cid=[customer_id]&passwd=[password]
 - URL : [server-name]/auth/login/customer
-- Return : {message : , token : ,} or {message :}
-- Example : Welcome!
+- Return : {success : true, token : '[random_string]'} or {success : false, error : true }
+- Example : {success : true, token : '[random_string]'} or {success : false, error : true }
 
 ### **/logout/customer**
 - *Method : GET*
