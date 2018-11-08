@@ -99,12 +99,14 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+
 ### **/faq** 
 - *Method : POST* 
 - Params : token, question, answer
 - URL : [server-name]/api/faq 
 - Return : success check
 - Example : { success : true } or Unantherized or { success : false }
+
 
 ### **/sign_up/customer** 
 - *Method : POST* 
@@ -117,8 +119,8 @@ enter [localhost]:3000/api
 - *Method : POST*
 - Parameter : cid=[customer_id]&passwd=[password]
 - URL : [server-name]/auth/login/customer
-- Return : {message : , token : ,} or {message :}
-- Example : Welcome!
+- Return : {success : true, token : '[random_string]'} or {success : false, error : true }
+- Example : {success : true, token : '[random_string]'} or {success : false, error : true }
 
 ### **/logout/customer**
 - *Method : GET*

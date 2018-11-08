@@ -13,7 +13,10 @@
 // Modified Date : 2018.11.07
 // Author : KJ
 // 비밀번호 암호화 추가
-
+//
+// Modified Date : 2018.11.07
+// Author : KJ
+// Add category post API 
 
 var express = require('express');
 var bodyParser = require('body-parser')
@@ -144,6 +147,59 @@ router.post('/supplier', function(req, res, next){
   })
 })
 
+// Order history API
+// Method : GET
+// URL : /api/order_history
+// 고객의 주문 내역 제공 api
+router.get("/order_history", passport.authenticate('jwt', { session: false }), function(req, res){
+  var cid = "";
+
+  var result = {
+    success : false
+  }
+  if (! (req.user.permission === 'customer' ||
+          req.user.permission === 'admin')) {
+    res.send(result);
+    return false; 
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`SELECT 
+  A.*, B.oid, B.iid, B.amount, B.orderstate, B.\`time\`
+FROM
+  (SELECT 
+      *
+  FROM
+      ddib.order_group
+  WHERE
+      cid = ?) A
+      INNER JOIN
+  ddib.\`order\` B ON A.gid = B.gid
+ORDER BY orderdate DESC;`, [cid], function(error, results) {
+    if (error) {
+      res.status(501).json(result);
+    }
+
+    var orders = [];
+
+    for (var i = 0; i < results.length; i++){
+      orders[i] = {
+        gid : results[i].gid,
+        cid : results[i].cid,
+        order_date : results[i].order_date,
+        payment : results[i].payment,
+        oid : results[i].oid,
+        iid : results[i].iid,
+        order_state : results[i].orderstate,
+        time : results[i].time
+      };
+    }
+
+    res.json(orders);
+  })
+});
+
 // Category API
 // Method : GET
 // URL : /api/category
@@ -169,6 +225,35 @@ router.get('/category', function(req, res, next){
 
     //category_json['results'] = results;
     res.json(results);
+  })
+})
+
+// Category POST API
+// Method : POST
+// Parameters : name, token
+// URL : /api/category
+// 카테고리 등록 api
+router.post('/category', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var body = req.body;
+  var name = body.name;
+
+  var result = {
+    success : false
+  };
+  if (req.user.permission !== 'admin') {
+    result['permission'] = false;
+    res.send(result);
+    return false;
+  }
+  db.query('INSERT INTO category (name) VALUES (?);', [name], function(error, categorys){
+    if (error) {
+      res.status(501).send({message:"Server Error"});
+      return false;
+    }
+
+    result['success'] = true;
+
+    res.json(result);
   })
 })
 
