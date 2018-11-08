@@ -367,7 +367,7 @@ router.post('/faq', passport.authenticate('jwt', { session: false }), function(r
     success : false
   }
 
-  if (question && answer) {
+  if (!( question && answer)) {
     res.json(result);
     return false;
   }
