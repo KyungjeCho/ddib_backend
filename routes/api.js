@@ -367,6 +367,10 @@ router.post('/faq', passport.authenticate('jwt', { session: false }), function(r
     success : false
   }
 
+  if (question && answer) {
+    res.json(result);
+    return false;
+  }
   // 권한 admin
   if(req.user.permission !== 'admin'){
     result['permssion'] = false;
