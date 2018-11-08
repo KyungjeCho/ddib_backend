@@ -28,7 +28,7 @@ CREATE TABLE `category` (
   `cateid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`cateid`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1,'한식'),(2,'중식'),(3,'일식'),(4,'양식'),(5,'분식'),(6,'야식'),(7,'신선품'),(8,'카페/디저트'),(9,'한식'),(10,'중식'),(11,'일식'),(12,'양식'),(13,'분식'),(14,'야식'),(15,'신선품'),(16,'카페/디저트');
+INSERT INTO `category` VALUES (1,'한식'),(2,'중식'),(3,'일식'),(4,'양식'),(5,'분식'),(6,'야식'),(7,'신선품'),(8,'카페/디저트'),(21,'ㅅ'),(22,'test'),(23,'test'),(24,'test');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,9 +65,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-
-INSERT INTO `customer` VALUES ('010-1111-1111','test','test','test',1.00000000,1.00000000),('010-1111-2222','password','조경제','서울특별시 성북구 12341234',NULL,NULL),('010-1423-2222','Dubak','김석희','서울특별시 마포구 12341234',NULL,NULL),('010-2222-3333','mypassword','john','경기도 구로시 12341234',NULL,NULL),('010-2323-2222','androidgood','김정아','대구광역시 중구 12341234',NULL,NULL),('010-3333-2222','mysqlgood','윤인성','대전광역시 중구 12341234',NULL,NULL),('010-4444-2222','hohomypassword','유재석','강원도 태백시 12341234',NULL,NULL),('010-5555-4444','12345678','박성훈','서울특별시 광진구 12341234',NULL,NULL),('111-1111-1122','Ha4DiMgbjNA+uB+9IK9+MmFLbjM=','test','test',1.00000000,1.00000000);
-
+INSERT INTO `customer` VALUES ('010-1111-1111','test','test','test',1.00000000,1.00000000),('010-1111-2222','password','조경제','서울특별시 성북구 12341234',NULL,NULL),('010-1423-2222','Dubak','김석희','서울특별시 마포구 12341234',NULL,NULL),('010-2222-3333','mypassword','john','경기도 구로시 12341234',NULL,NULL),('010-2323-2222','androidgood','김정아','대구광역시 중구 12341234',NULL,NULL),('010-3333-2222','mysqlgood','윤인성','대전광역시 중구 12341234',NULL,NULL),('010-4444-2222','hohomypassword','유재석','강원도 태백시 12341234',NULL,NULL),('010-5555-4444','12345678','박성훈','서울특별시 광진구 12341234',NULL,NULL),('111-1111-1122','Ha4DiMgbjNA+uB+9IK9+MmFLbjM=','test','test',1.00000000,1.00000000),('999-9999-9999','qySOKOfCQTUgiytn/kU8KgZfWvY=','admin','admin',1.00000000,1.00000000);
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,7 +81,7 @@ CREATE TABLE `faq` (
   `question` varchar(45) DEFAULT NULL,
   `answer` longtext,
   PRIMARY KEY (`fid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,6 +90,7 @@ CREATE TABLE `faq` (
 
 LOCK TABLES `faq` WRITE;
 /*!40000 ALTER TABLE `faq` DISABLE KEYS */;
+INSERT INTO `faq` VALUES (1,'test','test'),(2,'test','test'),(3,'test','test');
 /*!40000 ALTER TABLE `faq` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +117,7 @@ CREATE TABLE `favorites` (
 
 LOCK TABLES `favorites` WRITE;
 /*!40000 ALTER TABLE `favorites` DISABLE KEYS */;
-INSERT INTO `favorites` VALUES ('010-1423-2222','010-2323-5643'),('010-3333-2222','010-2323-5643'),('010-1111-2222','010-4456-2222'),('010-1423-2222','010-4456-2222'),('010-1111-2222','010-4563-2222'),('010-5555-4444','010-4563-2222'),('010-1423-2222','010-6767-4444'),('010-5555-4444','010-6767-4444'),('010-3333-2222','010-8888-3333'),('010-5555-4444','010-8888-3333'),('010-1111-2222','010-9999-2222'),('010-3333-2222','010-9999-2222');
+INSERT INTO `favorites` VALUES ('999-9999-9999','010-1423-2536'),('010-1423-2222','010-2323-5643'),('010-3333-2222','010-2323-5643'),('010-1111-2222','010-4456-2222'),('010-1423-2222','010-4456-2222'),('010-1111-2222','010-4563-2222'),('010-5555-4444','010-4563-2222'),('010-1423-2222','010-6767-4444'),('010-5555-4444','010-6767-4444'),('010-3333-2222','010-8888-3333'),('010-5555-4444','010-8888-3333'),('010-1111-2222','010-9999-2222'),('010-3333-2222','010-9999-2222');
 /*!40000 ALTER TABLE `favorites` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -370,10 +369,9 @@ DROP TABLE IF EXISTS `wishlist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wishlist` (
-  `wlid` int(10) unsigned NOT NULL,
-  `cid` varchar(15) DEFAULT NULL,
-  `iid` bigint(20) unsigned DEFAULT NULL,
-  PRIMARY KEY (`wlid`),
+  `cid` varchar(15) NOT NULL,
+  `iid` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`cid`,`iid`),
   KEY `fk_wishlist_1_idx` (`iid`),
   KEY `fk_wishlist_2_idx` (`cid`),
   CONSTRAINT `fk_wishlist_1` FOREIGN KEY (`iid`) REFERENCES `item` (`iid`),
@@ -387,7 +385,7 @@ CREATE TABLE `wishlist` (
 
 LOCK TABLES `wishlist` WRITE;
 /*!40000 ALTER TABLE `wishlist` DISABLE KEYS */;
-INSERT INTO `wishlist` VALUES (1811020001,'010-1111-2222',3),(1811020002,'010-1111-2222',4),(1811020003,'010-4444-2222',1);
+INSERT INTO `wishlist` VALUES ('010-4444-2222',1),('999-9999-9999',2),('010-1111-2222',3),('010-1111-2222',4);
 /*!40000 ALTER TABLE `wishlist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -400,4 +398,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-07 14:15:23
+-- Dump completed on 2018-11-08 18:10:58
