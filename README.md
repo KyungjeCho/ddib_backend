@@ -105,6 +105,14 @@ enter [localhost]:3000/api
 - Return : json file including user's order history
 - Example : { success : false } or [{ gid : , cid : , order_date : payment : , oid : , iid : , amount : , order_state : , time : }]
 
+### **/category** 
+- *Method : POST* 
+- Params : name, token
+- URL : [server-name]/api/category 
+- Return : Success : true or false
+- Example : { success : true } or Unauthorized  or { success : false }
+
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
