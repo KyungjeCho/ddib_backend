@@ -158,13 +158,13 @@ router.get("/order_history", passport.authenticate('jwt', { session: false }), f
     success : false
   }
   if (! (req.user.permission === 'customer' ||
-          req.user.permision === 'admin')) {
+          req.user.permission === 'admin')) {
     res.send(result);
     return false; 
   } else {
     cid = req.user.id;
   }
-  
+
   db.query(`SELECT 
   A.*, B.oid, B.iid, B.amount, B.orderstate, B.\`time\`
 FROM
