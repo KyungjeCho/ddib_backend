@@ -316,11 +316,45 @@ router.post('/favorites', passport.authenticate('jwt', { session: false }), func
       res.status(501).send(result);
       return false;
     }
-    
+
     result['success'] = true;
     res.send(result);
   })
 })
+
+// wishlist POST API
+// Method : POST
+// Parameters : iid
+// URL : /api/wishlist
+// 찜 등록 api
+router.post('/wishlist', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var iid = post.iid;
+
+  var result = {
+    success : false
+  }
+
+  if(!(req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.send(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+  
+  db.query(`INSERT INTO wishlist (cid, iid) VALUES (?, ?);`,
+  [cid, iid], function(error, results){
+    if (error) {
+      res.status(501).json(result);
+      return false;
+    }
+
+    result['success'] = true;
+    res.send(result);
+  })
+});
 
 // Alarm API
 // Method : POST

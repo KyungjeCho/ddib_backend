@@ -99,6 +99,12 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/wishlist** 
+- *Method : POST* 
+- Params : iid
+- URL : [server-name]/api/wishlist 
+- Return : true or false
+- Example : { success : true } or { success : false } or Unauthorized
 
 ### **/faq** 
 - *Method : POST* 
