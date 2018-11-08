@@ -13,7 +13,10 @@
 // Modified Date : 2018.11.07
 // Author : KJ
 // 비밀번호 암호화 추가
-
+//
+// Modified Date : 2018.11.07
+// Author : KJ
+// Add category post API 
 
 var express = require('express');
 var bodyParser = require('body-parser')
@@ -222,6 +225,35 @@ router.get('/category', function(req, res, next){
 
     //category_json['results'] = results;
     res.json(results);
+  })
+})
+
+// Category POST API
+// Method : POST
+// Parameters : name, token
+// URL : /api/category
+// 카테고리 등록 api
+router.post('/category', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var body = req.body;
+  var name = body.name;
+
+  var result = {
+    success : false
+  };
+  if (req.user.permission !== 'admin') {
+    result['permission'] = false;
+    res.send(result);
+    return false;
+  }
+  db.query('INSERT INTO category (name) VALUES (?);', [name], function(error, categorys){
+    if (error) {
+      res.status(501).send({message:"Server Error"});
+      return false;
+    }
+
+    result['success'] = true;
+
+    res.json(result);
   })
 })
 
