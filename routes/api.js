@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -197,6 +197,42 @@ router.post('/wtb', function(req, res, next){
     if (error)
       throw error;
     
+    res.send(result);
+  })
+})
+
+// favorites API
+// Method : POST
+// Header : token
+// Parameters : sid
+// URL : /api/favorites
+// 즐겨찾기 등록 api
+router.post('/favorites', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var sid = post.sid;
+  var cid = "";
+
+  var result = {
+    success : false
+  };
+
+  if(!(req.user.permission === "customer" ||
+    req.user.permission === "admin")){
+    res.send(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`INSERT INTO favorites (cid, sid) VALUES (?, ?);`,
+  [cid, sid], function(error, results){
+    if (error) {
+      result['error'] = true;
+      res.status(501).send(result);
+      return false;
+    }
+    
+    result['success'] = true;
     res.send(result);
   })
 })
