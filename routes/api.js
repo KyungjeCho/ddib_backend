@@ -187,7 +187,7 @@ ORDER BY orderdate DESC;`, [cid], function(error, results) {
       orders[i] = {
         gid : results[i].gid,
         cid : results[i].cid,
-        order_date : results[i].order_date,
+        order_date : results[i].orderdate,
         payment : results[i].payment,
         oid : results[i].oid,
         iid : results[i].iid,
