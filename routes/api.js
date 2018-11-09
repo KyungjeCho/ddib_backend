@@ -172,6 +172,23 @@ router.get('/category', function(req, res, next){
   })
 })
 
+// Order POST API
+// Method : POST
+// Parameters : payment, iid {array}, amount {array}, time {array}, length
+// URL : /api/order
+// 주문 등록 api
+router.post('/order', function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var payment = post.payment;
+  var iid = post.iid;
+  var amount = post.amount;
+  var time = post.time;
+  var length = post.length;
+  
+  console.log(iid, amount, time);
+})
+
 // Want_to_buy API
 // Method : POST
 // Parameters : cid, cateid, min_price, max_price
