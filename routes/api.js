@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -198,6 +198,47 @@ router.post('/wtb', function(req, res, next){
       throw error;
     
     res.send(result);
+  })
+})
+
+// Shopping Cart Post API
+// Method : POST
+// Headers : Authorization
+// Parameters : iid, amount
+// URL : /api/shopping_cart
+// 장바구니 등록 api
+router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var iid = post.iid;
+  var amount = post.amount;
+
+  var result = {
+    success : false
+  }
+
+  if (!amount) {
+    res.send(result);
+    return false;
+  }
+
+  if(!( req.user.permission === 'customer' ||
+        req.user.permission === 'admin' )) {
+    res.send(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`INSERT INTO shopping_cart (cid, iid, amount) VALUES (?, ?, ? );`,
+  [cid, iid, amount], function(error, results){
+    if (error) {
+      res.json(result);
+      return false;
+    }
+
+    result['success'] = true;
+    res.json(result);
   })
 })
 
