@@ -99,6 +99,13 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/order**
+- *Method : POST* 
+- Params : payment, iid, amount, time, length
+- Headers : Authorization
+- URL : [server-name]/api/order 
+- Return : { success : boolean }
+- Example : { success : true } or { success : false } or UnAuthorizion
 
 ### **/sign_up/customer** 
 - *Method : POST* 
