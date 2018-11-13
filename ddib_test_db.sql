@@ -78,10 +78,10 @@ DROP TABLE IF EXISTS `faq`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `faq` (
   `fid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `question` longtext CHARACTER SET latin1,
-  `answer` longtext CHARACTER SET latin1,
+  `question` longtext,
+  `answer` longtext,
   PRIMARY KEY (`fid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,7 +90,7 @@ CREATE TABLE `faq` (
 
 LOCK TABLES `faq` WRITE;
 /*!40000 ALTER TABLE `faq` DISABLE KEYS */;
-INSERT INTO `faq` VALUES (1,'test','test'),(2,'test','test'),(3,'test','test');
+INSERT INTO `faq` VALUES (1,'test','test'),(2,'test','test'),(3,'test','test'),(4,'ㄹㅇ묾누린ㅇ무ㅏㅣ룸ㄴ','ㅡㄹㅇ눔리ㅜㄴ아ㅣ룸');
 /*!40000 ALTER TABLE `faq` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -470,4 +470,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-13 17:35:20
+-- Dump completed on 2018-11-13 17:45:27
