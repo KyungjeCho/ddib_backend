@@ -232,6 +232,7 @@ router.get('/category', function(req, res, next){
   })
 })
 
+
 // Category POST API
 // Method : POST
 // Parameters : name, token
@@ -293,6 +294,60 @@ router.get('/shopping_cart_history',passport.authenticate('jwt', { session: fals
 
     res.json(result);
   })
+})
+// Order POST API
+// Method : POST
+// Parameters : payment, iid, amount, time, length
+// iid, amount, time는 order 정보들로 1;2;3;4;5; 처럼 ;를 이용하여 구분한다.
+// URL : /api/order
+// 주문 등록 api
+router.post('/order', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var payment = post.payment;
+  var iid = post.iid;
+  var amount = post.amount;
+  var time = post.time;
+  var length = post.length;
+
+  var result = {
+    success : false
+  }
+
+  // iid amount time params 크기가 틀리면 false 반환 
+  // TODO : string split
+  var iid_length = iid.split(';').length;
+  var amount_length = amount.split(';').length;
+  var time_length = time.split(';').length;
+ 
+  if ((iid_length !== amount_length) ||
+      (amount_length !== time_length)) {
+    res.json(result);
+    return false;
+  }
+
+  if (!(req.user.permission === 'customer' || 
+        req.user.permission === 'admin')) {
+    res.json(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+  
+  db.query('CALL InsertOrders(?, ?, ?, ?, ?, ?);', [cid, payment, iid, amount, time, length], function(error, results) {
+    if (error) {
+      res.json(result);
+      return false;
+    }
+
+    if (!( results[1][0].MYSQL_ERROR === null)) {
+      res.json(result);
+      return false;
+    }
+
+    result['success'] = true;
+    res.json(result)
+  });
 })
 
 // Want_to_buy API

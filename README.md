@@ -99,7 +99,6 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
-<<<<<<< HEAD
 ### **/wishlist** 
 - *Method : POST* 
 - Params : iid
@@ -120,7 +119,6 @@ enter [localhost]:3000/api
 - Return : json file including all shopping_cart 
 - Example :  [{ItemID: (int),Amount: (int)}, ...]  
 
-=======
 ### **/shopping_cart** 
 - *Method : POST* 
 - Header : Authorization
@@ -128,7 +126,14 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/shopping_cart
 - Return : { success : true } or {success : false } or Unauthorizated
 - Example : { success : true } or { success : false } or Unauthorizated
->>>>>>> issue-29-shopping-cart-post
+
+### **/order**
+- *Method : POST* 
+- Params : payment, iid, amount, time, length
+- Headers : Authorization
+- URL : [server-name]/api/order 
+- Return : { success : boolean }
+- Example : { success : true } or { success : false } or UnAuthorizion
 
 ### **/sign_up/customer** 
 - *Method : POST* 
