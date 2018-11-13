@@ -99,6 +99,11 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/shopping_cart_history** 
+- *Method : GET* 
+- URL : [server-name]/api/shopping_cart_history 
+- Return : json file including all shopping_cart 
+- Example :  [{ItemID: (int),Amount: (int)}, ...]  
 
 ### **/sign_up/customer** 
 - *Method : POST* 
