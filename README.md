@@ -113,6 +113,12 @@ enter [localhost]:3000/api
 - Return : success check
 - Example : { success : true } or Unantherized or { success : false }
 
+### **/shopping_cart_history** 
+- *Method : GET* 
+- URL : [server-name]/api/shopping_cart_history 
+- Return : json file including all shopping_cart 
+- Example :  [{ItemID: (int),Amount: (int)}, ...]  
+
 
 ### **/sign_up/customer** 
 - *Method : POST* 

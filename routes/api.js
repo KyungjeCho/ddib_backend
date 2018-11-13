@@ -17,6 +17,10 @@
 // Modified Date : 2018.11.07
 // Author : KJ
 // Add category post API 
+//
+// Modified Date : 2018.11.13
+// Author : KJ
+// 장바구니 목록 출력 api 추가
 
 var express = require('express');
 var bodyParser = require('body-parser')
@@ -252,6 +256,40 @@ router.post('/category', passport.authenticate('jwt', { session: false }), funct
     }
 
     result['success'] = true;
+
+    res.json(result);
+  })
+})
+
+// Shopping Cart Hisotry API
+// Method : GET
+// URL : /api/shopping_cart_history
+// 유저의 모든 장바구니를 반환하는 API
+router.get('/shopping_cart_history',passport.authenticate('jwt', { session: false }), function(req, res, next){
+
+  var cid = req.user.id;
+
+  db.query('SELECT * FROM shopping_cart WHERE cid = ?;', [cid], function(error, results){
+    if (error) {
+      res.send({ success : false });
+    }
+    
+    console.log(results)
+
+    if (results.length <= 0) {
+      res.send({ success : false });
+    }
+    var result = [];
+    
+    var i = 0;
+    while (i < results.length)
+    {
+      result[i] = {
+        ItemID : results[i].iid,
+        Amount : results[i].amount
+      }
+      i++;
+    }
 
     res.json(result);
   })
