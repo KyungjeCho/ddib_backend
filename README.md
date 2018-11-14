@@ -142,6 +142,13 @@ enter [localhost]:3000/api
 - Return : json file 
 - Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
 
+### **/sign_up/supplier** 
+- *Method : POST* 
+- Params : sid, passwd, rname, address, dlprice, latitude, longitude
+- URL : [server-name]/api/sign_up/supplier 
+- Return : json file 
+- Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
+
 ### **/login/customer**
 - *Method : POST*
 - Parameter : cid=[customer_id]&passwd=[password]
