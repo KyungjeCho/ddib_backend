@@ -99,11 +99,17 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
-
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
 - URL : [server-name]/api/sign_up/customer 
+- Return : json file 
+- Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
+
+### **/sign_up/supplier** 
+- *Method : POST* 
+- Params : sid, passwd, rname, address, dlprice, latitude, longitude
+- URL : [server-name]/api/sign_up/supplier 
 - Return : json file 
 - Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
 
