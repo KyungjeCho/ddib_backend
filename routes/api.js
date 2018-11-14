@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -252,25 +252,47 @@ router.get('/category', function(req, res, next){
 // Parameters : name, cateid, rawprice, saleprice, context, image, views, starttime, endtime, deliverable, count
 // URL : /api/item
 // 음식 등록 api
-router.post('/item', function(req, res, next){
+router.post('/item', passport.authenticate('jwt', { session: false }), function(req, res, next){
   var post = req.body;
   var sid = "";
+  var image_path = "";
+  var image = "";
+  var name = post.name;
+  var category_id = post.catetegory_id;
+  var raw_price = post.raw_price;
+  var sale_price = post.sale_price;
+  var context = post.context;
+  var start_time = post.start_time;
+  var end_time = post.end_time;
+  var deliverable = post.deliverable;
+  var count = post.count;
 
-  // TODO : Supplier login & sign up api must be completed 
+  var result = {
+    success : false
+  }
+  
   if(! (req.user.permission == 'supplier' || 
         req.user.permission == 'admin')) {
+    res.json(result);
     return false;
   }
   else {
-    cid = req.user.id;
+    sid = req.user.id;
   }
 
-  db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
-  [cid, cateid, min_price, max_price], function(error, result){
-    if (error)
-      throw error;
-    
-    res.send(result);
+  // Ver 0 not insert image path and don't store image file
+  // TODO : save file 
+  db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, count) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count],
+  function(error, result){
+    if (error){
+      res.json(result);
+    }
+
+    result['success'] = true;
+    res.json(result);
   })
 })
 
