@@ -40,7 +40,24 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
       }
       next(null, user_info);
     } else {
-      next(null, false);
+      db.query('SELECT * FROM supplier WHERE sid = ?', [jwt_payload.id], function(error, user) {
+        if (error) {
+          next(null, false);
+        }
+        if (user) {
+          var user_info = {
+            id : user[0].sid,
+              name : user[0].rname,
+              permission : "supplier"
+          }
+          if (user[0].cid === '999-9999-9999') {
+            user_info['permission'] = 'admin';
+          }
+          next(null, user_info);
+        } else {
+          next(null, false);
+        }
+      })
     }
   });
   
@@ -87,6 +104,56 @@ router.post("/login/customer", function(req, res) {
       // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
       var payload = {id: user[0].cid};
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
+      result['ID'] = user[0].cid;
+      result['name'] = user[0].name;
+      result['token'] = token;
+      result['success'] = true;
+      res.json(result);
+    } else {
+      result['error'] = true;
+      res.status(401).json(result);
+    }
+  });
+});
+
+// Supplier Login API
+// Method : POST
+// Params : sid, passwd
+// URL : /auth/login/supplier
+// Return : id, rname, token, success
+router.post("/login/supplier", function(req, res) {
+  var result = {
+    success : false
+  };
+
+  if(req.body.sid && req.body.passwd){
+    var name = req.body.sid;
+    var password = req.body.passwd;
+  } else {
+    result['empty_params'] = true;
+    res.json(result);
+  }
+  // usually this would be a database call:
+
+  db.query('SELECT * FROM supplier WHERE sid = ?;', [name], function(error, user) {
+    if (error) {
+      result['error'] = true;
+      res.status(501).send(result);
+      return false;
+    }
+
+    if(user.length <= 0){
+      result['error'] = true;
+      res.status(401).send(result);
+      return false;
+    }
+  
+    if(CryptoPasswd.verify(user[0].passwd,password)) {
+      // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
+      var payload = {id: user[0].cid};
+      var token = jwt.sign(payload, jwtOptions.secretOrKey);
+      result['ID'] = user[0].sid;
+      result['name'] = user[0].rname;
       result['token'] = token;
       result['success'] = true;
       res.json(result);
