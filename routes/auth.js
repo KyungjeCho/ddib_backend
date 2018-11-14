@@ -85,6 +85,8 @@ router.post("/login/customer", function(req, res) {
       // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
       var payload = {id: user[0].cid};
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
+      result['ID'] = user[0].cid;
+      result['name'] = user[0].name;
       result['token'] = token;
       result['success'] = true;
       res.json(result);
