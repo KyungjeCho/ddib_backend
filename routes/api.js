@@ -172,6 +172,34 @@ router.get('/category', function(req, res, next){
   })
 })
 
+// Itemp Post API
+// Method : POST
+// Header : Authorization
+// Parameters : name, cateid, rawprice, saleprice, context, image, views, starttime, endtime, deliverable, count
+// URL : /api/item
+// 음식 등록 api
+router.post('/item', function(req, res, next){
+  var post = req.body;
+  var sid = "";
+
+  // TODO : Supplier login & sign up api must be completed 
+  if(! (req.user.permission == 'supplier' || 
+        req.user.permission == 'admin')) {
+    return false;
+  }
+  else {
+    cid = req.user.id;
+  }
+
+  db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
+  [cid, cateid, min_price, max_price], function(error, result){
+    if (error)
+      throw error;
+    
+    res.send(result);
+  })
+})
+
 // Want_to_buy API
 // Method : POST
 // Parameters : cid, cateid, min_price, max_price
