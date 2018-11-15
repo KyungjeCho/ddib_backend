@@ -690,7 +690,7 @@ router.get('/item/detail/:itemID', function(req, res, next) {
     itemDetailJson['iid'] = item[0].iid;
     itemDetailJson['itemName'] = item[0].name;
     itemDetailJson['rawPrice'] = item[0].rawprice;
-    itemDetailJson['salePrice'] = item[0].salerice;
+    itemDetailJson['salePrice'] = item[0].saleprice;
     itemDetailJson['context'] = item[0].context;
     itemDetailJson['views'] = item[0].views + 1;
     itemDetailJson['startTime'] = item[0].starttime;
