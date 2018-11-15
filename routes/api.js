@@ -225,76 +225,51 @@ router.get('/item/list/:sort', function(req, res, next) {
 
   var result = [];
 
-  if (req.params.sort === '0'){
-    db.query(`SELECT * FROM item ORDER BY views DESC;`, function(error, item) {
-      if (error) {
-        res.json({ success : false });
-        return false;
-      }
+  var sql = 'SELECT * FROM item ';
 
-      if (item.length <= 0) {
-        res.json({ success : false });
-        return false;
-      }
-
-      for (var i = 0; i < item.length; i++) {
-
-        result[i] = {
-          success : true,
-          iid : item[i].iid,
-          itemName : item[i].name,
-          rawPrice : item[i].rawprice,
-          salePrice : item[i].salerice,
-          context : item[i].context,
-          views : item[i].views,
-          startTime : item[i].starttime,
-          endTime : item[i].endtime,
-          deliverable : item[i].deliverable,
-          supplierId : item[i].sid,
-          categoryId : item[i].caieid,
-          imagePath : item[i].image,
-          itemCount : item[i].count
-        }
-      }
-      res.json(result);
-    })
-  } else if (req.params.sort === '1') {
-    db.query(`SELECT * FROM item ORDER BY starttime DESC, endtime DESC;`, function(error, item) {
-      if (error) {
-        res.json({ success : false });
-        return false;
-      }
-
-      if (item.length <= 0) {
-        res.json({ success : false });
-        return false;
-      }
-
-      for (var i = 0; i < item.length; i++) {
-
-        result[i] = {
-          success : true,
-          iid : item[i].iid,
-          itemName : item[i].name,
-          rawPrice : item[i].rawprice,
-          salePrice : item[i].salerice,
-          context : item[i].context,
-          views : item[i].views,
-          startTime : item[i].starttime,
-          endTime : item[i].endtime,
-          deliverable : item[i].deliverable,
-          supplierId : item[i].sid,
-          categoryId : item[i].caieid,
-          imagePath : item[i].image,
-          itemCount : item[i].count
-        }
-      }
-      res.json(result);
-    })
+  if (req.params.sort === '0') { // 최다 조회수 순
+    sql = sql + 'ORDER BY views DESC;';
+  } else if (req.params.sort === '1') { // 최신 음식 순
+    sql = sql + 'ORDER BY starttime DESC, endtime DESC;';
+  } else if (req.params.sort === '2') { // 싼 가격 순
+    sql = sql + 'ORDER BY saleprice ASC;'; 
+  } else if (req.params.sort === '3') { // 비싼 가격 순
+    sql = sql + 'ORDER BY saleprice DESC';
   } else {
-    res.json({ success : false });
-    return false;
+    // Nothing
   }
+  db.query(`SELECT * FROM item ORDER BY views DESC;`, function(error, item) {
+    if (error) {
+      res.json({ success : false });
+      return false;
+    }
+
+    if (item.length <= 0) {
+      res.json({ success : false });
+      return false;
+    }
+
+    for (var i = 0; i < item.length; i++) {
+
+      result[i] = {
+        success : true,
+        iid : item[i].iid,
+        itemName : item[i].name,
+        rawPrice : item[i].rawprice,
+        salePrice : item[i].salerice,
+        context : item[i].context,
+        views : item[i].views,
+        startTime : item[i].starttime,
+        endTime : item[i].endtime,
+        deliverable : item[i].deliverable,
+        supplierId : item[i].sid,
+        categoryId : item[i].caieid,
+        imagePath : item[i].image,
+        itemCount : item[i].count
+      }
+    }
+    res.json(result);
+  })
 })
 
 // Alarm API
