@@ -204,7 +204,7 @@ router.post('/wtb', function(req, res, next){
 
 // Item Search Page API
 // Method : POST
-// Params : name
+// Params : name or cateid
 // URL : [server-name]/api/item/Search/:Name(입력)
 // Return : { success : false } or 
 // {
@@ -225,10 +225,27 @@ router.post('/wtb', function(req, res, next){
 //}
 router.post('/item/search', function(req, res, next) {
   var name = req.body.name;
+  var category_id = req.body.cateid;
 
   var result = [];
 
-  db.query(`SELECT * FROM item WHERE name LIKE ? ORDER BY views DESC;`, ['%' + name + '%'] ,function(error, item) { 
+  var format = [];
+  var sql = 'SELECT * FROM item WHERE ';
+  if (name) {
+    sql = sql + 'name LIKE ? ';
+    format[0] = '%' + name + '%';
+  } 
+  if (name && category_id) {
+    sql = sql + 'AND cateid = ? ';
+    format[1] = category_id;
+  } else if (category_id) {
+    sql = sql + 'cateid = ? ';
+    format[0] = category_id;
+  } else {
+    // Nothing
+  }
+  sql = sql + 'ORDER BY views DESC';
+  db.query(sql, format ,function(error, item) { 
     if (error) {
       res.json({ success : false });
       return false;
