@@ -32,8 +32,8 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
     if (user) {
       var user_info = {
         id : user[0].cid,
-          name : user[0].name,
-          permission : "customer"
+        name : user[0].name,
+        permission : "customer"
       }
       if (user[0].cid === '999-9999-9999') {
         user_info['permission'] = 'admin';
@@ -47,10 +47,10 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
         if (user) {
           var user_info = {
             id : user[0].sid,
-              name : user[0].rname,
-              permission : "supplier"
+            name : user[0].rname,
+            permission : "supplier"
           }
-          if (user[0].cid === '999-9999-9999') {
+          if (user[0].sid === '999-9999-9999') {
             user_info['permission'] = 'admin';
           }
           next(null, user_info);
