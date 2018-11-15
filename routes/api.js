@@ -207,23 +207,51 @@ router.post('/wtb', function(req, res, next){
 
 // Item Detail Page API
 // Method : GET
+// URL : [server-name]/api/item/detail/:itemID(입력)
+// Return : { success : false } or 
+// { 
+//    success : true,
+//    iid : iid,
+//    itemName : name.
+//    rawPrice : raw_price,
+//    salePrice : sale_price,
+//    context : context,
+//    views : views,
+//    startTime : start_time.
+//    endTime : end_time.
+//    delivable : 0 or 1,
+//    supplierId : sid.
+//    categoryId : cateid.
+//    imagePath : image
+//}
 router.get('/item/detail/:itemID', function(req, res, next) {
   var itemId = req.params.itemID;
   var itemDetailJson = {};
   db.query(`SELECT * FROM item WHERE iid = ?;`, [itemId], function(error, item) {
-    if (error)
-      throw error;
-    if (item.length == 0){
-      res.send("Item dont exist!");
+    if (error) {
+      res.json({ success : false });
       return false;
     }
 
+    if (item.length <= 0) {
+      res.json({ success : false });
+      return false;
+    }
+
+    db.query('UPDATE item SET views = ? WHERE iid = ?;', [item[0].views + 1, item[0].iid], function(error, result) {
+      if (error) {
+        res.json({ success : false })
+        return false;
+      }
+    })
+
+    itemDetailJson['success'] = true;
     itemDetailJson['iid'] = item[0].iid;
     itemDetailJson['itemName'] = item[0].name;
     itemDetailJson['rawPrice'] = item[0].rawprice;
     itemDetailJson['salePrice'] = item[0].salerice;
     itemDetailJson['context'] = item[0].context;
-    itemDetailJson['views'] = item[0].views;
+    itemDetailJson['views'] = item[0].views + 1;
     itemDetailJson['startTime'] = item[0].starttime;
     itemDetailJson['endTime'] = item[0].endtime;
     itemDetailJson['deliverable'] = item[0].deliverable;
