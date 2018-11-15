@@ -459,7 +459,6 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
     success : false
   }
 
-  
   if(! (req.user.permission == 'supplier' || 
         req.user.permission == 'admin')) {
     res.json(result);
@@ -472,13 +471,12 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
   // Ver 0 not insert image path and don't store image file
   // TODO : save file 
   if (req.file){
-    db.query(`INSERT INTO item 
-  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) 
-  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
+    db.query(`INSERT INTO item (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
   [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, req.file.filename],
   function(error, results){
     if (error){
       res.json(result);
+      return false;
     }
 
     result['success'] = true;
@@ -492,6 +490,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
   function(error, results){
     if (error){
       res.json(result);
+      return false;
     }
 
     result['success'] = true;
