@@ -257,7 +257,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), function(
   var sid = "";
   var image = post.image;
   var name = post.name;
-  var category_id = post.catetegory_id;
+  var category_id = post.category_id;
   var raw_price = post.raw_price;
   var sale_price = post.sale_price;
   var context = post.context;
@@ -265,7 +265,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), function(
   var end_time = post.end_time;
   var deliverable = post.deliverable;
   var count = post.count;
-
+console.log(post);
   var result = {
     success : false
   }
