@@ -201,6 +201,102 @@ router.post('/wtb', function(req, res, next){
   })
 })
 
+// All Item List Page API
+// Method : GET
+// URL : [server-name]/api/item/list
+// Return : { success : false } or 
+// [{ 
+//    success : true,
+//    iid : iid,
+//    itemName : name.
+//    rawPrice : raw_price,
+//    salePrice : sale_price,
+//    context : context,
+//    views : views,
+//    startTime : start_time.
+//    endTime : end_time.
+//    delivable : 0 or 1,
+//    supplierId : sid.
+//    categoryId : cateid.
+//    imagePath : image.
+//    itemCount : count
+//}, ... ]
+router.get('/item/list/:sort', function(req, res, next) {
+
+  var result = [];
+
+  if (req.params.sort === '0'){
+    db.query(`SELECT * FROM item ORDER BY views DESC;`, function(error, item) {
+      if (error) {
+        res.json({ success : false });
+        return false;
+      }
+
+      if (item.length <= 0) {
+        res.json({ success : false });
+        return false;
+      }
+
+      for (var i = 0; i < item.length; i++) {
+
+        result[i] = {
+          success : true,
+          iid : item[i].iid,
+          itemName : item[i].name,
+          rawPrice : item[i].rawprice,
+          salePrice : item[i].salerice,
+          context : item[i].context,
+          views : item[i].views,
+          startTime : item[i].starttime,
+          endTime : item[i].endtime,
+          deliverable : item[i].deliverable,
+          supplierId : item[i].sid,
+          categoryId : item[i].caieid,
+          imagePath : item[i].image,
+          itemCount : item[i].count
+        }
+      }
+      res.json(result);
+    })
+  } else if (req.params.sort === '1') {
+    db.query(`SELECT * FROM item ORDER BY starttime DESC, endtime DESC;`, function(error, item) {
+      if (error) {
+        res.json({ success : false });
+        return false;
+      }
+
+      if (item.length <= 0) {
+        res.json({ success : false });
+        return false;
+      }
+
+      for (var i = 0; i < item.length; i++) {
+
+        result[i] = {
+          success : true,
+          iid : item[i].iid,
+          itemName : item[i].name,
+          rawPrice : item[i].rawprice,
+          salePrice : item[i].salerice,
+          context : item[i].context,
+          views : item[i].views,
+          startTime : item[i].starttime,
+          endTime : item[i].endtime,
+          deliverable : item[i].deliverable,
+          supplierId : item[i].sid,
+          categoryId : item[i].caieid,
+          imagePath : item[i].image,
+          itemCount : item[i].count
+        }
+      }
+      res.json(result);
+    })
+  } else {
+    res.json({ success : false });
+    return false;
+  }
+})
+
 // Alarm API
 // Method : POST
 // Parameters : cid
