@@ -203,7 +203,7 @@ router.post('/wtb', function(req, res, next){
 
 // All Item List Page API
 // Method : GET
-// URL : [server-name]/api/item/list
+// URL : [server-name]/api/item/list/:sort
 // Return : { success : false } or 
 // [{ 
 //    success : true,
