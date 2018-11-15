@@ -18,6 +18,7 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var passport = require("passport");
+var multer = require('multer')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -25,8 +26,18 @@ var CryptoPasswd = require('../lib/passwordSecret');
 
 var auth = require('../lib/auth')
 
-
 var router = express.Router();
+
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/images' + req.url + '/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.user.id + Date.now() + file.originalname)
+    }
+})
+
+var upload = multer({ storage: storage })
 
 /* GET api home page. */
 router.get('/', function(req, res, next) {
@@ -246,16 +257,15 @@ router.get('/category', function(req, res, next){
   })
 })
 
-// Itemp Post API
+// Item Post API
 // Method : POST
 // Header : Authorization
 // Parameters : name, cateid, rawprice, saleprice, context, image, views, starttime, endtime, deliverable, count
 // URL : /api/item
 // 음식 등록 api
-router.post('/item', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/item', passport.authenticate('jwt', { session: false }), upload.single('image'), function(req, res, next){
   var post = req.body;
   var sid = "";
-  var image = post.image;
   var name = post.name;
   var category_id = post.category_id;
   var raw_price = post.raw_price;
@@ -265,7 +275,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), function(
   var end_time = post.end_time;
   var deliverable = post.deliverable;
   var count = post.count;
-console.log(post);
+
   var result = {
     success : false
   }
@@ -281,11 +291,11 @@ console.log(post);
 
   // Ver 0 not insert image path and don't store image file
   // TODO : save file 
-  if (image){
+  if (req.file){
     db.query(`INSERT INTO item 
   (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) 
   VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
-  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image],
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, req.file.filename],
   function(error, results){
     if (error){
       res.json(result);
