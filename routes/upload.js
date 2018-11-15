@@ -13,7 +13,11 @@ var router = express.Router();
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'public/images' + req.url + '/')
+        console.log("dest");
+        db.query("INSERT INTO item (sid, image) values (?,?)", ['999-9999-9999', file], function(error, results) {
+            console.log(results)
+            cb(null, 'public/images' + req.url + '/')
+        })
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
@@ -29,7 +33,10 @@ var upload = multer({ storage: storage })
 // 가맹업주 썸네일 이미지 업로드
 router.post('/item', upload.single('userfile'), function(req, res, next) {
     // TODO: AUTH Supplier
+    console.log("item")
+    console.log(req.body)
 
+    
     res.send("Uploaded! : " + req.file);
 })
 
