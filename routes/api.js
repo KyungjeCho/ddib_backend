@@ -222,7 +222,8 @@ router.post('/wtb', function(req, res, next){
 //    delivable : 0 or 1,
 //    supplierId : sid.
 //    categoryId : cateid.
-//    imagePath : image
+//    imagePath : image.
+//    itemCount : count
 //}
 router.get('/item/detail/:itemID', function(req, res, next) {
   var itemId = req.params.itemID;
@@ -258,7 +259,7 @@ router.get('/item/detail/:itemID', function(req, res, next) {
     itemDetailJson['supplierId'] = item[0].sid;
     itemDetailJson['categoryId'] = item[0].cateid;
     itemDetailJson['imagePath'] = item[0].image;
-
+    itemDetailJson['itemCount'] = item[0].count;
     res.json(itemDetailJson);
   })
 })
