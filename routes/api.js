@@ -2,6 +2,11 @@
 // Author : KJ
 // 2018.10.12
 //
+//
+// Item detail API 추가 
+// Author : KJ
+// Modified-Date: 2018.10.12
+//
 // Modified Date : 2018.11.02
 // Author : KJ
 // 알람 서비스 api 작성
@@ -640,6 +645,65 @@ router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), 
 });
 
 
+// Item Detail Page API
+// Method : GET
+// URL : [server-name]/api/item/detail/:itemID(입력)
+// Return : { success : false } or 
+// { 
+//    success : true,
+//    iid : iid,
+//    itemName : name.
+//    rawPrice : raw_price,
+//    salePrice : sale_price,
+//    context : context,
+//    views : views,
+//    startTime : start_time.
+//    endTime : end_time.
+//    delivable : 0 or 1,
+//    supplierId : sid.
+//    categoryId : cateid.
+//    imagePath : image
+//}
+router.get('/item/detail/:itemID', function(req, res, next) {
+  var itemId = req.params.itemID;
+  var itemDetailJson = {};
+  db.query(`SELECT * FROM item WHERE iid = ?;`, [itemId], function(error, item) {
+    if (error) {
+      res.json({ success : false });
+      return false;
+    }
+
+    if (item.length <= 0) {
+      res.json({ success : false });
+      return false;
+    }
+
+    db.query('UPDATE item SET views = ? WHERE iid = ?;', [item[0].views + 1, item[0].iid], function(error, result) {
+      if (error) {
+        res.json({ success : false })
+        return false;
+      }
+    })
+
+    itemDetailJson['success'] = true;
+    itemDetailJson['iid'] = item[0].iid;
+    itemDetailJson['itemName'] = item[0].name;
+    itemDetailJson['rawPrice'] = item[0].rawprice;
+    itemDetailJson['salePrice'] = item[0].salerice;
+    itemDetailJson['context'] = item[0].context;
+    itemDetailJson['views'] = item[0].views + 1;
+    itemDetailJson['startTime'] = item[0].starttime;
+    itemDetailJson['endTime'] = item[0].endtime;
+    itemDetailJson['deliverable'] = item[0].deliverable;
+    itemDetailJson['supplierId'] = item[0].sid;
+    itemDetailJson['categoryId'] = item[0].cateid;
+    itemDetailJson['imagePath'] = item[0].image;
+
+    res.json(itemDetailJson);
+  })
+})
+
+
 // Alarm API
 // Method : POST
 // Parameters : cid
@@ -684,27 +748,27 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
 
     // 최근 제일 많이 팔린 제품 찾는 데이터베이스 쿼리
     db.query(`select D.* from (select date(orderdate) as orderdate_date, iid, sum(amount) from
-    \`order\` A inner join order_group B on A.gid = B.gid group by orderdate_date, iid order by 1 desc, 3 desc limit 1) C inner join item D on C.iid = D.iid;`, function(error, items) {
-      if (error)
-        throw error;
-      
-      if (items.length > 0)
-      {
-        item['success'] = true;
-        item['id'] = items[0].iid;
-        item['sid'] = items[0].sid;
-        item['name'] = items[0].name; 
+      \`order\` A inner join order_group B on A.gid = B.gid group by orderdate_date, iid order by 1 desc, 3 desc limit 1) C inner join item D on C.iid = D.iid;`, function(error, items) {
+        if (error)
+          throw error;
         
-        res.json(item);
-      }
+        if (items.length > 0)
+        {
+          item['success'] = true;
+          item['id'] = items[0].iid;
+          item['sid'] = items[0].sid;
+          item['name'] = items[0].name; 
+          
+          res.json(item);
+        }
 
-      // 실패할 경우
-      else {
-        res.json(item);
-      }
-    })
-  }
-})
+        // 실패할 경우
+        else {
+          res.json(item);
+        }
+      })
+    }
+  })
 })
 
 // FAQ POST API
