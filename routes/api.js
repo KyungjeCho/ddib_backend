@@ -238,7 +238,7 @@ router.get('/item/list/:sort', function(req, res, next) {
   } else {
     // Nothing
   }
-  db.query(`SELECT * FROM item ORDER BY views DESC;`, function(error, item) {
+  db.query(sql, function(error, item) {
     if (error) {
       res.json({ success : false });
       return false;
@@ -256,7 +256,7 @@ router.get('/item/list/:sort', function(req, res, next) {
         iid : item[i].iid,
         itemName : item[i].name,
         rawPrice : item[i].rawprice,
-        salePrice : item[i].salerice,
+        salePrice : item[i].saleprice,
         context : item[i].context,
         views : item[i].views,
         startTime : item[i].starttime,
