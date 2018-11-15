@@ -201,6 +201,69 @@ router.post('/wtb', function(req, res, next){
   })
 })
 
+// Item Search Page API
+// Method : GET
+// URL : [server-name]/api/item/Search/:Name(입력)
+// Return : { success : false } or 
+// {
+//    success : true,
+//    iid : iid,
+//    itemName : name.
+//    rawPrice : raw_price,
+//    salePrice : sale_price,
+//    context : context,
+//    views : views,
+//    startTime : start_time.
+//    endTime : end_time.
+//    delivable : 0 or 1,
+//    supplierId : sid.
+//    categoryId : cateid.
+//    imagePath : image.
+//    itemCount : count
+//}
+router.get('/item/search/:name', function(req, res, next) {
+  var name = req.params.name;
+  var sort = '0';
+  var result = [];
+  var sql = 'SELECT * FROM item WHERE name like \'%?%\' ';
+
+  if (sort === '0') {
+    sql = sql + 'ORDER BY views DESC;';
+  }
+  db.query(sql, [name], function(error, item) { 
+    if (error) {
+      res.json({ success : false });
+      return false;
+    }
+
+    if (item.length <= 0) {
+      res.json({ success : false });
+      return false;
+    }
+    
+    for (var i = 0; i < item.length; i++) {
+      result[i] = {
+        success : true,
+        iid : item[i].iid,
+        itemName : item[i].name,
+        rawPrice : item[i].rawprice,
+        salePrice : item[i].saleprice,
+        context : item[i].context,
+        views : item[0].views + 1,
+        startTime : item[0].starttime,
+        endTime : item[0].endtime,
+        deliverable : item[0].deliverable,
+        supplierId : item[0].sid,
+        categoryId : item[0].cateid,
+        imagePath : item[0].image,
+        itemCount : item[0].count
+      }
+    }
+
+    res.json(result);
+  })
+})
+
 // Alarm API
 // Method : POST
 // Parameters : cid
