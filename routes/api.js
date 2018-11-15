@@ -255,8 +255,7 @@ router.get('/category', function(req, res, next){
 router.post('/item', passport.authenticate('jwt', { session: false }), function(req, res, next){
   var post = req.body;
   var sid = "";
-  var image_path = "";
-  var image = "";
+  var image = post.image;
   var name = post.name;
   var category_id = post.catetegory_id;
   var raw_price = post.raw_price;
@@ -282,11 +281,12 @@ router.post('/item', passport.authenticate('jwt', { session: false }), function(
 
   // Ver 0 not insert image path and don't store image file
   // TODO : save file 
-  db.query(`INSERT INTO item 
-  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, count) 
-  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`,
-  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count],
-  function(error, result){
+  if (image){
+    db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image],
+  function(error, results){
     if (error){
       res.json(result);
     }
@@ -294,6 +294,21 @@ router.post('/item', passport.authenticate('jwt', { session: false }), function(
     result['success'] = true;
     res.json(result);
   })
+  } else {
+    db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count],
+  function(error, results){
+    if (error){
+      res.json(result);
+    }
+
+    result['success'] = true;
+    res.json(result);
+  })
+  }
+  
 })
 
 // Want_to_buy API
