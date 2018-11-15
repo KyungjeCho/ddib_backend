@@ -26,14 +26,26 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var passport = require("passport");
 
+var multer = require('multer')
+
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
 var CryptoPasswd = require('../lib/passwordSecret');
 
 var auth = require('../lib/auth')
 
-
 var router = express.Router();
+
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/images' + req.url + '/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.user.id + Date.now() + file.originalname)
+    }
+})
+
+var upload = multer({ storage: storage })
 
 /* GET api home page. */
 router.get('/', function(req, res, next) {
@@ -306,7 +318,6 @@ router.get('/category', function(req, res, next){
   })
 })
 
-
 // Category POST API
 // Method : POST
 // Parameters : name, token
@@ -422,6 +433,71 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
     result['success'] = true;
     res.json(result)
   });
+})
+
+// Item Post API
+// Method : POST
+// Header : Authorization
+// Parameters : name, cateid, rawprice, saleprice, context, image, views, starttime, endtime, deliverable, count
+// URL : /api/item
+// 음식 등록 api
+router.post('/item', passport.authenticate('jwt', { session: false }), upload.single('image'), function(req, res, next){
+  var post = req.body;
+  var sid = "";
+  var name = post.name;
+  var category_id = post.category_id;
+  var raw_price = post.raw_price;
+  var sale_price = post.sale_price;
+  var context = post.context;
+  var start_time = post.start_time;
+  var end_time = post.end_time;
+  var deliverable = post.deliverable;
+  var count = post.count;
+
+
+  var result = {
+    success : false
+  }
+
+  
+  if(! (req.user.permission == 'supplier' || 
+        req.user.permission == 'admin')) {
+    res.json(result);
+    return false;
+  }
+  else {
+    sid = req.user.id;
+  }
+
+  // Ver 0 not insert image path and don't store image file
+  // TODO : save file 
+  if (req.file){
+    db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, req.file.filename],
+  function(error, results){
+    if (error){
+      res.json(result);
+    }
+
+    result['success'] = true;
+    res.json(result);
+  })
+  } else {
+    db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count],
+  function(error, results){
+    if (error){
+      res.json(result);
+    }
+
+    result['success'] = true;
+    res.json(result);
+  })
+  }
 })
 
 // Want_to_buy API
