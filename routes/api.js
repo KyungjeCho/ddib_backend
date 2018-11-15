@@ -17,7 +17,8 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var urlencode = require('urlencode')
+var iconv = require('iconv')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -202,7 +203,8 @@ router.post('/wtb', function(req, res, next){
 })
 
 // Item Search Page API
-// Method : GET
+// Method : POST
+// Params : name
 // URL : [server-name]/api/item/Search/:Name(입력)
 // Return : { success : false } or 
 // {
@@ -221,22 +223,13 @@ router.post('/wtb', function(req, res, next){
 //    imagePath : image.
 //    itemCount : count
 //}
-router.get('/item/search/:name', function(req, res, next) {
-  var name = req.params.name;
-  var sort = '0';
+router.post('/item/search', function(req, res, next) {
+  var name = req.body.name;
+
   var result = [];
-  var sql = 'SELECT * FROM item WHERE name like \'%?%\' ';
 
-  if (sort === '0') {
-    sql = sql + 'ORDER BY views DESC;';
-  }
-  db.query(sql, [name], function(error, item) { 
+  db.query(`SELECT * FROM item WHERE name LIKE ? ORDER BY views DESC;`, ['%' + name + '%'] ,function(error, item) { 
     if (error) {
-      res.json({ success : false });
-      return false;
-    }
-
-    if (item.length <= 0) {
       res.json({ success : false });
       return false;
     }

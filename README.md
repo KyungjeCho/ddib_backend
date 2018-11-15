@@ -99,6 +99,12 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/item/search** 
+- *Method : POST* 
+- Params : name
+- URL : [server-name]/api/item/search 
+- Return : json file 
+- Example : [{ success : true, iid : 29, itemName : , rawPrice : , salePrice : , context : , views : , startTime : , endTime : , deliverable : , supplierId : , categoryId : , imagePath : }, ...]
 
 ### **/sign_up/customer** 
 - *Method : POST* 
