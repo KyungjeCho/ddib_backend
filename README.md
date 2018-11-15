@@ -99,6 +99,7 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+
 ### **/item** 
 - *Method : POST* 
 - URL : [server-name]/api/item
@@ -146,6 +147,13 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/alarm
 - Return : json file including an item that the customer bought the most
 - Example : { success : true, id : 1, sid : '010-9999-1111', name : '순대국' } or { success : false } 
+
+### **/upload/item**
+- *Method : POST*
+- Parameter : userfile=imagefile
+- URL : [server-name]/upload/item
+- Return : image file
+
 
 ## Slack
 
