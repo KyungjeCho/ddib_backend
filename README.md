@@ -99,6 +99,26 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/wishlist** 
+- *Method : POST* 
+- Params : iid
+- URL : [server-name]/api/wishlist 
+- Return : true or false
+- Example : { success : true } or { success : false } or Unauthorized
+
+### **/faq** 
+- *Method : POST* 
+- Params : token, question, answer
+- URL : [server-name]/api/faq 
+- Return : success check
+- Example : { success : true } or Unantherized or { success : false }
+
+### **/shopping_cart_history** 
+- *Method : GET* 
+- URL : [server-name]/api/shopping_cart_history 
+- Return : json file including all shopping_cart 
+- Example :  [{ItemID: (int),Amount: (int)}, ...]  
+
 ### **/order_history/customer** 
 - *Method : GET* 
 - URL : [server-name]/api/order_history/customer
@@ -119,18 +139,59 @@ enter [localhost]:3000/api
         image_path : 
       }]
 
-### **/category** 
-- *Method : POST* 
-- Params : name, token
-- URL : [server-name]/api/category 
-- Return : Success : true or false
-- Example : { success : true } or Unauthorized  or { success : false }
+### **/order_history/supplier** 
+- *Method : GET* 
+- URL : [server-name]/api/order_history/supplier
+- Return : json file including user's order history
+- Example : { success : false } or [{
+        oid : ,
+        iid : ,
+        amount : ,
+        order_state : ,
+        time : ,
+        gid : , 
+        name  : ,
+        sale_price : ,
+        cid : ,
+        order_date : ,
+        payment : 
+      }]
 
+### **/shopping_cart** 
+- *Method : POST* 
+- Header : Authorization
+- Params : iid, amount
+- URL : [server-name]/api/shopping_cart
+- Return : { success : true } or {success : false } or Unauthorizated
+- Example : { success : true } or { success : false } or Unauthorizated
+
+### **/order**
+- *Method : POST* 
+- Params : payment, iid, amount, time, length
+- Headers : Authorization
+- URL : [server-name]/api/order 
+- Return : { success : boolean }
+- Example : { success : true } or { success : false } or UnAuthorizion
+
+### **/item** 
+- *Method : POST* 
+- URL : [server-name]/api/item
+- Headers : Authorization
+- Params : sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count
+- Return : { success : boolean }
+- Example : { success : true }
 
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
 - URL : [server-name]/api/sign_up/customer 
+- Return : json file 
+- Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
+
+### **/sign_up/supplier** 
+- *Method : POST* 
+- Params : sid, passwd, rname, address, dlprice, latitude, longitude
+- URL : [server-name]/api/sign_up/supplier 
 - Return : json file 
 - Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
 
