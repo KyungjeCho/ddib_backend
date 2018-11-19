@@ -204,7 +204,7 @@ router.post('/wtb', function(req, res, next){
 
 // Item Search Page API
 // Method : POST
-// Params : name or cateid
+// Params : name or cateid or sid
 // URL : [server-name]/api/item/Search/:Name(입력)
 // Return : { success : false } or 
 // {
@@ -226,25 +226,44 @@ router.post('/wtb', function(req, res, next){
 router.post('/item/search', function(req, res, next) {
   var name = req.body.name;
   var category_id = req.body.cateid;
+  var supplier_id = req.body.sid;
 
   var result = [];
 
+  var format_sql = [];
+
   var format = [];
+
   var sql = 'SELECT * FROM item WHERE ';
-  if (name) {
-    sql = sql + 'name LIKE ? ';
-    format[0] = '%' + name + '%';
-  } 
-  if (name && category_id) {
-    sql = sql + 'AND cateid = ? ';
-    format[1] = category_id;
+  var condition = "";
+
+  var i = 0;
+
+  if (name && category_id && supplier_id) {
+    format_sql = "name LIKE ? AND cateid = ? AND sid = ? "
+    format = ['%' + name + '%', category_id, supplier_id];
+  } else if (name && category_id) {
+    format_sql = "name LIKE ? AND cateid = ? "
+    format = ['%' + name + '%', category_id];
+  } else if (name && supplier_id) {
+    format_sql = "name LIKE ? AND sid = ? "
+    format = ['%' + name + '%', supplier_id];
+  } else if (category_id && supplier_id) {
+    format_sql = "cateid = ? AND sid = ? "
+    format = [category_id, supplier_id];
+  } else if (name) {
+    format_sql = 'name LIKE ? ';
+    format= ['%' + name + '%'];
   } else if (category_id) {
-    sql = sql + 'cateid = ? ';
-    format[0] = category_id;
-  } else {
-    // Nothing
+    format_sql = 'cateid = ? ';
+    format = [category_id];
+  } else if (supplier_id) {
+    format_sql = 'sid = ? ';
+    format = [supplier_id];
   }
-  sql = sql + 'ORDER BY views DESC';
+
+  sql = sql + format_sql + 'ORDER BY views DESC;';
+
   db.query(sql, format ,function(error, item) { 
     if (error) {
       res.json({ success : false });
@@ -266,7 +285,7 @@ router.post('/item/search', function(req, res, next) {
         supplierId : item[0].sid,
         categoryId : item[0].cateid,
         imagePath : item[0].image,
-        itemCount : item[0].count
+        itemCount : item[0].itemcount
       }
     }
 

@@ -101,7 +101,7 @@ enter [localhost]:3000/api
 
 ### **/item/search** 
 - *Method : POST* 
-- Params : name or cateid
+- Params : name or cateid or sid
 - URL : [server-name]/api/item/search 
 - Return : json file 
 - Example : [{ success : true, iid : 29, itemName : , rawPrice : , salePrice : , context : , views : , startTime : , endTime : , deliverable : , supplierId : , categoryId : , imagePath : }, ...]
