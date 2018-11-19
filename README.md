@@ -141,6 +141,12 @@ enter [localhost]:3000/api
 - Return : {success : true, token : '[random_string]'} or {success : false, error : true }
 - Example : {success : true, token : '[random_string]'} or {success : false, error : true }
 
+### **/login/supplier**
+- *Method : POST*
+- Parameter : sid=[customer_id]&passwd=[password]
+- URL : [server-name]/auth/login/supplier
+- Return : {success : true, token : '[random_string]', ID : '[supplier id]', rname : '[restaurant]'} or {success : false, error : true }
+
 ### **/logout/customer**
 - *Method : GET*
 - URL : [server-name]/auth/logout/customer
