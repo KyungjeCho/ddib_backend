@@ -428,12 +428,29 @@ router.get('/shopping_cart_history',passport.authenticate('jwt', { session: fals
 
   var cid = req.user.id;
 
-  db.query('SELECT * FROM shopping_cart WHERE cid = ?;', [cid], function(error, results){
+  db.query(`SELECT 
+  A.*,
+  B.sid,
+  B.name,
+  B.cateid,
+  B.saleprice,
+  B.image,
+  B.starttime,
+  B.endtime,
+  B.deliverable,
+  B.itemcount
+FROM
+  (SELECT 
+      *
+  FROM
+      shopping_cart
+  WHERE
+      cid = ?) A
+      INNER JOIN
+  ddib.item B ON A.iid = B.iid;`, [cid], function(error, results){
     if (error) {
       res.send({ success : false });
     }
-    
-    console.log(results)
 
     if (results.length <= 0) {
       res.send({ success : false });
@@ -445,7 +462,16 @@ router.get('/shopping_cart_history',passport.authenticate('jwt', { session: fals
     {
       result[i] = {
         ItemID : results[i].iid,
-        Amount : results[i].amount
+        Amount : results[i].amount,
+        sid : results[i].sid,
+        name : results[i].name,
+        category_id : results[i].cateid,
+        sale_price : results[i].saleprice,
+        image_path : results[i].image,
+        start_time : results[i].starttime,
+        end_time : results[i].endtime,
+        deliverable : results[i].deliverable,
+        item_count : results[i].itemcount
       }
       i++;
     }
