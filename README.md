@@ -100,6 +100,7 @@ enter [localhost]:3000/api
 - Example : { results: [{ID: ,name: }, ...]}  
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### **/wishlist** 
 - *Method : POST* 
 - Params : iid
@@ -119,6 +120,27 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/shopping_cart_history 
 - Return : json file including all shopping_cart 
 - Example :  [{ItemID: (int),Amount: (int)}, ...]  
+=======
+### **/order_history/customer** 
+- *Method : GET* 
+- URL : [server-name]/api/order_history/customer
+- Return : json file including user's order history
+- Example : { success : false } or [{
+        gid : ,
+        cid : ,
+        order_date : ,
+        payment : ,
+        oid : ,
+        iid : ,
+        order_state : ,
+        time : ,
+        sid : ,
+        name : ,
+        cateid : ,
+        sale_price : ,
+        image_path : 
+      }]
+>>>>>>> issue-8-order-history
 
 ### **/shopping_cart** 
 - *Method : POST* 

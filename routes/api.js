@@ -242,11 +242,11 @@ router.post('/supplier', function(req, res, next){
   })
 })
 
-// Order history API
+// Customer Order history API
 // Method : GET
-// URL : /api/order_history
+// URL : /api/order_history/customer
 // 고객의 주문 내역 제공 api
-router.get("/order_history", passport.authenticate('jwt', { session: false }), function(req, res){
+router.get("/order_history/customer", passport.authenticate('jwt', { session: false }), function(req, res){
   var cid = "";
 
   var result = {
@@ -261,16 +261,20 @@ router.get("/order_history", passport.authenticate('jwt', { session: false }), f
   }
 
   db.query(`SELECT 
-  A.*, B.oid, B.iid, B.amount, B.orderstate, B.\`time\`
+  C.*, D.sid, D.name, D.cateid, D.saleprice, D.image
 FROM
   (SELECT 
+      A.*, B.oid, B.iid, B.amount, B.orderstate, B.\`time\`
+  FROM
+      (SELECT 
       *
   FROM
       ddib.order_group
   WHERE
-      cid = ?) A
+      cid = '010-1111-2222') A
+  INNER JOIN ddib.\`order\` B ON A.gid = B.gid) C
       INNER JOIN
-  ddib.\`order\` B ON A.gid = B.gid
+  ddib.item D ON C.iid = D.iid
 ORDER BY orderdate DESC;`, [cid], function(error, results) {
     if (error) {
       res.status(501).json(result);
@@ -287,7 +291,71 @@ ORDER BY orderdate DESC;`, [cid], function(error, results) {
         oid : results[i].oid,
         iid : results[i].iid,
         order_state : results[i].orderstate,
-        time : results[i].time
+        time : results[i].time,
+        sid : results[i].sid,
+        name : results[i].name,
+        cateid : results[i].cateid,
+        sale_price : results[i].saleprice,
+        image_path : results[i].image
+      };
+    }
+
+    res.json(orders);
+  })
+});
+
+// Supplier Order history API
+// Method : GET
+// URL : /api/order_history/customer
+// 고객의 주문 내역 제공 api
+router.get("/order_history/supplier", passport.authenticate('jwt', { session: false }), function(req, res){
+  var sid = "";
+
+  var result = {
+    success : false
+  }
+  if (! (req.user.permission === 'supplier' ||
+          req.user.permission === 'admin')) {
+    res.send(result);
+    return false; 
+  } else {
+    sid = req.user.id;
+  }
+
+  db.query(`SELECT 
+  C.*, D.cid, D.orderdate, D.payment
+FROM
+  (SELECT 
+      B.*, A.name, A.cateid, A.saleprice
+  FROM
+      (SELECT 
+      *
+  FROM
+      ddib.item
+  WHERE
+      sid = ?) A
+  INNER JOIN ddib.order B ON A.iid = B.iid) C
+      INNER JOIN
+  ddib.order_group D ON C.gid = D.gid;`, [sid], function(error, results) {
+    if (error) {
+      res.status(501).json(result);
+    }
+
+    var orders = [];
+
+    for (var i = 0; i < results.length; i++){
+      orders[i] = {
+        oid : results[i].oid,
+        iid : results[i].iid,
+        amount : results[i].amount,
+        order_state : results[i].orderstate,
+        time : results[i].time,
+        gid : results[i].gid, 
+        name  : results[i].name,
+        sale_price : results[i].saleprice,
+        cid : results[i].cid,
+        order_date : results[i].order_date,
+        payment : results[i].payment
       };
     }
 
