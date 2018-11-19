@@ -99,8 +99,6 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 ### **/wishlist** 
 - *Method : POST* 
 - Params : iid
@@ -120,7 +118,7 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/shopping_cart_history 
 - Return : json file including all shopping_cart 
 - Example :  [{ItemID: (int),Amount: (int)}, ...]  
-=======
+
 ### **/order_history/customer** 
 - *Method : GET* 
 - URL : [server-name]/api/order_history/customer
@@ -140,7 +138,25 @@ enter [localhost]:3000/api
         sale_price : ,
         image_path : 
       }]
->>>>>>> issue-8-order-history
+
+### **/order_history/supplier** 
+- *Method : GET* 
+- URL : [server-name]/api/order_history/supplier
+- Return : json file including user's order history
+- Example : { success : false } or [{
+        oid : ,
+        iid : ,
+        amount : ,
+        order_state : ,
+        time : ,
+        gid : , 
+        name  : ,
+        sale_price : ,
+        cid : ,
+        order_date : ,
+        payment : 
+      }]
+
 
 ### **/shopping_cart** 
 - *Method : POST* 
@@ -157,7 +173,6 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/order 
 - Return : { success : boolean }
 - Example : { success : true } or { success : false } or UnAuthorizion
-=======
 
 ### **/item** 
 - *Method : POST* 
@@ -166,7 +181,6 @@ enter [localhost]:3000/api
 - Params : sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count
 - Return : { success : boolean }
 - Example : { success : true }
->>>>>>> issue-25-item-post
 
 ### **/sign_up/customer** 
 - *Method : POST* 
