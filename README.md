@@ -103,7 +103,19 @@ enter [localhost]:3000/api
 - *Method : GET* 
 - URL : [server-name]/api/shopping_cart_history 
 - Return : json file including all shopping_cart 
-- Example :  [{ItemID: (int),Amount: (int)}, ...]  
+- Example :  [{
+        ItemID : ,
+        Amount : ,
+        sid : ,
+        name : ,
+        category_id : ,
+        sale_price : ,
+        image_path : ,
+        start_time : ,
+        end_time : ,
+        deliverable : ,
+        item_count : 
+      }, ...]  
 
 ### **/sign_up/customer** 
 - *Method : POST* 
