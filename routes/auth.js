@@ -155,11 +155,7 @@ router.post("/login/supplier", function(req, res) {
   
     if(CryptoPasswd.verify(user[0].passwd,password)) {
       // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
-<<<<<<< HEAD
-      var payload = {id: user[0].sid};
-=======
       var payload = {id: user[0].sid, permission: "supplier"};
->>>>>>> issue-1-login-feature
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
       result['ID'] = user[0].sid;
       result['name'] = user[0].rname;
