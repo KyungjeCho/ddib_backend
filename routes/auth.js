@@ -30,7 +30,7 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
       if (error) {
         next(null, false);
       }
-      if (user) {
+      if (user.length > 0) {
         var user_info = {
           id : user[0].cid,
             name : user[0].name,
@@ -49,7 +49,7 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
       if (error) {
         next(null, false);
       }
-      if (user) {
+      if (user.length > 0) {
         var user_info = {
           id : user[0].sid,
             name : user[0].rname,
