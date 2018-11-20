@@ -13,11 +13,14 @@
 // Modified Date : 2018.11.07
 // Author : KJ
 // 비밀번호 암호화 추가
-
+//
+// Modified Date : 2018.11.20
+// Author : KJ
+// 장바구니 삭제 API 추가
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -266,6 +269,46 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
     })
   }
 })
+})
+
+// Shopping Cart DELETE API
+// Method : POST
+// Parameters : iid
+// URL : /api/shopping_cart/delete
+// 장바구니 삭제 api
+router.post('/shopping_cart/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var iid = post.iid;
+
+  var result = {
+    success : false
+  }
+  
+  if (!iid) {
+    res.json(result);
+    return false;
+  }
+
+  if(!(req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.json(result);
+    return false;
+  }
+  else {
+    cid = req.user.id;
+  }
+
+  db.query(`DELETE FROM shopping_cart WHERE cid = ? AND iid = ?;`,
+  [cid, iid], function(error, result){
+    if (error) {
+      res.json(result);
+      return false;
+    }
+    
+    result['success'] = true;
+    res.send(result);
+  })
 })
 
 module.exports = router;
