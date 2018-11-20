@@ -13,11 +13,14 @@
 // Modified Date : 2018.11.07
 // Author : KJ
 // 비밀번호 암호화 추가
-
+//
+// Modified Date : 2018.11.20
+// Author : KJ
+// Add Shopping Cart Update api
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -266,6 +269,69 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
     })
   }
 })
+})
+
+// Shopping Cart Update API
+// Method : POST
+// Parameters : amount, iid
+// URL : /api/shopping_cart/update
+// 장바구니 업데이트 api
+router.post('/shopping_cart/update', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var amount = post.amount;
+  var iid = post.iid;
+
+  var result = {
+    success : false
+  }
+  // 무조건 입력
+  if (!(iid && amount)) {
+    res.json(result);
+    return false;
+  }
+  
+  // amount가 0 이하일 경우
+  if (amount <= 0) {
+    res.json(result);
+    return false;
+  }
+
+  if(!(req.user.permission === 'customer'|| 
+        req.user.permission === 'admin')){
+    res.json(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+  
+  db.query(`SELECT * FROM shopping_cart WHERE cid = ? AND iid = ?;`,
+            [cid, iid],
+            function(error, results) {
+    if(error) {
+      res.json(result);
+      return false;
+    }
+
+    if (results.length <= 0) {
+      res.json(result);
+      return false;
+    } else {
+      db.query(`UPDATE shopping_cart 
+      SET 
+          amount = ?
+      WHERE
+          iid = ? AND cid = ?;`, [amount, iid, cid], function(error, results) {
+        if(error) {
+          res.json(result);
+          return false;
+        }
+    
+        result['success'] = true;
+        res.json(result);
+      })
+    }
+  })
 })
 
 module.exports = router;
