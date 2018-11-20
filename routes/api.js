@@ -627,6 +627,7 @@ router.post('/wtb', function(req, res, next){
   })
 })
 
+
 // favorites API
 // Method : POST
 // Header : token
@@ -845,7 +846,6 @@ router.get('/item/list/:sort', function(req, res, next) {
       return false;
     }
     for (var i = 0; i < item.length; i++) {
-
       result[i] = {
         success : true,
         iid : item[i].iid,
@@ -861,6 +861,97 @@ router.get('/item/list/:sort', function(req, res, next) {
         categoryId : item[i].caieid,
         imagePath : item[i].image,
         itemCount : item[i].count
+    }
+  }
+  res.json(result);
+  })
+})
+
+// Item Search Page API
+// Method : POST
+// Params : name or cateid or sid
+// URL : [server-name]/api/item/Search/:Name(입력)
+// Return : { success : false } or 
+// {
+//    success : true,
+//    iid : iid,
+//    itemName : name.
+//    rawPrice : raw_price,
+//    salePrice : sale_price,
+//    context : context,
+//    views : views,
+//    startTime : start_time.
+//    endTime : end_time.
+//    delivable : 0 or 1,
+//    supplierId : sid.
+//    categoryId : cateid.
+//    imagePath : image.
+//    itemCount : count
+//}
+router.post('/item/search', function(req, res, next) {
+  var name = req.body.name;
+  var category_id = req.body.cateid;
+  var supplier_id = req.body.sid;
+
+  var result = [];
+
+  var format_sql = [];
+
+  var format = [];
+
+  var sql = 'SELECT * FROM item WHERE ';
+  var condition = "";
+
+  var i = 0;
+
+  if (name && category_id && supplier_id) {
+    format_sql = "name LIKE ? AND cateid = ? AND sid = ? "
+    format = ['%' + name + '%', category_id, supplier_id];
+  } else if (name && category_id) {
+    format_sql = "name LIKE ? AND cateid = ? "
+    format = ['%' + name + '%', category_id];
+  } else if (name && supplier_id) {
+    format_sql = "name LIKE ? AND sid = ? "
+    format = ['%' + name + '%', supplier_id];
+  } else if (category_id && supplier_id) {
+    format_sql = "cateid = ? AND sid = ? "
+    format = [category_id, supplier_id];
+  } else if (name) {
+    format_sql = 'name LIKE ? ';
+    format= ['%' + name + '%'];
+  } else if (category_id) {
+    format_sql = 'cateid = ? ';
+    format = [category_id];
+  } else if (supplier_id) {
+    format_sql = 'sid = ? ';
+    format = [supplier_id];
+  }
+
+  sql = sql + format_sql + 'ORDER BY views DESC;';
+
+  db.query(sql, format ,function(error, item) { 
+    if (error) {
+      res.json({ success : false });
+      return false;
+    }
+    
+    for (var i = 0; i < item.length; i++) {
+
+      result[i] = {
+        success : true,
+        iid : item[i].iid,
+        itemName : item[i].name,
+        rawPrice : item[i].rawprice,
+        salePrice : item[i].saleprice,
+        context : item[i].context,
+        views : item[0].views + 1,
+        startTime : item[0].starttime,
+        endTime : item[0].endtime,
+        deliverable : item[0].deliverable,
+        supplierId : item[0].sid,
+        categoryId : item[0].cateid,
+        imagePath : item[0].image,
+        itemCount : item[0].itemcount
       }
     }
     res.json(result);
