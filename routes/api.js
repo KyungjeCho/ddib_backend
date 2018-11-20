@@ -294,19 +294,21 @@ router.post('/shopping_cart/delete', passport.authenticate('jwt', { session: fal
         req.user.permission === 'admin')) {
     res.json(result);
     return false;
-  }
-  else {
+  } else {
     cid = req.user.id;
   }
 
   db.query(`DELETE FROM shopping_cart WHERE cid = ? AND iid = ?;`,
-  [cid, iid], function(error, result){
+  [cid, iid], function(error, results){
     if (error) {
       res.json(result);
       return false;
     }
+
+    if (results.affectedRows > 0) {
+      result['success'] = true;
+    }
     
-    result['success'] = true;
     res.send(result);
   })
 })
