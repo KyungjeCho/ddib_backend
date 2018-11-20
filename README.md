@@ -194,6 +194,48 @@ enter [localhost]:3000/api
 - Return : { success : boolean }
 - Example : { success : true }
 
+### **/item/detail/:itemID** 
+- *Method : GET* 
+- URL : [server-name]/api/item/:itemID
+- Return : { success : false } or 
+ {
+    success : true,
+    iid : iid,
+    itemName : name.
+    rawPrice : raw_price,
+    salePrice : sale_price,
+    context : context,
+    views : views,
+    startTime : start_time.
+    endTime : end_time.
+    delivable : 0 or 1,
+    supplierId : sid.
+    categoryId : cateid.
+    imagePath : image.
+    itemCount : count
+}
+
+### **/item/list/:sort** 
+- *Method : GET* 
+- URL : [server-name]/api/list/:sort
+- Return : { success : false } or 
+ [{ 
+    success : true,
+    iid : iid,
+    itemName : name.
+    rawPrice : raw_price,
+    salePrice : sale_price,
+    context : context,
+    views : views,
+    startTime : start_time.
+    endTime : end_time.
+    delivable : 0 or 1,
+    supplierId : sid.
+    categoryId : cateid.
+    imagePath : image.
+    itemCount : count
+}, ... ]
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
