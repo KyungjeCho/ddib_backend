@@ -260,13 +260,17 @@ router.post('/item/search', function(req, res, next) {
   } else if (supplier_id) {
     format_sql = 'sid = ? ';
     format = [supplier_id];
+  } else {
+    res.json([]);
+    return false;
   }
 
   sql = sql + format_sql + 'ORDER BY views DESC;';
 
   db.query(sql, format ,function(error, item) { 
     if (error) {
-      res.json({ success : false });
+      res.json([]);
+      console.log(error)
       return false;
     }
     
