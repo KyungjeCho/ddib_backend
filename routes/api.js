@@ -30,6 +30,10 @@
 // Modified Date : 2018.11.20
 // Author : KJ
 // Add Shopping Cart Update api
+//
+// Modified Date : 2018.11.20
+// Author : KJ
+// 장바구니 삭제 API 추가
 
 var express = require('express');
 var bodyParser = require('body-parser')
@@ -1131,6 +1135,48 @@ router.post('/shopping_cart/update', passport.authenticate('jwt', { session: fal
         res.json(result);
       })
     }
+  })
+})
+
+// Shopping Cart DELETE API
+// Method : POST
+// Parameters : iid
+// URL : /api/shopping_cart/delete
+// 장바구니 삭제 api
+router.post('/shopping_cart/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var iid = post.iid;
+
+  var result = {
+    success : false
+  }
+  
+  if (!iid) {
+    res.json(result);
+    return false;
+  }
+
+  if(!(req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.json(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`DELETE FROM shopping_cart WHERE cid = ? AND iid = ?;`,
+  [cid, iid], function(error, results){
+    if (error) {
+      res.json(result);
+      return false;
+    }
+
+    if (results.affectedRows > 0) {
+      result['success'] = true;
+    }
+    
+    res.send(result);
   })
 })
 

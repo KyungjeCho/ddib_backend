@@ -250,6 +250,14 @@ enter [localhost]:3000/api
 - Return : json file 
 - Example : { success : true } or { success : false }
 
+### **/shopping_cart/delete** 
+- *Method : POST* 
+- Headers : Authorization
+- Params : iid
+- URL : [server-name]/api/shopping_cart/delete
+- Return : json file 
+- Example : { success : true } or { success : false }
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
