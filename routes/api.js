@@ -268,7 +268,7 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
 })
 })
 
-// Category API
+// Supplier Detail Item API
 // Method : GET
 // URL : /api/supplier/detail/item/:ItemID
 // 아이템을 이용하여 가맹업주 정보 제공하는 API
@@ -276,8 +276,14 @@ router.get('/supplier/detail/item/:ItemID', function(req, res, next){
   var iid = req.params.ItemID;
   var sid = "";
 
+  // HACK : how about joining two table such as `item` and `supplier`
   db.query('SELECT sid FROM item WHERE iid = ?;', [iid], function(error, results) {
     if (error) {
+      res.json([]);
+      return false;
+    }
+
+    if (results.length <= 0) {
       res.json([]);
       return false;
     }
