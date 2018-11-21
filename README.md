@@ -258,6 +258,12 @@ enter [localhost]:3000/api
 - Return : json file 
 - Example : { success : true } or { success : false }
 
+### **/supplier/detail/item/:ItemID** 
+- *Method : GET* 
+- URL : [server-name]/api/supplier/detail/item/:ItemID 
+- Return : json file including a supplier informaton
+- Example : [ { sid:, rname :, latitude :, longitude :, address :, dlprice : }] 
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude

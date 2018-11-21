@@ -1180,5 +1180,54 @@ router.post('/shopping_cart/delete', passport.authenticate('jwt', { session: fal
   })
 })
 
+// Supplier Detail Item API
+// Method : GET
+// URL : /api/supplier/detail/item/:ItemID
+// 아이템을 이용하여 가맹업주 정보 제공하는 API
+router.get('/supplier/detail/item/:ItemID', function(req, res, next){
+  var iid = req.params.ItemID;
+  var sid = "";
+
+  // HACK : how about joining two table such as `item` and `supplier`
+  db.query('SELECT sid FROM item WHERE iid = ?;', [iid], function(error, results) {
+    if (error) {
+      res.json([]);
+      return false;
+    }
+
+    if (results.length <= 0) {
+      res.json([]);
+      return false;
+    }
+
+    sid = results[0].sid;
+
+    db.query('SELECT * FROM supplier WHERE sid = ?;',[sid], function(error, supplier){
+      if (error) {
+        res.json([]);
+        return false;
+      }
+      
+      var result = [];
+      
+      for(var i = 0; i < supplier.length; i++)
+      {
+        result[i] = {
+          ID : supplier[i].sid,
+          rname : supplier[i].rname,
+          latitude : supplier[i].latitude,
+          longitude : supplier[i].longitude,
+          address : supplier[i].address,
+          dlprice : supplier[i].dlprice
+        }
+      }
+
+      res.json(result);
+    })
+  })
+
+  
+})
+
 module.exports = router;
 
