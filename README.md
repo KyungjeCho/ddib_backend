@@ -326,6 +326,13 @@ enter [localhost]:3000/api
     itemCount : count
 }
 
+### **/wishlist/delete** 
+- *Method : POST* 
+- Params : iid
+- URL : [server-name]/api/wishlist/delete 
+- Return : { success : boolean }
+- Example : { success : true } or { success : false }
+
 ## Slack
 
 ddib-backend.slack.com

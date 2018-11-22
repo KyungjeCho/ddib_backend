@@ -34,6 +34,10 @@
 // Modified Date : 2018.11.20
 // Author : KJ
 // 장바구니 삭제 API 추가
+//
+// Modified Date : 2018.11.22
+// Author : KJ
+// 찜 삭제 추가
 
 var express = require('express');
 var bodyParser = require('body-parser')
@@ -1224,6 +1228,50 @@ router.get('/supplier/detail/item/:ItemID', function(req, res, next){
   })
 
   
+})
+
+// Wishlist DELETE API
+// Method : POST
+// Parameters : iid
+// URL : /api/wishlist/delete
+// 찜 삭제 api
+router.post('/wishlist/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var iid = post.iid;
+
+  var result = {
+    success : false
+  }
+
+  if (! iid) {
+    res.send(result);
+    return false;
+  }
+
+  if(! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')){
+    res.send(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`DELETE FROM wishlist WHERE cid = ? AND iid = ?;`,
+  [cid, iid], function(error, results){
+    if (error) {
+      res.send(result);
+      return false;
+    }
+
+    if (results.affectedRows <= 0) {
+      res.send(result);
+      return false;
+    }
+    
+    result['success'] = true;
+    res.send(result);
+  })
 })
 
 module.exports = router;
