@@ -214,32 +214,47 @@ router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), 
   var amount = post.amount;
 
   var result = {
-    success : false
+    message : 'false'
   }
 
-  if (!amount) {
-    res.send(result);
+  if (!(iid && amount)) {
+    res.json(result);
     return false;
   }
 
   if(!( req.user.permission === 'customer' ||
         req.user.permission === 'admin' )) {
-    res.send(result);
+    res.json(result);
     return false;
   } else {
     cid = req.user.id;
   }
 
-  db.query(`INSERT INTO shopping_cart (cid, iid, amount) VALUES (?, ?, ? );`,
-  [cid, iid, amount], function(error, results){
-    if (error) {
+  db.query('SELECT * FROM shopping_cart WHERE cid = ? AND iid = ?',
+  [cid, iid], function(error1, results1) {
+    if (error1) {
       res.json(result);
       return false;
     }
 
-    result['success'] = true;
-    res.json(result);
+    if (results1 <= 0) {
+      db.query(`INSERT INTO shopping_cart (cid, iid, amount) VALUES (?, ?, ? );`,
+      [cid, iid, amount], function(error2, results2){
+        if (error2) {
+          res.json(result);
+          return false;
+        }
+    
+        result['message'] = 'success';
+        res.json(result);
+      })
+    } else {
+      result['message'] = 'duplicate';
+      res.json(result);
+      return false;
+    }
   })
+  
 })
 
 // Alarm API
