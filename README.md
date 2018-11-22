@@ -176,7 +176,7 @@ enter [localhost]:3000/api
 - Header : Authorization
 - Params : iid, amount
 - URL : [server-name]/api/shopping_cart
-- Return : { success : true } or {success : false } or Unauthorizated
+- Return : { message : 'success' } or { message : 'false' } or { message : 'duplicate' } or Unauthorizated
 - Example : { success : true } or { success : false } or Unauthorizated
 
 ### **/order**
