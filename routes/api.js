@@ -13,11 +13,14 @@
 // Modified Date : 2018.11.07
 // Author : KJ
 // 비밀번호 암호화 추가
-
+//
+// Modified Date : 2018.11.22
+// Author : KJ
+// Wishlist HISTORY API 추가
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -266,6 +269,69 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
     })
   }
 })
+})
+
+// Wishlist HISTORY API
+// Method : GET
+// URL : /api/wishlist/history
+// 고객의 찜 목록 반환 API
+router.get('/wishlist/history',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var cid = "";
+
+  if (! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.json([]);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`SELECT 
+  A.*,
+  B.sid,
+  B.name,
+  B.cateid,
+  B.saleprice,
+  B.image,
+  B.views,
+  B.starttime,
+  B.endtime,
+  B.deliverable,
+  B.itemcount
+FROM
+  (SELECT 
+      *
+  FROM
+      ddib.wishlist
+  WHERE
+      cid = ?) A
+      INNER JOIN
+  ddib.item B ON A.iid = B.iid;`, [cid], function(error, wishlists){
+    if (error) {
+      res.json([]);
+      return false;
+    }
+    console.log('a');
+    var result = [];
+    for (var i = 0; i < wishlists.length; i++) {
+      result[i] = {
+        customer_id : wishlists[i].cid,
+        item_id : wishlists[i].iid,
+        supplier_id : wishlists[i].sid,
+        name : wishlists[i].name,
+        category_id : wishlists[i].cateid,
+        sale_price : wishlists[i].saleprice,
+        image_path : wishlists[i].image,
+        views : wishlists[i].views,
+        start_time : wishlists[i].starttime,
+        end_time : wishlists[i].endtime,
+        deliverable : wishlists[i].deliverable,
+        item_count : wishlists[i].itemcount
+      }
+    }
+
+    res.json(result);
+  })
 })
 
 module.exports = router;
