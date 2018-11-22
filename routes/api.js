@@ -159,7 +159,7 @@ router.get("/order_history/customer", passport.authenticate('jwt', { session: fa
   }
   if (! (req.user.permission === 'customer' ||
           req.user.permission === 'admin')) {
-    res.send(result);
+    res.send([]);
     return false; 
   } else {
     cid = req.user.id;
@@ -176,13 +176,13 @@ FROM
   FROM
       ddib.order_group
   WHERE
-      cid = '010-1111-2222') A
+      cid = ?) A
   INNER JOIN ddib.\`order\` B ON A.gid = B.gid) C
       INNER JOIN
   ddib.item D ON C.iid = D.iid
 ORDER BY orderdate DESC;`, [cid], function(error, results) {
     if (error) {
-      res.status(501).json(result);
+      res.status(501).json([]);
     }
 
     var orders = [];
