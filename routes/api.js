@@ -650,27 +650,40 @@ router.post('/favorites', passport.authenticate('jwt', { session: false }), func
   var cid = "";
 
   var result = {
-    success : false
+    message : 'false'
   };
 
   if(!(req.user.permission === "customer" ||
     req.user.permission === "admin")){
-    res.send(result);
+    res.json(result);
     return false;
   } else {
     cid = req.user.id;
   }
 
-  db.query(`INSERT INTO favorites (cid, sid) VALUES (?, ?);`,
-  [cid, sid], function(error, results){
-    if (error) {
-      result['error'] = true;
-      res.status(501).send(result);
+  db.query('SELECT * FROM favorites WHERE cid = ? AND sid = ?;',
+  [cid, sid], function (error1, results1) {
+    if (error1) {
+      res.json(result);
       return false;
     }
 
-    result['success'] = true;
-    res.send(result);
+    if (results1 <= 0) { 
+      db.query(`INSERT INTO favorites (cid, sid) VALUES (?, ?);`,
+      [cid, sid], function(error2, results){
+        if (error2) {
+          res.send(result);
+          return false;
+        }
+        
+        result['message'] = 'success';
+        res.send(result);
+      })
+    } else {
+      result['message'] = 'duplicate';
+      res.json(result);
+      return false;
+    }
   })
 })
 

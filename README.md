@@ -333,6 +333,12 @@ enter [localhost]:3000/api
 - Return : { success : boolean }
 - Example : { success : true } or { success : false }
 
+### **/favorites** 
+- *Method : POST* 
+- Params : sid
+- URL : [server-name]/api/favorites
+- Return : { message : 'success' or 'false' or 'duplicate' }
+
 ## Slack
 
 ddib-backend.slack.com
