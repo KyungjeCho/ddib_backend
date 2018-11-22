@@ -103,8 +103,8 @@ enter [localhost]:3000/api
 - *Method : POST* 
 - Params : iid
 - URL : [server-name]/api/wishlist 
-- Return : true or false
-- Example : { success : true } or { success : false } or Unauthorized
+- Return : 'success' or 'false' or 'duplicate'
+- Example : { message : 'success' } or { message : 'false' } or { message : 'duplicate' } or Unauthorized
 
 ### **/sign_up/customer** 
 - *Method : POST* 

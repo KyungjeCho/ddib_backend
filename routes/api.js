@@ -212,27 +212,42 @@ router.post('/wishlist', passport.authenticate('jwt', { session: false }), funct
   var iid = post.iid;
 
   var result = {
-    success : false
+    message : 'false'
   }
   if(!(req.user.permission === 'customer' ||
         req.user.permission === 'admin')) {
-    res.send(result);
+    res.json(result);
     return false;
   } else {
     cid = req.user.id;
   }
 
-  db.query(`INSERT INTO wishlist (cid, iid) VALUES (?, ?);`,
-  [cid, iid], function(error, results){
+  db.query('SELECT * FROM wishlist WHERE cid = ? AND iid = ?;',
+  [cid, iid], function(error, results1) {
     if (error) {
-      res.status(501).json(result);
+      res.json(result);
       return false;
     }
-
-    result['success'] = true;
-    res.send(result);
+    
+    if (results1 <= 0) {
+      db.query(`INSERT INTO wishlist (cid, iid) VALUES (?, ?);`,
+      [cid, iid], function(error, results2){
+        if (error) {
+          res.json(result);
+          return false;
+        }
+    
+        result['message'] = 'success';
+        res.json(result);
+      })
+    } else {
+      result['message'] = 'duplicate';
+      res.json(result);
+      return false;
+    }
   })
 })
+  
 
 // Alarm API
 // Method : POST
