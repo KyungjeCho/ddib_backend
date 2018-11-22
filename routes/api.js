@@ -314,17 +314,14 @@ ORDER BY orderdate DESC;`, [cid], function(error, results) {
 
 // Supplier Order history API
 // Method : GET
-// URL : /api/order_history/customer
+// URL : /api/order_history/supplier
 // 고객의 주문 내역 제공 api
 router.get("/order_history/supplier", passport.authenticate('jwt', { session: false }), function(req, res){
   var sid = "";
 
-  var result = {
-    success : false
-  }
   if (! (req.user.permission === 'supplier' ||
           req.user.permission === 'admin')) {
-    res.send(result);
+    res.send([]);
     return false; 
   } else {
     sid = req.user.id;
@@ -346,7 +343,7 @@ FROM
       INNER JOIN
   ddib.order_group D ON C.gid = D.gid;`, [sid], function(error, results) {
     if (error) {
-      res.status(501).json(result);
+      res.status(501).json([]);
     }
 
     var orders = [];
@@ -457,11 +454,11 @@ FROM
       INNER JOIN
   ddib.item B ON A.iid = B.iid;`, [cid], function(error, results){
     if (error) {
-      res.send({ success : false });
+      res.send([]);
     }
 
     if (results.length <= 0) {
-      res.send({ success : false });
+      res.send([]);
     }
     var result = [];
     
@@ -487,6 +484,7 @@ FROM
     res.json(result);
   })
 })
+
 // Order POST API
 // Method : POST
 // Parameters : payment, iid, amount, time, length
@@ -845,12 +843,12 @@ router.get('/item/list/:sort', function(req, res, next) {
   }
   db.query(sql, function(error, item) {
     if (error) {
-      res.json({ success : false });
+      res.json([]);
       return false;
     }
 
     if (item.length <= 0) {
-      res.json({ success : false });
+      res.json([]);
       return false;
     }
     for (var i = 0; i < item.length; i++) {
@@ -943,7 +941,6 @@ router.post('/item/search', function(req, res, next) {
   db.query(sql, format ,function(error, item) { 
     if (error) {
       res.json([]);
-      console.log(error)
       return false;
     }
     
