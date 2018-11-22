@@ -259,7 +259,7 @@ router.get('/item/detail/:itemID', function(req, res, next) {
     itemDetailJson['supplierId'] = item[0].sid;
     itemDetailJson['categoryId'] = item[0].cateid;
     itemDetailJson['imagePath'] = item[0].image;
-    itemDetailJson['itemCount'] = item[0].count;
+    itemDetailJson['itemCount'] = item[0].itemcount;
     res.json(itemDetailJson);
   })
 })
