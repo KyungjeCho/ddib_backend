@@ -305,6 +305,27 @@ enter [localhost]:3000/api
 - Return : json file including an item that the customer bought the most
 - Example : { success : true, id : 1, sid : '010-9999-1111', name : '순대국' } or { success : false } 
 
+### **/item/detail/:itemID** 
+- *Method : GET* 
+- URL : [server-name]/api/alarm
+- Return : { success : false } or 
+ { 
+    success : true,
+    iid : iid,
+    itemName : name.
+    rawPrice : raw_price,
+    salePrice : sale_price,
+    context : context,
+    views : views,
+    startTime : start_time.
+    endTime : end_time.
+    delivable : 0 or 1,
+    supplierId : sid.
+    categoryId : cateid.
+    imagePath : image.
+    itemCount : count
+}
+
 ## Slack
 
 ddib-backend.slack.com
