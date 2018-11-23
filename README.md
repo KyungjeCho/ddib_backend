@@ -339,6 +339,26 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/favorites
 - Return : { message : 'success' or 'false' or 'duplicate' }
 
+### **/wishlist/history** 
+- *Method : GET* 
+- Headers : Authorization
+- URL : [server-name]/api/wishlist/history 
+- Return : [] or 
+{
+  customer_id : ,
+  item_id : ,
+  supplier_id : ,
+  name : ,
+  category_id : ,
+  sale_price : ,
+  image_path : ,
+  views : ,
+  start_time : ,
+  end_time : ,
+  deliverable : ,
+  item_count : 
+}
+
 ## Slack
 
 ddib-backend.slack.com
