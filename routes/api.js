@@ -17,7 +17,8 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
+var multer = require('multer')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -25,15 +26,25 @@ var CryptoPasswd = require('../lib/passwordSecret');
 
 var auth = require('../lib/auth')
 
-
 var router = express.Router();
+
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/images' + req.url + '/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.user.id + Date.now() + file.originalname)
+    }
+})
+
+var upload = multer({ storage: storage })
 
 /* GET api home page. */
 router.get('/', function(req, res, next) {
   res.send(hello);
 });
 
-// Sign Up API
+// Customer Sign Up API
 // Method : POST
 // URL : /api/sign_up/customer
 // 회원가입 API
@@ -85,7 +96,6 @@ router.post('/sign_up/customer', function(req, res, next) {
         return false;
       }
       
-      // TODO : 비밀번호 암호화
       passwd = CryptoPasswd.create(passwd);
       
       db.query(`INSERT INTO customer 
@@ -93,12 +103,87 @@ router.post('/sign_up/customer', function(req, res, next) {
       (?, ?, ?, ?, ?, ?);`, [cid, passwd, name, address, latitude, longitude],
       function(error, user){
         if (error) {
-          throw errror;
+          res.json(result);
+          return false;
         }
         result['success'] = true;
         res.json(result);
       });
 
+    } else {
+      res.json(result);
+    }
+  })
+})
+
+// Supplier Sign Up API
+// Method : POST
+// Params : sid, passwd, rname, address, dlprice, latitude, longitude
+// URL : /api/sign_up/supplier
+// 가맹업주 회원가입 API
+router.post('/sign_up/supplier', function(req, res, next) {
+  var post = req.body;
+  var sid = post.sid;
+  var passwd = post.passwd;
+  var rname = post.rname;
+  var address = post.address;
+  var dlprice = post.dlprice;
+  var latitude = post.latitude;
+  var longitude = post.longitude;
+
+  var result = {};
+  result['success'] = false;
+  if (!(sid && passwd)) {
+    res.json(result);
+    return false;
+  }
+
+  var idError = false;
+  var passwdError = false;
+
+  // 1. 아이디 중복 체크
+  db.query('SELECT * FROM supplier WHERE sid = ?;', [sid], function(error, user){
+
+    if (error) {
+      throw error;
+    }
+    if (user.length <= 0) {
+
+      // 2. 아이디 패스워드 유효 체크 
+      
+      var regID = /^\d{3}-\d{3,4}-\d{4}$/;
+      var regPasswd = /^[a-z0-9_]{8,20}$/; 
+
+      if (!regID.test(sid)){
+        idError = true;
+      }
+      if (!regPasswd.test(passwd)) {
+        passwdError = true;
+      }
+      if (idError || passwdError) {
+        result['idError'] = idError;
+        result['passwdError'] = passwdError;
+
+        res.send(result);
+        return false;
+      }
+      
+      passwd = CryptoPasswd.create(passwd);
+      
+      db.query(`INSERT INTO supplier 
+      (sid, passwd, rname, address, dlprice, latitude, longitude) VALUES 
+      (?, ?, ?, ?, ?, ? ,?);`, [sid, passwd, rname, address, dlprice, latitude, longitude],
+      function(error, user){
+        if (error) {
+          res.json(result);
+          return false;
+        }
+
+        result['success'] = true;
+        res.json(result);
+      });
+    } else {
+      res.json(result);
     }
   })
 })
@@ -170,6 +255,70 @@ router.get('/category', function(req, res, next){
     //category_json['results'] = results;
     res.json(results);
   })
+})
+
+// Item Post API
+// Method : POST
+// Header : Authorization
+// Parameters : name, cateid, rawprice, saleprice, context, image, views, starttime, endtime, deliverable, count
+// URL : /api/item
+// 음식 등록 api
+router.post('/item', passport.authenticate('jwt', { session: false }), upload.single('image'), function(req, res, next){
+  var post = req.body;
+  var sid = "";
+  var name = post.name;
+  var category_id = post.category_id;
+  var raw_price = post.raw_price;
+  var sale_price = post.sale_price;
+  var context = post.context;
+  var start_time = post.start_time;
+  var end_time = post.end_time;
+  var deliverable = post.deliverable;
+  var count = post.count;
+
+  var result = {
+    success : false
+  }
+  
+  if(! (req.user.permission == 'supplier' || 
+        req.user.permission == 'admin')) {
+    res.json(result);
+    return false;
+  }
+  else {
+    sid = req.user.id;
+  }
+
+  // Ver 0 not insert image path and don't store image file
+  // TODO : save file 
+  if (req.file){
+    db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, req.file.filename],
+  function(error, results){
+    if (error){
+      res.json(result);
+    }
+
+    result['success'] = true;
+    res.json(result);
+  })
+  } else {
+    db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count],
+  function(error, results){
+    if (error){
+      res.json(result);
+    }
+
+    result['success'] = true;
+    res.json(result);
+  })
+  }
+  
 })
 
 // Want_to_buy API
