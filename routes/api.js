@@ -311,7 +311,7 @@ FROM
       res.json([]);
       return false;
     }
-    console.log('a');
+    
     var result = [];
     for (var i = 0; i < wishlists.length; i++) {
       result[i] = {
