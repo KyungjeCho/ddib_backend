@@ -167,12 +167,13 @@ router.post('/sign_up/supplier', function(req, res, next) {
   var passwdError = false;
 
   // 1. 아이디 중복 체크
-  db.query('SELECT * FROM supplier WHERE sid = ?;', [sid], function(error, user){
+  db.query('SELECT * FROM supplier WHERE sid = ?;', [sid], function(error1, user1){
 
-    if (error) {
-      throw error;
+    if (error1) {
+      throw error1;
     }
-    if (user.length <= 0) {
+
+    if (user1.length <= 0) {
 
       // 2. 아이디 패스워드 유효 체크 
       
@@ -198,8 +199,8 @@ router.post('/sign_up/supplier', function(req, res, next) {
       db.query(`INSERT INTO supplier 
       (sid, passwd, rname, address, dlprice, latitude, longitude) VALUES 
       (?, ?, ?, ?, ?, ? ,?);`, [sid, passwd, rname, address, dlprice, latitude, longitude],
-      function(error, user){
-        if (error) {
+      function(error2, user2){
+        if (error2) {
           res.json(result);
           return false;
         }
