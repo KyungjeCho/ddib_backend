@@ -97,8 +97,13 @@ enter [localhost]:3000/api
 - *Method : GET* 
 - URL : [server-name]/api/category 
 - Return : json file including all category
-- Example : { results: [{ID: ,name: }, ...]}  
+- Example : [{ID: ,name: }, ...]
 
+### **/category/detail** 
+- *Method : GET* 
+- URL : [server-name]/api/category/detail/:CategoryID
+- Return : json file including an category
+- Example :  [{ID: ,name: }] or []
 
 ### **/sign_up/customer** 
 - *Method : POST* 
