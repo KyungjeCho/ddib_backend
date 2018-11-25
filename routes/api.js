@@ -325,8 +325,8 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
 // Method : POST
 // Header : Authorization
 // Parameters : iid, score, text
-// URL : /api/item
-// 음식 등록 api
+// URL : /api/review
+// 리뷰 등록 api
 router.post('/review', passport.authenticate('jwt', { session: false }), function(req, res, next){
   var post = req.body;
   var cid = "";
@@ -359,6 +359,36 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
     }
 
     result['success'] = true;
+    res.json(result);
+  })
+})
+
+// Review GET API
+// Method : GET
+// URL : /api/review/:ItemID
+// 리뷰 api
+router.get('/review/:ItemID', function(req, res, next){
+  var iid = req.params.ItemID;
+
+  var result = [];
+
+  db.query(`SELECT * FROM review WHERE iid = ?;`,
+  [iid],
+  function(error, results){
+    if (error){
+      res.json([]);
+      return false;
+    }
+
+    for (var i = 0; i < results.length; i++) {
+      result[i] = {
+        category_id : results[i].cid,
+        item_id : results[i].iid,
+        score : results[i].score,
+        text : results[i].text,
+        date : results[i].date
+      }
+    }
     res.json(result);
   })
 })

@@ -116,6 +116,17 @@ enter [localhost]:3000/api
 - Return : { success : boolean }
 - Example : { success : true }
 
+### **/review/:ItemID** 
+- *Method : GET* 
+- URL : [server-name]/api/review/:ItemID
+- Return : [{
+        category_id :,
+        item_id : ,
+        score : ,
+        text : ,
+        date : 
+      }, ... ]
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
