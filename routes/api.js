@@ -966,6 +966,68 @@ router.post('/item/search', function(req, res, next) {
   })
 })
 
+// All Item Search Page API
+// Method : POST
+// Params : name 
+// URL : [server-name]/api/item/search/all
+// Return : { success : false } or 
+// {
+//    success : true,
+//    iid : iid,
+//    itemName : name.
+//    rawPrice : raw_price,
+//    salePrice : sale_price,
+//    context : context,
+//    views : views,
+//    startTime : start_time.
+//    endTime : end_time.
+//    delivable : 0 or 1,
+//    supplierId : sid.
+//    categoryId : cateid.
+//    imagePath : image.
+//    itemCount : count
+//}
+router.post('/item/search/all', function(req, res, next) {
+  var name = req.body.name;
+
+  name = '%' + name + '%';
+
+  var result = [];
+
+  var sql = 'select * from (select A.*, B.name as CategoryName, C.rname as RestaurantName from ddib.item A, ddib.category B, ddib.supplier C WHERE A.cateid = B.cateid AND A.sid = C.sid ) D WHERE name like ? OR CategoryName like ? OR RestaurantName like ? ';
+
+  sql = sql +  'ORDER BY views DESC;';
+
+  db.query(sql, [name, name, name],function(error, item) { 
+    if (error) {
+      res.json([]);
+      console.log(error)
+      return false;
+    }
+    
+    for (var i = 0; i < item.length; i++) {
+
+      result[i] = {
+        success : true,
+        iid : item[i].iid,
+        itemName : item[i].name,
+        rawPrice : item[i].rawprice,
+        salePrice : item[i].saleprice,
+        context : item[i].context,
+        views : item[0].views + 1,
+        startTime : item[0].starttime,
+        endTime : item[0].endtime,
+        deliverable : item[0].deliverable,
+        supplierId : item[0].sid,
+        categoryId : item[0].cateid,
+        imagePath : item[0].image,
+        itemCount : item[0].itemcount
+      }
+    }
+    res.json(result);
+  })
+})
+
 // Alarm API
 // Method : POST
 // Parameters : cid
