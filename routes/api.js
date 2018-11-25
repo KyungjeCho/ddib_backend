@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -177,27 +177,30 @@ router.get('/category', function(req, res, next){
 // Parameters : cid, cateid, min_price, max_price
 // URL : /api/wtb
 // 삽니다 등록 api
-router.post('/wtb', function(req, res, next){
+router.post('/wtb', passport.authenticate('jwt', { session: false }), function(req, res, next){
   var post = req.body;
   var cid = "";
   var cateid = post.cateid;
   var min_price = post.min_price;
   var max_price = post.max_price;
 
-  if(!req.user){
-    res.send("Pls login!");
+  if(! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')){
+    res.send( { success : false });
     return false;
   }
   else {
-    cid = req.user.cid;
+    cid = req.user.id;
   }
 
   db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
   [cid, cateid, min_price, max_price], function(error, result){
-    if (error)
-      throw error;
+    if (error) {
+      res.json ( { success : false } );
+      return false;
+    }
     
-    res.send(result);
+    res.send({ success : true });
   })
 })
 
@@ -206,15 +209,16 @@ router.post('/wtb', function(req, res, next){
 // URL : /api/wtb
 // Return : 유저의 삽니다 목록 or "Pls login!"
 // 유저의 삽니다 목록 API
-router.get('/wtb', function(req, res, next){
+router.get('/wtb', passport.authenticate('jwt', { session: false }), function(req, res, next){
   var cid = "";
 
-  if(!auth.isOwner(req, res)){
-    res.send("Pls login!");
+  if(! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.json([]);
     return false;
   }
   else {
-    cid = req.session.is_id;
+    cid = req.user.id;
   }
 
   // wtb 테이블과 category 테이블을 조인하여 카테고리 이름을 얻는다.
@@ -224,7 +228,6 @@ router.get('/wtb', function(req, res, next){
     if (error)
       throw error;
 
-    var wtb_json = {};
     var results = [];
       
     var i = 0;
@@ -239,8 +242,7 @@ router.get('/wtb', function(req, res, next){
       i++;
     }
 
-    wtb_json['results'] = results;
-    res.json(wtb_json);
+    res.json(results);
   })
 })
 
