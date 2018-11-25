@@ -80,4 +80,7 @@ typings/
 
 lib/db.js
 lib/session.js
+lib/passport.js
+lib/passwordSecret.js
 sessions/*
+public/images/*

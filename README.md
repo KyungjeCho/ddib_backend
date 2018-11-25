@@ -34,8 +34,10 @@ npm install로 코드에서 요구하는 미들웨어를 설치한다.
 npm install
 ```
 데이터베이스 템플릿을 이용하여 데이터베이스 코드를 작성한다.
+비밀번호 암호화 키를 작성하기 위해 passwordSecrete.js를 만들어 사용자가 암호화 키를 입력한다.
 ```
 cp ./lib/db.template.js ./lib/db.js
+cp ./lib/passwordSecret.template.js ./lib/passwordSecret.js 
 ```
 gedit이나 vi(m) 이나 다른 ide로 ./lib/db.js 파일을 수정한다.
 
@@ -53,6 +55,25 @@ var db = mysql.createConnection({
 db.connect();
 
 module.exports = db;
+```
+```
+var CryptoPasswd = {
+    secret : '', // <- 암호화 키 입력
+    create : function(password){
+      const encrypted = crypto.createHmac('sha1', this.secret)
+                              .update(password)
+                              .digest('base64')
+      return encrypted;
+    },
+    verify : function(encrypted_password, password) {
+      const encrypted = crypto.createHmac('sha1', this.secret)
+                              .update(password)
+                              .digest('base64')
+      return encrypted === encrypted_password;
+    }
+  }
+
+module.exports = CryptoPasswd;
 ```
 서버 시작하기 위해 돌린다. window cmd로는 DEBUG=를 할 수 없다.
 ```
@@ -78,12 +99,26 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+
+### **/sign_up/customer** 
+- *Method : POST* 
+- Params : cid, passwd, name, address, latitude, longitude
+- URL : [server-name]/api/sign_up/customer 
+- Return : json file 
+- Example : { success : true } or { success : false } or {success : false, idError : true, passwdError : false }
+
 ### **/login/customer**
 - *Method : POST*
 - Parameter : cid=[customer_id]&passwd=[password]
 - URL : [server-name]/auth/login/customer
-- Return : false(already logined) or "Welcome!"(Success) or "Who?"(Access denied)
-- Example : Welcome!
+- Return : {success : true, token : '[random_string]'} or {success : false, error : true }
+- Example : {success : true, token : '[random_string]'} or {success : false, error : true }
+
+### **/login/supplier**
+- *Method : POST*
+- Parameter : sid=[customer_id]&passwd=[password]
+- URL : [server-name]/auth/login/supplier
+- Return : {success : true, token : '[random_string]', ID : '[supplier id]', rname : '[restaurant]'} or {success : false, error : true }
 
 ### **/logout/customer**
 - *Method : GET*
@@ -103,6 +138,13 @@ enter [localhost]:3000/api
 - URL : [server-name]/api/wtb
 - Return : select results or "Pls login!"
 - Example : results
+
+### **/alarm** 
+- *Method : POST* 
+- Params : cid
+- URL : [server-name]/api/alarm
+- Return : json file including an item that the customer bought the most
+- Example : { success : true, id : 1, sid : '010-9999-1111', name : '순대국' } or { success : false } 
 
 ## Slack
 
