@@ -174,7 +174,8 @@ router.get('/category', function(req, res, next){
 
 // Want_to_buy API
 // Method : POST
-// Parameters : cid, cateid, min_price, max_price
+// Headers : Authorization
+// Parameters : cateid, min_price, max_price
 // URL : /api/wtb
 // 삽니다 등록 api
 router.post('/wtb', passport.authenticate('jwt', { session: false }), function(req, res, next){
@@ -206,6 +207,7 @@ router.post('/wtb', passport.authenticate('jwt', { session: false }), function(r
 
 // Want To Buy API
 // Method : GET
+// Headers : Authorization
 // URL : /api/wtb
 // Return : 유저의 삽니다 목록 or "Pls login!"
 // 유저의 삽니다 목록 API

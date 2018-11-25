@@ -129,14 +129,14 @@ enter [localhost]:3000/api
 ### **/wtb**
 - *Method : GET*
 - URL : [server-name]/api/wtb
-- Return : json file including user wtb table information or "Pls login!"
-- Example : { results: [{cateID: , cateName: , minPrice: , maxPrice: }, ...]}
+- Return : json file including user wtb table information or []
+- Example : [{cateID: , cateName: , minPrice: , maxPrice: }, ...]
 
 ### **/wtb**
 - *Method : POST*
 - Parameter : cateid=[category_id]&min_price=[minimum price]&max_price=[maximum price]
 - URL : [server-name]/api/wtb
-- Return : select results or "Pls login!"
+- Return : { success : boolean }
 - Example : results
 
 ### **/alarm** 
