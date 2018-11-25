@@ -321,6 +321,48 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
   
 })
 
+// Review Post API
+// Method : POST
+// Header : Authorization
+// Parameters : iid, score, text
+// URL : /api/item
+// 음식 등록 api
+router.post('/review', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var iid = post.iid;
+  var score = post.score;
+  var text = post.text;
+
+  var result = {
+    success : false
+  }
+  
+  if(! (req.user.permission == 'customer' || 
+        req.user.permission == 'admin')) {
+    res.json(result);
+    return false;
+  }
+  else {
+    cid = req.user.id;
+  }
+
+  // TODO : 중복 가능?
+  db.query(`INSERT INTO review 
+  (cid, iid, score, text) 
+  VALUES (?, ?, ?, ?);`,
+  [cid, iid, score, text],
+  function(error, results){
+    if (error){
+      res.json(result);
+      return false;
+    }
+
+    result['success'] = true;
+    res.json(result);
+  })
+})
+
 // Want_to_buy API
 // Method : POST
 // Parameters : cid, cateid, min_price, max_price
