@@ -127,8 +127,8 @@ enter [localhost]:3000/api
 - Example : Logout!
 
 ### **/alarm** 
-- *Method : POST* 
-- Params : cid
+- *Method : GET* 
+- Headers : Authorization
 - URL : [server-name]/api/alarm
 - Return : json file including an item that the customer bought the most
 - Example : { success : true, id : 1, sid : '010-9999-1111', name : '순대국' } or { success : false } 
