@@ -46,8 +46,11 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var passport = require("passport");
+<<<<<<< HEAD
 
 var multer = require('multer')
+=======
+>>>>>>> issue_5_wtb_post
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -717,30 +720,77 @@ router.get('/review/:ItemID', function(req, res, next){
 
 // Want_to_buy API
 // Method : POST
-// Parameters : cid, cateid, min_price, max_price
+// Headers : Authorization
+// Parameters : cateid, min_price, max_price
 // URL : /api/wtb
 // 삽니다 등록 api
-router.post('/wtb', function(req, res, next){
+router.post('/wtb', passport.authenticate('jwt', { session: false }), function(req, res, next){
   var post = req.body;
   var cid = "";
   var cateid = post.cateid;
   var min_price = post.min_price;
   var max_price = post.max_price;
 
-  if(!req.user){
-    res.send("Pls login!");
+  if(! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')){
+    res.send( { success : false });
     return false;
   }
   else {
-    cid = req.user.cid;
+    cid = req.user.id;
   }
 
   db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
   [cid, cateid, min_price, max_price], function(error, result){
+    if (error) {
+      res.json ( { success : false } );
+      return false;
+    }
+    
+    res.send({ success : true });
+  })
+})
+
+// Want To Buy API
+// Method : GET
+// Headers : Authorization
+// URL : /api/wtb
+// Return : 유저의 삽니다 목록 or "Pls login!"
+// 유저의 삽니다 목록 API
+router.get('/wtb', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var cid = "";
+
+  if(! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.json([]);
+    return false;
+  }
+  else {
+    cid = req.user.id;
+  }
+
+  // wtb 테이블과 category 테이블을 조인하여 카테고리 이름을 얻는다.
+  // HACK: 조인문은 느리다. 일단 인덱스를 걸었지만 더 빠르게 구현하기
+  db.query(`SELECT wtb.*, cate.name FROM want_to_buy wtb INNER JOIN category cate ON wtb.cateid = cate.cateid WHERE wtb.cid = ?;`,
+  [cid], function(error, wtbs){
     if (error)
       throw error;
-    
-    res.send(result);
+
+    var results = [];
+      
+    var i = 0;
+    while (i < wtbs.length)
+    {
+      results[i] = {
+        cateID : wtbs[i].cateid,
+        cateName : wtbs[i].name,
+        minPrice : wtbs[i].min_price,
+        maxPrice : wtbs[i].max_price
+      }
+      i++;
+    }
+
+    res.json(results);
   })
 })
 

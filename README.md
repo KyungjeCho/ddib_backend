@@ -330,6 +330,19 @@ enter [localhost]:3000/api
 - Return : "Logout!"
 - Example : Logout!
 
+### **/wtb**
+- *Method : GET*
+- URL : [server-name]/api/wtb
+- Return : json file including user wtb table information or []
+- Example : [{cateID: , cateName: , minPrice: , maxPrice: }, ...]
+
+### **/wtb**
+- *Method : POST*
+- Parameter : cateid=[category_id]&min_price=[minimum price]&max_price=[maximum price]
+- URL : [server-name]/api/wtb
+- Return : { success : boolean }
+- Example : results
+
 ### **/alarm** 
 - *Method : POST* 
 - Params : cid
