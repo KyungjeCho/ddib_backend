@@ -286,6 +286,16 @@ enter [localhost]:3000/api
 - Return : json file including an category
 - Example :  [{ID: ,name: }] or []
 
+### **/review/:ItemID** 
+- *Method : GET* 
+- URL : [server-name]/api/review/:ItemID
+- Return : [{
+        category_id :,
+        item_id : ,
+        score : ,
+        text : ,
+        date : 
+      }, ... ]
 
 ### **/sign_up/customer** 
 - *Method : POST* 
