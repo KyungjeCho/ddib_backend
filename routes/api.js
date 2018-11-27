@@ -46,11 +46,8 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var passport = require("passport");
-<<<<<<< HEAD
 
 var multer = require('multer')
-=======
->>>>>>> issue_5_wtb_post
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -1232,16 +1229,12 @@ router.post('/item/search/all', function(req, res, next) {
 })
 
 // Alarm API
-// Method : POST
-// Parameters : cid
+// Method : GET
+// HEADERS : Authorization
 // URL : /api/alarm
 // 알람 서비스 
-// HACK : cid 유저가 틀릴 경우 false를 출력하지 않고 전날 제일 많이 팔린 제품을 출력한다.
-// TODO : session or token 으로 인증, GET 메소드로 변경, params 삭제
-
-router.post('/alarm', function(req, res, next) {
-  var post = req.body;
-  var cid = post.cid;
+router.get('/alarm', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+  var cid = req.user.id;
 
   // 안드로이드로 보낼 json 객체 선언
   var item = {};
