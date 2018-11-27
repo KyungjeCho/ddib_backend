@@ -489,7 +489,6 @@ FROM
       }
       i++;
     }
-
     res.json(result);
   })
 })
@@ -654,6 +653,37 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
     res.json(result);
   })
 })
+
+// Category Detail API
+// Method : GET
+// URL : /api/category/detail/:CategoryID
+// 한 카테고리를 반환하는 API
+router.get('/category/detail/:CategoryID', function(req, res, next){
+  var cateid = req.params.CategoryID;
+
+  db.query('SELECT * FROM category WHERE cateid = ?;', [cateid], function(error, categorys){
+    if (error){
+      res.json([])
+      return false;
+    }
+      
+    
+    var results = [];
+    
+    var i = 0;
+    while (i < categorys.length)
+    {
+      results[i] = {
+        ID : categorys[i].cateid,
+        name : categorys[i].name
+
+      }
+      i++;
+    }
+    res.json(results);
+  })
+})
+
 
 // Want_to_buy API
 // Method : POST
