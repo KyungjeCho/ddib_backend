@@ -244,6 +244,13 @@ enter [localhost]:3000/api
 - Return : json file 
 - Example : [{ success : true, iid : 29, itemName : , rawPrice : , salePrice : , context : , views : , startTime : , endTime : , deliverable : , supplierId : , categoryId : , imagePath : }, ...]
 
+### **/item/search/all** 
+- *Method : POST* 
+- Params : name
+- URL : [server-name]/api/item/search/all
+- Return : json file 
+- Example : [{ success : true, iid : 29, itemName : , rawPrice : , salePrice : , context : , views : , startTime : , endTime : , deliverable : , supplierId : , categoryId : , imagePath : }, ...]
+
 ### **/shopping_cart/update** 
 - *Method : POST* 
 - Params : iid, amount
