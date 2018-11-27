@@ -265,6 +265,14 @@ enter [localhost]:3000/api
 - Return : json file including a supplier informaton
 - Example : [ { sid:, rname :, latitude :, longitude :, address :, dlprice : }] 
 
+### **/review** 
+- *Method : POST* 
+- URL : [server-name]/api/review
+- Headers : Authorization
+- Params : iid, score, text
+- Return : { success : boolean }
+- Example : { success : true }
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
