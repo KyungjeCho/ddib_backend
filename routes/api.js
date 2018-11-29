@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -266,6 +266,48 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
     })
   }
 })
+})
+
+// Favorites DELETE API
+// Method : POST
+// Headers : Authorization
+// Params : sid
+// URL : /api/favorites/delete
+// 즐겨찾기 삭제 API
+router.post('/favorites/delete',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var sid = req.body.sid;
+  var cid = "";
+
+  var result = {
+    success : false
+  }
+
+  if (!sid) {
+    res.json(result);
+    return false;
+  }
+
+  if (! (req.user.permission === 'customer' ||
+          req.user.permission === 'admin')){
+    res.json(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query('DELETE FROM favorites WHERE cid = ? AND sid = ?;',[cid, sid], function(error, results){
+    if (error){
+      res.json(result);
+      return false;
+    }
+    
+    if (results.affectedRows <= 0) {
+      res.json(result);
+      return false;
+    }
+    result['success'] = true;
+    res.json(result);
+  })
 })
 
 module.exports = router;

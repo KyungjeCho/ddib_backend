@@ -99,6 +99,13 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/favorites/delete** 
+- *Method : POST* 
+- Headers : Authorization
+- Params : sid
+- URL : [server-name]/api/favorites/delete 
+- Return : json file 
+- Example : { success : true } or { success : false } 
 
 ### **/sign_up/customer** 
 - *Method : POST* 
