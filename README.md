@@ -99,6 +99,11 @@ enter [localhost]:3000/api
 - Return : json file including all category
 - Example : { results: [{ID: ,name: }, ...]}  
 
+### **/favorties/history** 
+- *Method : GET* 
+- URL : [server-name]/api/favorites/history 
+- Return : json file including all favorites supplier information
+- Example : [{customer_ID: , supplier_ID:, restaurant_name:, address:, dlprice:, latitude:, longitude: }, ...]
 
 ### **/sign_up/customer** 
 - *Method : POST* 
