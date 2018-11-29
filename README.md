@@ -303,6 +303,14 @@ enter [localhost]:3000/api
 - Return : json file including all favorites supplier information
 - Example : [{customer_ID: , supplier_ID:, restaurant_name:, address:, dlprice:, latitude:, longitude: }, ...]
 
+### **/favorites/delete** 
+- *Method : POST* 
+- Headers : Authorization
+- Params : sid
+- URL : [server-name]/api/favorites/delete 
+- Return : json file 
+- Example : { success : true } or { success : false } 
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude
