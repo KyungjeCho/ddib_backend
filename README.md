@@ -297,6 +297,12 @@ enter [localhost]:3000/api
         date : 
       }, ... ]
 
+### **/favorties/history** 
+- *Method : GET* 
+- URL : [server-name]/api/favorites/history 
+- Return : json file including all favorites supplier information
+- Example : [{customer_ID: , supplier_ID:, restaurant_name:, address:, dlprice:, latitude:, longitude: }, ...]
+
 ### **/sign_up/customer** 
 - *Method : POST* 
 - Params : cid, passwd, name, address, latitude, longitude

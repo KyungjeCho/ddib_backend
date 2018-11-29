@@ -1590,5 +1590,48 @@ FROM
   })
 })
 
+// favorites HISTORY API
+// Method : GET
+// Headers : Authorization
+// URL : /api/favorites/history
+// 즐겨찾기 히스토리 API 
+router.get('/favorites/history', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+
+  var cid = "";
+
+  if (! (req.user.permission === 'customer' ||
+          req.user.permission === 'admin')) {
+    res.json([]);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`
+  select A.cid, B.* from ddib.favorites A inner join ddib.supplier B on A.sid = B.sid WHERE A.cid = ?; `, [cid], function(error, results) {
+
+    if (error) {
+      res.json([]);
+      return false;
+    }
+
+    var result = [];
+
+    for (var i = 0; i < results.length; i++) {
+      result[i] = {
+        customer_ID : results[i].cid,
+        supplier_ID : results[i].sid,
+        restaurant_name : results[i].rname,
+        address : results[i].address,
+        dlprice : results[i].dlprice,
+        latitude : results[i].latitude,
+        longitude : results[i].longitude
+      }
+    }
+
+    res.json(result);
+  })
+})
+
 module.exports = router;
 
