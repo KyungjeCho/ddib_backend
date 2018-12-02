@@ -17,7 +17,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-
+var passport = require("passport");
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -172,31 +172,42 @@ router.get('/category', function(req, res, next){
   })
 })
 
-// Want_to_buy API
+// Want_to_buy DELETE API
 // Method : POST
-// Parameters : cid, cateid, min_price, max_price
-// URL : /api/wtb
-// 삽니다 등록 api
-router.post('/wtb', function(req, res, next){
+// Headers : Authorization
+// Parameters : cateid
+// URL : /api/wtb/delete
+// 삽니다 삭제 api
+router.post('/wtb/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
   var post = req.body;
   var cid = "";
   var cateid = post.cateid;
-  var min_price = post.min_price;
-  var max_price = post.max_price;
 
-  if(!req.user){
-    res.send("Pls login!");
+  var result = {
+    success : false
+  }
+
+  if(! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.json(result);
     return false;
-  }
-  else {
-    cid = req.user.cid;
+  } else {
+    cid = req.user.id;
   }
 
-  db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
-  [cid, cateid, min_price, max_price], function(error, result){
-    if (error)
-      throw error;
+  db.query(`DELETE FROM want_to_buy WHERE cid = ? AND cateid = ?;`,
+  [cid, cateid], function(error, results){
+    if (error) {
+      res.json(result);
+      return false;
+    }
     
+    if (results.affectedRows <= 0){
+      res.json(result);
+      return false;
+    };
+    
+    result['success'] = true;
     res.send(result);
   })
 })
