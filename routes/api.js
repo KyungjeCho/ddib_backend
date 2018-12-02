@@ -123,24 +123,34 @@ router.post('/customer', function(req, res, next){
   })
 })
 
-router.post('/supplier', function(req, res, next){
-  var post = req.body;
-  var id = post.sid;
-  var passwd = post.passwd;
+// Supplier All GET API
+// Method : GET
+// URL : /api/supplier
+// 모든 가맹업주를 반환하는 API
+router.get('/supplier', function(req, res, next){
 
-  db.query(`SELECT * FROM supplier WHERE sid = ? AND passwd = ?;`, [id, passwd], function(error, supplier) {
-    if (error)
-      throw error;
-
-    var supplier_json = {
-      ID: supplier[0].sid,
-      passwd: supplier[0].passwd,
-      rname: supplier[0].rname,
-      address: supplier[0].address,
-      dlprice: supplier[0].dlprice
+  db.query(`SELECT * FROM supplier;`, function(error, supplier) {
+    if (error){
+      res.json([]);
+      return false;
     }
 
-    res.send(supplier_json);
+    var result = [];
+
+    for (var i = 0; i < supplier.length; i++) {
+      result[i] = {
+        ID: supplier[i].sid,
+        passwd: supplier[i].passwd,
+        rname: supplier[i].rname,
+        address: supplier[i].address,
+        dlprice: supplier[i].dlprice,
+        latitude: supplier[i].latitude,
+        longitude: supplier[i].longitude
+      }
+    }
+
+
+    res.send(result);
   })
 })
 

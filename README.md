@@ -133,6 +133,12 @@ enter [localhost]:3000/api
 - Return : json file including an item that the customer bought the most
 - Example : { success : true, id : 1, sid : '010-9999-1111', name : '순대국' } or { success : false } 
 
+### **/supplier** 
+- *Method : GET* 
+- URL : [server-name]/api/supplier 
+- Return : json file including all supplier
+- Example : [{ID: , passwd: , rname: ,address: ,dlprice: ,latitude: , longitude: ,}, ...]
+
 ## Slack
 
 ddib-backend.slack.com
