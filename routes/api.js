@@ -1134,7 +1134,7 @@ router.get('/item/list/:sort', function(req, res, next) {
         endTime : item[i].endtime,
         deliverable : item[i].deliverable,
         supplierId : item[i].sid,
-        categoryId : item[i].caieid,
+        categoryId : item[i].cateid,
         imagePath : item[i].image,
         itemCount : item[i].count
     }
