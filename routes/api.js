@@ -217,7 +217,7 @@ router.post('/wtb', function(req, res, next){
 //    endTime : end_time.
 //    delivable : 0 or 1,
 //    supplierId : sid.
-//    categoryId : cateid.
+//    categoryId : cateid,
 //    imagePath : image.
 //    itemCount : count
 //}, ... ]
@@ -263,7 +263,7 @@ router.get('/item/list/:sort', function(req, res, next) {
         endTime : item[i].endtime,
         deliverable : item[i].deliverable,
         supplierId : item[i].sid,
-        categoryId : item[i].caieid,
+        categoryId : item[i].cateid,
         imagePath : item[i].image,
         itemCount : item[i].count
       }
