@@ -45,7 +45,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser')
-var passport = require("passport");
+var passport = require("passport") 
 
 var multer = require('multer')
 
@@ -496,6 +496,46 @@ FROM
       i++;
     }
     res.json(result);
+  })
+})
+
+// Want_to_buy DELETE API
+// Method : POST
+// Headers : Authorization
+// Parameters : cateid
+// URL : /api/wtb/delete
+// 삽니다 삭제 api
+router.post('/wtb/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var cid = "";
+  var cateid = post.cateid;
+
+  var result = {
+    success : false
+  }
+
+  if(! (req.user.permission === 'customer' ||
+        req.user.permission === 'admin')) {
+    res.json(result);
+    return false;
+  } else {
+    cid = req.user.id;
+  }
+
+  db.query(`DELETE FROM want_to_buy WHERE cid = ? AND cateid = ?;`,
+  [cid, cateid], function(error, results){
+    if (error) {
+      res.json(result);
+      return false;
+    }
+    
+    if (results.affectedRows <= 0){
+      res.json(result);
+      return false;
+    };
+    
+    result['success'] = true;
+    res.send(result);
   })
 })
 

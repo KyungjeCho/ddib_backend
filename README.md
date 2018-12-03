@@ -418,6 +418,14 @@ enter [localhost]:3000/api
   item_count : 
 }
 
+### **/wtb/delete** 
+- *Method : POST* 
+- Headers : Authorization
+- Params : cateid
+- URL : [server-name]/api/wtb/delete 
+- Return : json file 
+- Example : { success : true } or { success : false }
+
 ## Slack
 
 ddib-backend.slack.com
