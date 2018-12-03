@@ -440,6 +440,8 @@ router.post('/category', passport.authenticate('jwt', { session: false }), funct
 // 유저의 모든 장바구니를 반환하는 API
 router.get('/shopping_cart_history',passport.authenticate('jwt', { session: false }), function(req, res, next){
 
+  var result = [];
+
   var cid = req.user.id;
 
   db.query(`SELECT 
@@ -475,23 +477,28 @@ FROM
     while (i < results.length)
     {
       result[i] = {
-        ItemID : results[i].iid,
-        Amount : results[i].amount,
-        sid : results[i].sid,
-        name : results[i].name,
-        category_id : results[i].cateid,
-        sale_price : results[i].saleprice,
-        image_path : results[i].image,
-        start_time : results[i].starttime,
-        end_time : results[i].endtime,
-        deliverable : results[i].deliverable,
-        item_count : results[i].itemcount
+
+        success : true,
+        iid : item[i].iid,
+        itemName : item[i].name,
+        rawPrice : item[i].rawprice,
+        salePrice : item[i].saleprice,
+        context : item[i].context,
+        views : item[i].views,
+        startTime : item[i].starttime,
+        endTime : item[i].endtime,
+        deliverable : item[i].deliverable,
+        supplierId : item[i].sid,
+        categoryId : item[i].cateid,
+        imagePath : item[i].image,
+        itemCount : item[i].count
       }
       i++;
     }
     res.json(result);
   })
 })
+
 
 // Order POST API
 // Method : POST
