@@ -611,7 +611,7 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
 // Parameters : name, cateid, rawprice, saleprice, context, image, views, starttime, endtime, deliverable, count
 // URL : /api/item
 // 음식 등록 api
-router.post('/item', passport.authenticate('jwt', { session: false }), upload.single('image'), function(req, res, next){
+router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.single('image'),*/ function(req, res, next){
   var post = req.body;
   var sid = "";
   var name = post.name;
@@ -623,6 +623,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
   var end_time = post.end_time;
   var deliverable = post.deliverable;
   var count = post.count;
+  var image = post.image;
 
 
   var result = {
@@ -640,6 +641,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
 
   // Ver 0 not insert image path and don't store image file
   // TODO : save file 
+  /*
   if (req.file){
     db.query(`INSERT INTO item (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
   [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, req.file.filename],
@@ -658,6 +660,20 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
   VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`,
   [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count],
   function(error, results){
+      if (error){
+        res.json(result);
+      } 
+
+      result['success'] = true;
+      res.json(result);
+    })
+  }
+  */
+  db.query(`INSERT INTO item 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) 
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image],
+  function(error, results){
     if (error){
       res.json(result);
       return false;
@@ -666,7 +682,6 @@ router.post('/item', passport.authenticate('jwt', { session: false }), upload.si
     result['success'] = true;
     res.json(result);
   })
-  }
 })
 
 // Review Post API
