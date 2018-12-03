@@ -489,19 +489,19 @@ FROM
       result[i] = {
 
         success : true,
-        iid : item[i].iid,
-        itemName : item[i].name,
-        rawPrice : item[i].rawprice,
-        salePrice : item[i].saleprice,
-        context : item[i].context,
-        views : item[i].views,
-        startTime : item[i].starttime,
-        endTime : item[i].endtime,
-        deliverable : item[i].deliverable,
-        supplierId : item[i].sid,
-        categoryId : item[i].cateid,
-        imagePath : item[i].image,
-        itemCount : item[i].count
+        iid : results[i].iid,
+        itemName : results[i].name,
+        rawPrice : results[i].rawprice,
+        salePrice : results[i].saleprice,
+        context : results[i].context,
+        views : results[i].views,
+        startTime : results[i].starttime,
+        endTime : results[i].endtime,
+        deliverable : results[i].deliverable,
+        supplierId : results[i].sid,
+        categoryId : results[i].cateid,
+        imagePath : results[i].image,
+        itemCount : results[i].count
       }
       i++;
     }
