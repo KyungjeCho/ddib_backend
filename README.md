@@ -426,6 +426,13 @@ enter [localhost]:3000/api
 - Return : json file 
 - Example : { success : true } or { success : false }
 
+### **/supplier** 
+- *Method : GET* 
+- URL : [server-name]/api/supplier 
+- Return : json file including all supplier
+- Example : [{ID: , passwd: , rname: ,address: ,dlprice: ,latitude: , longitude: ,}, ...]
+
+
 ## Slack
 
 ddib-backend.slack.com
