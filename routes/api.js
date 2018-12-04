@@ -323,7 +323,7 @@ ORDER BY orderdate DESC;`, [cid], function(error, results) {
         name : results[i].name,
         cateid : results[i].cateid,
         sale_price : results[i].saleprice,
-        image_path : results[i].image
+        image_path : results[i].image.toString('utf-8')
       };
     }
 
@@ -500,7 +500,7 @@ FROM
         deliverable : results[i].deliverable,
         supplierId : results[i].sid,
         categoryId : results[i].cateid,
-        imagePath : results[i].image,
+        imagePath : results[i].image.toString('utf-8'),
         itemCount : results[i].count
       }
       i++;
@@ -1068,7 +1068,7 @@ router.get('/item/detail/:itemID', function(req, res, next) {
     itemDetailJson['deliverable'] = item[0].deliverable;
     itemDetailJson['supplierId'] = item[0].sid;
     itemDetailJson['categoryId'] = item[0].cateid;
-    itemDetailJson['imagePath'] = item[0].image;
+    itemDetailJson['imagePath'] = item[0].image.toString('utf-8');
     itemDetailJson['itemCount'] = item[0].itemcount;
     res.json(itemDetailJson);
   })
@@ -1135,7 +1135,7 @@ router.get('/item/list/:sort', function(req, res, next) {
         deliverable : item[i].deliverable,
         supplierId : item[i].sid,
         categoryId : item[i].cateid,
-        imagePath : item[i].image,
+        imagePath : item[i].image.toString('utf-8'),
         itemCount : item[i].count
     }
   }
@@ -1229,7 +1229,7 @@ router.post('/item/search', function(req, res, next) {
         deliverable : item[0].deliverable,
         supplierId : item[0].sid,
         categoryId : item[0].cateid,
-        imagePath : item[0].image,
+        imagePath : item[0].image.toString('utf-8'),
         itemCount : item[0].itemcount
       }
     }
@@ -1292,7 +1292,7 @@ router.post('/item/search/all', function(req, res, next) {
         deliverable : item[0].deliverable,
         supplierId : item[0].sid,
         categoryId : item[0].cateid,
-        imagePath : item[0].image,
+        imagePath : item[0].image.toString('utf-8'),
         itemCount : item[0].itemcount
       }
     }
@@ -1649,7 +1649,7 @@ FROM
         name : wishlists[i].name,
         category_id : wishlists[i].cateid,
         sale_price : wishlists[i].saleprice,
-        image_path : wishlists[i].image,
+        image_path : wishlists[i].image.toString('utf-8'),
         views : wishlists[i].views,
         start_time : wishlists[i].starttime,
         end_time : wishlists[i].endtime,
