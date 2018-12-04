@@ -487,21 +487,17 @@ FROM
     while (i < results.length)
     {
       result[i] = {
-
-        success : true,
-        iid : results[i].iid,
-        itemName : results[i].name,
-        rawPrice : results[i].rawprice,
-        salePrice : results[i].saleprice,
-        context : results[i].context,
-        views : results[i].views,
-        startTime : results[i].starttime,
-        endTime : results[i].endtime,
+        ItemID : results[i].iid,
+        Amount : results[i].amount,
+        name : results[i].name,
+        sale_price : results[i].saleprice,
+        start_time : results[i].starttime,
+        end_time : results[i].endtime,
         deliverable : results[i].deliverable,
-        supplierId : results[i].sid,
-        categoryId : results[i].cateid,
-        imagePath : results[i].image.toString('utf-8'),
-        itemCount : results[i].count
+        sid : results[i].sid,
+        category_id : results[i].cateid,
+        image_path : results[i].image.toString('utf-8'),
+        item_count : results[i].itemcount
       }
       i++;
     }
