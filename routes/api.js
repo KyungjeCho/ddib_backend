@@ -625,9 +625,13 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
   var count = post.count;
   var image = post.image;
 
-
   var result = {
     success : false
+  }
+
+  if (!image) {
+    res.json(result);
+    return false;
   }
 
   if(! (req.user.permission == 'supplier' || 
