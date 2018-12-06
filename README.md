@@ -155,6 +155,7 @@ enter [localhost]:3000/api
 
 ### **/order_history/supplier** 
 - *Method : GET* 
+- Headers : Authorization
 - URL : [server-name]/api/order_history/supplier
 - Return : json file including user's order history
 - Example : { success : false } or [{

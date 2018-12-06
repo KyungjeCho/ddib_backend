@@ -361,7 +361,7 @@ FROM
       sid = ?) A
   INNER JOIN ddib.order B ON A.iid = B.iid) C
       INNER JOIN
-  ddib.order_group D ON C.gid = D.gid;`, [sid], function(error, results) {
+  ddib.order_group D ON C.gid = D.gid ORDER BY D.orderdate DESC;`, [sid], function(error, results) {
     if (error) {
       res.status(501).json([]);
     }
