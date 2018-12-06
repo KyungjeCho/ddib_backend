@@ -379,7 +379,7 @@ FROM
         name  : results[i].name,
         sale_price : results[i].saleprice,
         cid : results[i].cid,
-        order_date : results[i].order_date,
+        order_date : results[i].orderdate,
         payment : results[i].payment
       };
     }
