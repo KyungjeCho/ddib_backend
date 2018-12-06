@@ -323,7 +323,8 @@ ORDER BY orderdate DESC;`, [cid], function(error, results) {
         name : results[i].name,
         cateid : results[i].cateid,
         sale_price : results[i].saleprice,
-        image_path : results[i].image.toString('utf-8')
+        image_path : results[i].image.toString('utf-8'),
+        amount : results[i].amount
       };
     }
 

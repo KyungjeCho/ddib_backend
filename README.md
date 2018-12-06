@@ -149,7 +149,8 @@ enter [localhost]:3000/api
         name : ,
         cateid : ,
         sale_price : ,
-        image_path : 
+        image_path : ,
+        amount
       }]
 
 ### **/order_history/supplier** 
