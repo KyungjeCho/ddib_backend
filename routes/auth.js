@@ -89,6 +89,8 @@ router.post("/login/customer", function(req, res) {
     result['empty_params'] = true;
     res.json(result);
   }
+
+  console.log(fcm_token)
   // usually this would be a database call:
 
   db.query('SELECT * FROM customer WHERE cid = ?;', [name], function(error, user) {
@@ -113,13 +115,13 @@ router.post("/login/customer", function(req, res) {
       result['ID'] = user[0].cid;
       result['name'] = user[0].name;
       result['token'] = token;
-      result['success'] = true;
       db.query('UPDATE customer SET fcm_token = ? WHERE cid = ?;'[fcm_token, user[0].cid], function(error2, results){
         if (error2) {
           res.json(result);
           return false;
         }
 
+        result['success'] = true;
         res.json(result);
       })
 
