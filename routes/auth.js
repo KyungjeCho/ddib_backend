@@ -115,7 +115,7 @@ router.post("/login/customer", function(req, res) {
       result['ID'] = user[0].cid;
       result['name'] = user[0].name;
       result['token'] = token;
-      db.query('UPDATE customer SET fcm_token = ? WHERE cid = ?;'[fcm_token, user[0].cid], function(error2, results){
+      db.query('UPDATE customer SET fcm_token = ? WHERE cid = ?;', [fcm_token, user[0].cid], function(error2, results){
         if (error2) {
           res.json(result);
           return false;
