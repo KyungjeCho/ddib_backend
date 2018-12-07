@@ -8,7 +8,7 @@ var _ = require("lodash");
 var bodyParser = require('body-parser');
 var FCM = require('fcm-node');
 
-var serverKey = require('ddib-fcm.json');
+var serverKey = require('./ddib-fcm.json');
 
 var fcm = new FCM(serverKey)
 
