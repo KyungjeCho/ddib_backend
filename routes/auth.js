@@ -123,6 +123,7 @@ router.post("/login/customer", function(req, res) {
 
         result['success'] = true;
         res.json(result);
+        return true;
       })
 
     } else {
