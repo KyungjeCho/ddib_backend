@@ -1099,7 +1099,7 @@ router.get('/item/list/:sort', function(req, res, next) {
 
   var result = [];
 
-  var sql = 'SELECT * FROM item ';
+  var sql = 'SELECT A.*, B.rname FROM item A INNER JOIN supplier B ON A.sid = B.sid ';
 
   if (req.params.sort === '0') { // 최다 조회수 순
     sql = sql + 'ORDER BY views DESC;';
