@@ -1137,7 +1137,8 @@ router.get('/item/list/:sort', function(req, res, next) {
         supplierId : item[i].sid,
         categoryId : item[i].cateid,
         imagePath : item[i].image.toString('utf-8'),
-        itemCount : item[i].count
+        itemCount : item[i].count,
+        restaurant_name : item[i].rname
     }
   }
   res.json(result);
