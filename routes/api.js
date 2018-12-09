@@ -1137,7 +1137,7 @@ router.get('/item/list/:sort', function(req, res, next) {
         supplierId : item[i].sid,
         categoryId : item[i].cateid,
         imagePath : item[i].image.toString('utf-8'),
-        itemCount : item[i].count,
+        itemCount : item[i].itemcount,
         restaurant_name : item[i].rname
     }
   }
@@ -1177,7 +1177,7 @@ router.post('/item/search', function(req, res, next) {
 
   var format = [];
 
-  var sql = 'SELECT * FROM item WHERE ';
+  var sql = 'SELECT A.*, B.rname FROM item A INNER JOIN supplier B ON A.sid = B.sid WHERE ';
   var condition = "";
 
   var i = 0;
@@ -1232,7 +1232,8 @@ router.post('/item/search', function(req, res, next) {
         supplierId : item[0].sid,
         categoryId : item[0].cateid,
         imagePath : item[0].image.toString('utf-8'),
-        itemCount : item[0].itemcount
+        itemCount : item[0].itemcount,
+        restaurant_name : item[0].rname
       }
     }
     res.json(result);
