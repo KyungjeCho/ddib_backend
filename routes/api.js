@@ -629,6 +629,8 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
   var deliverable = post.deliverable;
   var count = post.count;
   var image = post.image;
+  var timesale = post.timesale;
+  var leastprice = post.leastprice;
 
   var result = {
     success : false
@@ -649,9 +651,9 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
   }
 
   db.query(`INSERT INTO item 
-  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image) 
+  (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image, timesale, leastprice) 
   VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?);`,
-  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image],
+  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image, timesale, leastprice],
   function(error, results){
     if (error){
       res.json(result);
@@ -753,8 +755,18 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
     cid = req.user.id;
   }
 
-  // TODO : 중복 가능?
-  db.query(`INSERT INTO review 
+  db.query('SELECT * FROM order A INNER JOIN item B ON A.iid = B.iid WHERE B.iid = ?',[iid], function (error2, results2) {
+    if (error2) {
+      res.json(result);
+      return false;
+    }
+
+    if (results2.length > 0){
+      res.json(result);
+      return false;
+    }
+
+    db.query(`INSERT INTO review 
   (cid, iid, score, text) 
   VALUES (?, ?, ?, ?);`,
   [cid, iid, score, text],
@@ -766,6 +778,7 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
 
     result['success'] = true;
     res.json(result);
+  })
   })
 })
 
