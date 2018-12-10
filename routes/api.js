@@ -859,7 +859,7 @@ router.get('/review/customer/:CustomerID', function(req, res, next){
 
   var result = [];
 
-  db.query(`SELECT A.*, B.name FROM review A INNER JOIN item B ON A.iid = B.iid WHERE cid = ?;`,
+  db.query(`SELECT A.*, B.name FROM review A INNER JOIN item B ON A.iid = B.iid WHERE cid = ? ORDER BY A.\`date\` DESC;`,
   [cid],
   function(error, results){
     if (error){
