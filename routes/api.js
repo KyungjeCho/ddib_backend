@@ -637,6 +637,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
   }
 
   if (!image) {
+    console.log(2);
     res.json(result);
     return false;
   }
