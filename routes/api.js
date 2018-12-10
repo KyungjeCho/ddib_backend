@@ -686,7 +686,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
         },
       };
 
-      fcm.send(message, function(err, response) {
+      fcm.sendToDevice(message, function(err, response) {
         if (err) {
             console.error('Push메시지 발송에 실패했습니다.');
             console.log(err);
@@ -720,7 +720,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
         },
       };
 
-      fcm.send(message, function(err, response) {
+      fcm.sendToDevice(message, function(err, response) {
         if (err) {
             console.error('Push메시지 발송에 실패했습니다.');
             return false;
