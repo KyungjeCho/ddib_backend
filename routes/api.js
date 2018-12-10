@@ -656,6 +656,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
   [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image, timesale, leastprice],
   function(error, results){
     if (error){
+      console.log(error);
       res.json(result);
       return false;
     }
