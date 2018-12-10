@@ -65,7 +65,7 @@ function item_decrease() {
         console.log(sale_price);
         db.query('UPDATE item SET saleprice = ?, sale_step = ? WHERE iid = ?;', [sale_price, 1, results[i].iid], function (error2, resutls2){
           if (error2) {
-            return false;
+            console.log('Update error');
           }
         })
       } else if (date.getTime() > quarter_time && results[i].sale_step === 1) {
@@ -75,12 +75,11 @@ function item_decrease() {
         console.log(sale_price);
         db.query('UPDATE item SET saleprice = ?, sale_step = ? WHERE iid = ?;', [sale_price, 2, results[i].iid], function (error2, resutls2){
           if (error2) {
-            return false;
+            console.log('Update Error');
           }
         })
       } else {
         console.log(-1);
-        return false;
       }
     }
   })
