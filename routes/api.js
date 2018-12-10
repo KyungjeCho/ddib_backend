@@ -675,6 +675,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
       for (var i = 0; i < results2.length; i++) {
         regTokens[i] = results2[i].fcm_token;
       }
+      console.log(regTokens);
       message = {
         // 수신대상
         registration_ids: regTokens,
@@ -686,7 +687,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
         },
       };
 
-      fcm.sendToDevice(message, function(err, response) {
+      fcm.send(message, function(err, response) {
         if (err) {
             console.error('Push메시지 발송에 실패했습니다.');
             console.log(err);
@@ -720,7 +721,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
         },
       };
 
-      fcm.sendToDevice(message, function(err, response) {
+      fcm.send(message, function(err, response) {
         if (err) {
             console.error('Push메시지 발송에 실패했습니다.');
             return false;
