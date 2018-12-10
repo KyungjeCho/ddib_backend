@@ -767,7 +767,7 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
       return false;
     }
 
-    if (results2.length > 0){
+    if (results2.length <= 0){
       console.log('주문한 음식이 아니다')
       res.json(result);
       return false;
