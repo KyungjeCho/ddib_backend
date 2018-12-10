@@ -677,7 +677,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
       }
       message = {
         // 수신대상
-        registration_ids: results2[i].fcm_token,
+        registration_ids: regTokens,
         // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
         notification: {
             title: "삽니다!",
@@ -710,7 +710,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
       }
       message = {
         // 수신대상
-        registration_ids: results2[i].fcm_token,
+        registration_ids: regTokens,
         // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
         notification: {
             title: "즐겨찾기!",
