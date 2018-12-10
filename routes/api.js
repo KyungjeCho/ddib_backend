@@ -665,7 +665,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
     }
 
     var message = {};
-    db.query('SELECT * FROM wtb A INNDER JOIN customer B ON A.cid = B.cid WHERE A.cateid = ?;',[category_id], function(error2, results2) {
+    db.query('SELECT * FROM wtb A INNER JOIN customer B ON A.cid = B.cid WHERE A.cateid = ?;',[category_id], function(error2, results2) {
       if (error2) {
         console.log(error2);
         res.json(result);
@@ -697,7 +697,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
       }
     });
     
-    db.query('SELECT * FROM favorites A INNDER JOIN customer B ON A.cid = B.cid WHERE A.sid = ?;',[sid], function(error2, results2) {
+    db.query('SELECT * FROM favorites A INNER JOIN customer B ON A.cid = B.cid WHERE A.sid = ?;',[sid], function(error2, results2) {
       if (error2) {
         console.log(error2);
         res.json(result);
