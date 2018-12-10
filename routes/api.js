@@ -673,7 +673,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
       }
       var regTokens = [];
       for (var i = 0; i < results2.length; i++) {
-        if (results2[i]){
+        if (results2[i].fcm_token){
           regTokens[i] = results2[i].fcm_token;
         }
       }
@@ -712,7 +712,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
 
       var regTokens = [];
       for (var i = 0; i < results2.length; i++) {
-        if (results2[i]){
+        if (results2[i].fcm_token){
           regTokens[i] = results2[i].fcm_token;
         }
       }
