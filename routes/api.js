@@ -671,29 +671,30 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
         res.json(result);
         return false;
       }
-
+      var regTokens = [];
       for (var i = 0; i < results2.length; i++) {
-        message = {
-            // 수신대상
-            to: results2[i].fcm_token,
-            // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
-            notification: {
-                title: results2[i].name + "님!",
-                body: "삽니다!에 등록하신 카테고리로 새 음식이 올라왔어요!",
-                
-            },
-        };
-
-        fcm.send(message, function(err, response) {
-            if (err) {
-                console.error('Push메시지 발송에 실패했습니다.');
-                return false;
-            }
-        
-            console.log('Push메시지가 발송되었습니다.');
-            console.log(response);
-        });
+        regTokens[i] = results2[i].fcm_token;
       }
+      message = {
+        // 수신대상
+        registration_ids: results2[i].fcm_token,
+        // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
+        notification: {
+            title: "삽니다!",
+            body: "삽니다!에 등록하신 카테고리로 새 음식이 올라왔어요!",
+            
+        },
+      };
+
+      fcm.send(message, function(err, response) {
+        if (err) {
+            console.error('Push메시지 발송에 실패했습니다.');
+            return false;
+        }
+    
+        console.log('Push메시지가 발송되었습니다.');
+        console.log(response);
+      });
     });
     
     db.query('SELECT * FROM favorites A INNER JOIN customer B ON A.cid = B.cid WHERE A.sid = ?;',[sid], function(error2, results2) {
@@ -703,29 +704,30 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
         return false;
       }
 
+      var regTokens = [];
       for (var i = 0; i < results2.length; i++) {
-        message = {
-            // 수신대상
-            to: results2[i].fcm_token,
-            // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
-            notification: {
-                title: results2[i].name + "님!",
-                body: "즐겨찾기에 등록하신 식당에서 새 음식이 올라왔어요!",
-                
-            },
-        };
-
-        fcm.send(message, function(err, response) {
-            if (err) {
-                console.error('Push메시지 발송에 실패했습니다.');
-                console.error(err);
-                return false;
-            }
-        
-            console.log('Push메시지가 발송되었습니다.');
-            console.log(response);
-        });
+        regTokens[i] = results2[i].fcm_token;
       }
+      message = {
+        // 수신대상
+        registration_ids: results2[i].fcm_token,
+        // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
+        notification: {
+            title: "즐겨찾기!",
+            body: "즐겨찾기!에 등록하신 식당에서 새 음식이 올라왔어요!",
+            
+        },
+      };
+
+      fcm.send(message, function(err, response) {
+        if (err) {
+            console.error('Push메시지 발송에 실패했습니다.');
+            return false;
+        }
+    
+        console.log('Push메시지가 발송되었습니다.');
+        console.log(response);
+      });
     })
 
     result['success'] = true;
