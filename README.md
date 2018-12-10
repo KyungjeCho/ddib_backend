@@ -307,7 +307,8 @@ enter [localhost]:3000/api
         item_id : ,
         score : ,
         text : ,
-        date : 
+        date : ,
+        itemName : 
       }, ... ]
 
 ### **/favorties/history** 
