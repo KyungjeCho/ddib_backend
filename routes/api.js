@@ -636,6 +636,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
     success : false
   }
 
+  console.log(image);
   if (!image) {
     console.log(2);
     res.json(result);
@@ -664,7 +665,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
     }
 
     var message = {};
-    db.query('SELECT * FROM wtb A INNDER JOIN customer B A.cid = B.cid WHERE A.cateid = ?;',[cateid], function(error2, results2) {
+    db.query('SELECT * FROM wtb A INNDER JOIN customer B A.cid = B.cid WHERE A.cateid = ?;',[category_id], function(error2, results2) {
       if (error2) {
         console.log(error2);
         res.json(result);
