@@ -762,11 +762,13 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
 
   db.query('SELECT * FROM order A WHERE A.iid = ?',[iid], function (error2, results2) {
     if (error2) {
+      console.log(error2);
       res.json(result);
       return false;
     }
 
     if (results2.length > 0){
+      console.log('주문한 음식이 아니다')
       res.json(result);
       return false;
     }
@@ -777,6 +779,7 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
   [cid, iid, score, text],
   function(error, results){
     if (error){
+      console.log(error2);
       res.json(result);
       return false;
     }
