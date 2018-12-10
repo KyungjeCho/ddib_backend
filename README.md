@@ -299,6 +299,17 @@ enter [localhost]:3000/api
         date : 
       }, ... ]
 
+### **/review/customer/:CustomerID** 
+- *Method : GET* 
+- URL : [server-name]/api/review/cusotmer/:CustomerID
+- Return : [{
+        category_id :,
+        item_id : ,
+        score : ,
+        text : ,
+        date : 
+      }, ... ]
+
 ### **/favorties/history** 
 - *Method : GET* 
 - URL : [server-name]/api/favorites/history 

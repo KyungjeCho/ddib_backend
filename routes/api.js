@@ -842,6 +842,35 @@ router.get('/review/:ItemID', function(req, res, next){
   })
 })
 
+// Review Custoemr ID GET API
+// Method : GET
+// URL : /api/review/customer/:CusotmerID
+// 리뷰 api
+router.get('/review/custoemer/:CustomerID', function(req, res, next){
+  var cid = req.params.CustomerID;
+
+  var result = [];
+
+  db.query(`SELECT * FROM review WHERE cid = ?;`,
+  [cid],
+  function(error, results){
+    if (error){
+      res.json([]);
+      return false;
+    }
+
+    for (var i = 0; i < results.length; i++) {
+      result[i] = {
+        category_id : results[i].cid,
+        item_id : results[i].iid,
+        score : results[i].score,
+        text : results[i].text,
+        date : results[i].date
+      }
+    }
+    res.json(result);
+  })
+})
 
 // Want_to_buy API
 // Method : POST
