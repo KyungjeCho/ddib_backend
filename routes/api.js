@@ -643,6 +643,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
 
   if(! (req.user.permission == 'supplier' || 
         req.user.permission == 'admin')) {
+    console.log(1);
     res.json(result);
     return false;
   }
