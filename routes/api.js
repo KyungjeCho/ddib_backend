@@ -760,7 +760,7 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
     cid = req.user.id;
   }
 
-  db.query('SELECT * FROM order A INNER JOIN item B ON A.iid = B.iid WHERE B.iid = ?',[iid], function (error2, results2) {
+  db.query('SELECT * FROM order A WHERE A.iid = ?',[iid], function (error2, results2) {
     if (error2) {
       res.json(result);
       return false;
@@ -1291,7 +1291,7 @@ router.post('/item/search', function(req, res, next) {
     format_sql = 'cateid = ? ';
     format = [category_id];
   } else if (supplier_id) {
-    format_sql = 'sid = ? ';
+    format_sql = 'A.sid = ? ';
     format = [supplier_id];
   } else {
     res.json([]);
