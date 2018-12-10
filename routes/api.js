@@ -1315,15 +1315,15 @@ router.post('/item/search', function(req, res, next) {
         rawPrice : item[i].rawprice,
         salePrice : item[i].saleprice,
         context : item[i].context,
-        views : item[0].views + 1,
-        startTime : item[0].starttime,
-        endTime : item[0].endtime,
-        deliverable : item[0].deliverable,
-        supplierId : item[0].sid,
-        categoryId : item[0].cateid,
-        imagePath : item[0].image.toString('utf-8'),
-        itemCount : item[0].itemcount,
-        restaurant_name : item[0].rname
+        views : item[i].views + 1,
+        startTime : item[i].starttime,
+        endTime : item[i].endtime,
+        deliverable : item[i].deliverable,
+        supplierId : item[i].sid,
+        categoryId : item[i].cateid,
+        imagePath : item[i].image.toString('utf-8'),
+        itemCount : item[i].itemcount,
+        restaurant_name : item[i].rname
       }
     }
     res.json(result);

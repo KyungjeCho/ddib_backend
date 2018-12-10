@@ -301,7 +301,7 @@ enter [localhost]:3000/api
 
 ### **/review/customer/:CustomerID** 
 - *Method : GET* 
-- URL : [server-name]/api/review/cusotmer/:CustomerID
+- URL : [server-name]/api/review/customer/:CustomerID
 - Return : [{
         category_id :,
         item_id : ,
