@@ -851,12 +851,12 @@ router.get('/review/:ItemID', function(req, res, next){
 // Method : GET
 // URL : /api/review/customer/:CusotmerID
 // 리뷰 api
-router.get('/review/custoemer/:CustomerID', function(req, res, next){
+router.get('/review/customer/:CustomerID', function(req, res, next){
   var cid = req.params.CustomerID;
 
   var result = [];
 
-  db.query(`SELECT * FROM review WHERE cid = ?;`,
+  db.query(`SELECT A.*, B.name FROM review A INNER JOIN item B ON A.iid = B.iid WHERE cid = ?;`,
   [cid],
   function(error, results){
     if (error){
@@ -870,7 +870,8 @@ router.get('/review/custoemer/:CustomerID', function(req, res, next){
         item_id : results[i].iid,
         score : results[i].score,
         text : results[i].text,
-        date : results[i].date
+        date : results[i].date,
+        itemName : results[i].name
       }
     }
     res.json(result);
