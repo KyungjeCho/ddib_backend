@@ -35,7 +35,65 @@ app.get("/secretDebug",
     res.json("debugging");
 });
 
+function item_decrease() {
 
+  db.query('SELECT * FROM item WHERE timesale = 1;', function(error, results){
+    if (error) {
+      return false;
+    }
+
+    console.log('inner');
+
+    for (var i = 0; i < results.length; i++) {
+      var date = new Date();
+
+      var starttime = new Date(results[i].starttime);
+      var endtime = new Date(results[i].endtime);
+      console.log(starttime, endtime);
+
+      var half_time = (starttime.getTime() + endtime.getTime()) / 2;
+      var quarter_time = ((1 - 3/ 4) * starttime.getTime() + (3/4) * endtime.getTime());
+
+      console.log(date.getTime(), half_time, quarter_time);
+      console.log(results[i].sale_step);
+      if (date.getTime() > half_time && results[i].sale_step === 0) {
+        console.log(1);
+
+        console.log(results[i].saleprice, results[i].leastprice);
+        var sale_price =  (results[i].saleprice + results[i].leastprice) / 2;
+
+        console.log(sale_price);
+        db.query('UPDATE item SET saleprice = ?, sale_step = ? WHERE iid = ?;', [sale_price, 1, results[i].iid], function (error2, resutls2){
+          if (error2) {
+            return false;
+          }
+        })
+      } else if (date.getTime() > quarter_time && results[i].sale_step === 1) {
+        console.log(0);
+        var sale_price = results[i].leastprice;
+
+        console.log(sale_price);
+        db.query('UPDATE item SET saleprice = ?, sale_step = ? WHERE iid = ?;', [sale_price, 2, results[i].iid], function (error2, resutls2){
+          if (error2) {
+            return false;
+          }
+        })
+      } else {
+        console.log(-1);
+        return false;
+      }
+    }
+  })
+}
+var timerObj = setInterval(function () {
+  item_decrease();
+}, 300000);
+
+timerObj.unref();
+
+setImmediate(() => {
+  timerObj.ref();
+});
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -53,6 +111,7 @@ app.use('/auth', authRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
