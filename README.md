@@ -301,7 +301,7 @@ enter [localhost]:3000/api
 
 ### **/review/customer/:CustomerID** 
 - *Method : GET* 
-- URL : [server-name]/api/review/customer/:CustomerID
+- URL : [server-name]/api/review/cusmer/:CustomerID
 - Return : [{
         category_id :,
         item_id : ,
@@ -446,6 +446,13 @@ enter [localhost]:3000/api
 - Return : json file including all supplier
 - Example : [{ID: , passwd: , rname: ,address: ,dlprice: ,latitude: , longitude: ,}, ...]
 
+### **/order/state/update** 
+- *Method : POST* 
+- Headers : Authorization
+- Params : oid, state ['waiting', 'cooking', 'delivery', 'complement']
+- URL : [server-name]/api/order/state/update 
+- Return : json file 
+- Example : { success : true } or { success : false }
 
 ## Slack
 

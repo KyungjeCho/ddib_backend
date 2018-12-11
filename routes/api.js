@@ -677,7 +677,6 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
           regTokens[i] = results2[i].fcm_token;
         }
       }
-      console.log(regTokens);
       if (regTokens.length > 0){
         message = {
           // 수신대상
@@ -1851,6 +1850,55 @@ router.post('/favorites/delete',  passport.authenticate('jwt', { session: false 
       res.json(result);
       return false;
     }
+    result['success'] = true;
+    res.json(result);
+  })
+})
+
+// Order state UPDATE API
+// Method : POST
+// Headers : Authorization
+// Params : oid, state ['waiting', 'cooking', 'delivery', 'complement']
+// URL : /api/order/state/update
+// Order state UPDATE API
+router.post('/order/state/update',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+
+  var states = ['waiting', 'cooking', 'delivery', 'complement'];
+
+  var sid = "";
+  var state = req.body.state;
+  var oid = req.body.oid;
+
+  var result = {
+    success : false
+  }
+  
+  if (states.indexOf(state) === -1) {
+    
+    res.json(result);
+    return false;
+  }
+
+  if (! (req.user.permission === 'supplier' ||
+          req.user.permission === 'admin')){
+    res.json(result);
+    return false;
+  } else {
+    sid = req.user.id;
+  }
+
+  db.query('UPDATE \`order\` SET orderstate = ? WHERE oid = ?;',[state, oid], function(error, results){
+    if (error){
+      console.log(error);
+      res.json(result);
+      return false;
+    }
+    
+    if (results.affectedRows <= 0) {
+      res.json(result);
+      return false;
+    }
+
     result['success'] = true;
     res.json(result);
   })
