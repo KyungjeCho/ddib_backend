@@ -612,8 +612,9 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
     res.json(result)
   });
 
+  console.log(iids);
   for (var i = 0; i < iids.length; i++) {
-    db.query('SELECT A.fcm_token FROM supplier A INNER JOIN item B ON A.sid = B.sid WHERE B.iid = ? AND A.fcm_token is not null;', [iid], function(error, results) {
+    db.query('SELECT A.fcm_token FROM supplier A INNER JOIN item B ON A.sid = B.sid WHERE B.iid = ? AND A.fcm_token is not null;', [iids[i]], function(error, results) {
       if (error) {
         return false;
       }
