@@ -581,7 +581,9 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
   var time_length = time.split(';').length;
   var iids = iid.split(';');
 
-  iids = iids.slice(0, iids.length - 1);
+  if (iids.length < 1) {
+    iids = iids.slice(0, iids.length - 1);
+  }
   
   if ((iid_length !== amount_length) ||
       (amount_length !== time_length)) {
