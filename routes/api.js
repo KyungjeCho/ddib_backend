@@ -1205,7 +1205,7 @@ router.get('/item/list/:sort', function(req, res, next) {
 
   var result = [];
 
-  var sql = 'SELECT C.*, avg(D.score) as avg_score FROM (SELECT A.*, B.rname FROM item A INNER JOIN supplier B ON A.sid = B.sid) C LEFT OUTER JOIN review D on C.iid = D.iid GROUP BY C.iid ';
+  var sql = 'SELECT C.*, ifnull(avg(D.score), 0) as avg_score FROM (SELECT A.*, B.rname FROM ddib.item A INNER JOIN ddib.supplier B ON A.sid = B.sid) C LEFT OUTER JOIN ddib.review D on C.iid = D.iid GROUP BY C.iid ';
 
   if (req.params.sort === '0') { // 최다 조회수 순
     sql = sql + 'ORDER BY views DESC;';
