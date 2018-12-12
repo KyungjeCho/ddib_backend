@@ -1198,13 +1198,14 @@ router.get('/item/detail/:itemID', function(req, res, next) {
 //    supplierId : sid.
 //    categoryId : cateid.
 //    imagePath : image.
-//    itemCount : count
+//    itemCount : count,
+//    avg_review_score : review
 //}, ... ]
 router.get('/item/list/:sort', function(req, res, next) {
 
   var result = [];
 
-  var sql = 'SELECT A.*, B.rname FROM item A INNER JOIN supplier B ON A.sid = B.sid ';
+  var sql = 'SELECT C.*, avg(D.score) as avg_score FROM (SELECT A.*, B.rname FROM item A INNER JOIN supplier B ON A.sid = B.sid) C LEFT OUTER JOIN review D on C.iid = D.iid GROUP BY C.iid ';
 
   if (req.params.sort === '0') { // 최다 조회수 순
     sql = sql + 'ORDER BY views DESC;';
@@ -1243,7 +1244,8 @@ router.get('/item/list/:sort', function(req, res, next) {
         categoryId : item[i].cateid,
         imagePath : item[i].image.toString('utf-8'),
         itemCount : item[i].itemcount,
-        restaurant_name : item[i].rname
+        restaurant_name : item[i].rname,
+        avg_review_score : item[i].avg_score
     }
   }
   res.json(result);

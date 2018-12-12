@@ -236,7 +236,8 @@ enter [localhost]:3000/api
     supplierId : sid.
     categoryId : cateid.
     imagePath : image.
-    itemCount : count
+    itemCount : count,
+    avg_review_score : avg_review_score
 }, ... ]
 
 ### **/item/search** 
