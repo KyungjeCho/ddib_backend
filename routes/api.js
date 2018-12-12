@@ -620,6 +620,7 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
       if (error) {
         return false;
       }
+      console.log(results);
       if (results.length > 0){
         message = {
           // 수신대상
