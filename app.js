@@ -44,6 +44,8 @@ function item_decrease() {
 
     for (var i = 0; i < results.length; i++) {
       var date = new Date();
+      
+      date.setHours(date.getUTCHours() + 9);
       console.log(date.toDateString());
       var starttime = new Date(results[i].starttime);
       var endtime = new Date(results[i].endtime);
@@ -61,7 +63,7 @@ function item_decrease() {
       console.log(date.getTime(), half_time, quarter_time);
       console.log("Current : " + date.toLocaleString(), "Half time : " + half_time_obj.toLocaleString(), "Quarter time : " + quarter_time_obj.toLocaleString());
       console.log("Over Half time : " + (date.getTime() > half_time), "Over quarter Time : " + (date.getTime() > quarter_time));
-      
+
       if (date.getTime() /*current time*/ > half_time /*over than half time */&& results[i].sale_step === 0) {
         console.log(1);
 
