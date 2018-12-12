@@ -654,7 +654,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
 
   db.query(`INSERT INTO item 
   (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image, timesale, leastprice, original_review_count) 
-  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+  VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
   [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image, timesale, leastprice, count],
   function(error, results){
     if (error){
