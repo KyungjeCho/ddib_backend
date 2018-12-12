@@ -665,7 +665,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
     }
 
     var message = {};
-    db.query('SELECT * FROM want_to_buy A INNER JOIN customer B ON A.cid = B.cid WHERE A.cateid = ?;',[category_id], function(error2, results2) {
+    db.query('SELECT * FROM want_to_buy A INNER JOIN customer B ON A.cid = B.cid WHERE A.cateid = ? AND A.min_price <= ? AND ? <= A.max_price;',[category_id, sale_price, sale_price], function(error2, results2) {
       if (error2) {
         console.log(error2);
         res.json(result);
