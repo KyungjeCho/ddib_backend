@@ -42,11 +42,9 @@ function item_decrease() {
       return false;
     }
 
-    console.log('inner');
-
     for (var i = 0; i < results.length; i++) {
       var date = new Date();
-
+      console.log(date.toDateString());
       var starttime = new Date(results[i].starttime);
       var endtime = new Date(results[i].endtime);
       console.log(starttime, endtime);
@@ -56,7 +54,15 @@ function item_decrease() {
 
       console.log(date.getTime(), half_time, quarter_time);
       console.log(results[i].sale_step);
-      if (date.getTime() > half_time && results[i].sale_step === 0) {
+
+      var half_time_obj = new Date(half_time);
+      var quarter_time_obj = new Date(quarter_time);
+
+      console.log(date.getTime(), half_time, quarter_time);
+      console.log("Current : " + date.toLocaleString(), "Half time : " + half_time_obj.toLocaleString(), "Quarter time : " + quarter_time_obj.toLocaleString());
+      console.log("Over Half time : " + (date.getTime() > half_time), "Over quarter Time : " + (date.getTime() > quarter_time));
+      
+      if (date.getTime() /*current time*/ > half_time /*over than half time */&& results[i].sale_step === 0) {
         console.log(1);
 
         console.log(results[i].saleprice, results[i].leastprice);
@@ -73,7 +79,7 @@ function item_decrease() {
         var sale_price = results[i].leastprice;
 
         console.log(sale_price);
-        db.query('UPDATE item SET saleprice = ?, sale_step = ? WHERE iid = ?;', [sale_price, 2, results[i].iid], function (error2, resutls2){
+        db.query('UPDATE item SET saleprice = ?, sale_step = ?, timesale = ? WHERE iid = ?;', [sale_price, 2, 0, results[i].iid], function (error2, resutls2){
           if (error2) {
             console.log('Update Error');
           }
