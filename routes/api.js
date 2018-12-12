@@ -618,7 +618,7 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
       if (results.length > 0){
         message = {
           // 수신대상
-          registration_ids: results[0].fcm_token,
+          to : results[0].fcm_token,
           // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
           notification: {
               title: "음식 주문이 들어왔습니다!",
