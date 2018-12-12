@@ -84,10 +84,12 @@ router.post("/login/customer", function(req, res) {
   if(req.body.cid && req.body.passwd){
     var name = req.body.cid;
     var password = req.body.passwd;
+    var fcm_token = req.body.token;
   } else {
     result['empty_params'] = true;
     res.json(result);
   }
+
   // usually this would be a database call:
 
   db.query('SELECT * FROM customer WHERE cid = ?;', [name], function(error, user) {
@@ -112,8 +114,17 @@ router.post("/login/customer", function(req, res) {
       result['ID'] = user[0].cid;
       result['name'] = user[0].name;
       result['token'] = token;
-      result['success'] = true;
-      res.json(result);
+      db.query('UPDATE customer SET fcm_token = ? WHERE cid = ?;', [fcm_token, user[0].cid], function(error2, results){
+        if (error2) {
+          res.json(result);
+          return false;
+        }
+
+        result['success'] = true;
+        res.json(result);
+        return true;
+      })
+
     } else {
       result['error'] = true;
       res.status(401).json(result);
@@ -134,6 +145,7 @@ router.post("/login/supplier", function(req, res) {
   if(req.body.sid && req.body.passwd){
     var name = req.body.sid;
     var password = req.body.passwd;
+    var fcm_token = req.body.token;
   } else {
     result['empty_params'] = true;
     res.json(result);
@@ -160,6 +172,18 @@ router.post("/login/supplier", function(req, res) {
       result['ID'] = user[0].sid;
       result['name'] = user[0].rname;
       result['token'] = token;
+
+      db.query('UPDATE supplier SET fcm_token = ? WHERE sid = ?;', [fcm_token, user[0].sid], function(error2, results){
+        if (error2) {
+          res.json(result);
+          return false;
+        }
+
+        result['success'] = true;
+        res.json(result);
+        return true;
+      })
+
       result['success'] = true;
       res.json(result);
     } else {
