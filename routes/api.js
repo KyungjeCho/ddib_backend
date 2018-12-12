@@ -579,7 +579,10 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
   var iid_length = iid.split(';').length;
   var amount_length = amount.split(';').length;
   var time_length = time.split(';').length;
- 
+  var iids = iid.split(';');
+
+  iids = iids.slice(0, iids.length - 1);
+  
   if ((iid_length !== amount_length) ||
       (amount_length !== time_length)) {
     res.json(result);
@@ -608,6 +611,36 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
     result['success'] = true;
     res.json(result)
   });
+
+  for (var i = 0; i < iids.length; i++) {
+    db.query('SELECT A.fcm_token FROM supplier A INNER JOIN item B ON A.sid = B.sid WHERE B.iid = ? AND A.fcm_token is not null;', [iid], function(error, results) {
+      
+      if (results.length > 0){
+        message = {
+          // 수신대상
+          registration_ids: results[0].fcm_token,
+          // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
+          notification: {
+              title: "음식 주문이 들어왔습니다!",
+              body: "음식 주문이 올라왔어요! 확인해 주세요",
+              sound: "default"
+          },
+        };
+  
+        fcm.send(message, function(err, response) {
+          if (err) {
+              console.error('Push메시지 발송에 실패했습니다.');
+              console.log(err);
+              return false;
+          }
+      
+          console.log('Push메시지가 발송되었습니다.');
+          console.log(response);
+        });
+      }
+    });
+  }
+  db.query('')
 })
 
 // Item Post API
