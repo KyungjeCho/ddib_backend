@@ -646,7 +646,6 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
       }
     });
   }
-  db.query('')
 })
 
 // Item Post API
