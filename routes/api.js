@@ -2036,6 +2036,6 @@ var rule1 = new schedule.RecurrenceRule();
 rule1.hour = 18;
 var job1 = schedule.scheduleJob(rule1, 'Asia/Seoul', function() {
   console.log(1);
-}
+})
 
 module.exports = router;
