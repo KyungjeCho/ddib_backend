@@ -1992,7 +1992,7 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
 })
 
 var rule = new schedule.RecurrenceRule();
-rule.hour = 17;
+rule.hour = 11;
 var job = schedule.scheduleJob(rule, 'Asia/Seoul', function() {
   db.query(key_word, function(error, results) {
     if(error){
