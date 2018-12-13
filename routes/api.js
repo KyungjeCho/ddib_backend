@@ -1956,7 +1956,7 @@ router.post('/order/state/update',  passport.authenticate('jwt', { session: fals
 router.post('/item/update',  passport.authenticate('jwt', { session: false }), function(req, res, next){
   var post = req.body;
   var sid = "";
-  var saleprice = post.sele_price;
+  var saleprice = post.sale_price;
   var itemcount = post.count;
   var starttime = post.start_time;
   var endtime = post.end_time;
