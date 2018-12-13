@@ -78,7 +78,7 @@ function item_decrease() {
         var sale_price =  (results[i].saleprice + results[i].leastprice) / 2;
 
         console.log(sale_price);
-        db.query('UPDATE item SET saleprice = ?, sale_step = ?, original_review_count = ? WHERE iid = ?;', [sale_price, 1, results[i].iid, results[i].itemcount], function (error2, resutls2){
+        db.query('UPDATE item SET saleprice = ?, sale_step = ?, original_item_count = ? WHERE iid = ?;', [sale_price, 1, results[i].itemcount, results[i].iid], function (error2, resutls2){
           if (error2) {
             console.log('Update error');
           }
