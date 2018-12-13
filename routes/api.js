@@ -1992,10 +1992,14 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
 })
 
 var rule = new schedule.RecurrenceRule();
-rule.hour = 12;
+rule.hour = 21;
+rule.minute = 12;
+rule.second = 30;
 var job = schedule.scheduleJob(rule, function() {
+  console.log('alarm!');
   db.query(key_word, function(error, results) {
     if(error){
+      console.log(error);
       return false;
     }
 
