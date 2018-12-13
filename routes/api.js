@@ -1992,8 +1992,8 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
 })
 
 var rule = new schedule.RecurrenceRule();
-rule.hour = 11;
-var job = schedule.scheduleJob(rule, 'Asia/Seoul', function() {
+rule.hour = 12;
+var job = schedule.scheduleJob(rule, function() {
   db.query(key_word, function(error, results) {
     if(error){
       return false;
@@ -2033,12 +2033,12 @@ var job = schedule.scheduleJob(rule, 'Asia/Seoul', function() {
 })
 
 var rule1 = new schedule.RecurrenceRule();
-rule1.hour = 11; //오후 8시
-var job1 = schedule.scheduleJob(rule1, 'Asia/Seoul', function() {
+rule1.second = 1; //오후 8시
+var job1 = schedule.scheduleJob(rule1, function() {
   console.log(1);
   message = {
     // 수신대상
-    to : 'fE9UtlB5Jqk:APA91bEDXrY32R83Z1jp1w0pOlj-fTr-pc8x5qskNt7tl0p6Vo47agVJtsqxzthUQxJYXmal40DOUHo_pTYIk8H4_xCIemkvkwVTGxnDWOr_oK0TF82pj6ntfYKnpiVub0giv1Wpxbcq',
+    to : 'd5eIWqvfvO4:APA91bE9s_O2xMrnRFTtSo4Hb9n3UCpA8s_pUTVez_gLbniBCYMD2Dxbf8kaeblfFoljj5P5idnZZ0TMqtC_ebukpBjEbC0tu4FXb4rTc1Vh1xst4l9yV7vi2M1nQ8LvrCdxKFvR6vfR',
     // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
     notification: {
         title: "test",
