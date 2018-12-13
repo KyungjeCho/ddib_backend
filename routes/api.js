@@ -2032,30 +2032,4 @@ var job = schedule.scheduleJob(rule, function() {
   })
 })
 
-var rule1 = new schedule.RecurrenceRule();
-rule1.second = 1; //오후 8시
-var job1 = schedule.scheduleJob(rule1, function() {
-  console.log(1);
-  message = {
-    // 수신대상
-    to : 'd5eIWqvfvO4:APA91bE9s_O2xMrnRFTtSo4Hb9n3UCpA8s_pUTVez_gLbniBCYMD2Dxbf8kaeblfFoljj5P5idnZZ0TMqtC_ebukpBjEbC0tu4FXb4rTc1Vh1xst4l9yV7vi2M1nQ8LvrCdxKFvR6vfR',
-    // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
-    notification: {
-        title: "test",
-        body: "messages",
-    },
-  };
-
-  fcm.send(message, function(err, response) {
-    if (err) {
-        console.error('Push메시지 발송에 실패했습니다.');
-        console.log(err);
-        return false;
-    }
-
-    console.log('Push메시지가 발송되었습니다.');
-    console.log(response);
-  });
-})
-
 module.exports = router;
