@@ -2033,9 +2033,29 @@ var job = schedule.scheduleJob(rule, 'Asia/Seoul', function() {
 })
 
 var rule1 = new schedule.RecurrenceRule();
-rule1.hour = 18;
+rule1.hour = 11; //오후 8시
 var job1 = schedule.scheduleJob(rule1, 'Asia/Seoul', function() {
   console.log(1);
+  message = {
+    // 수신대상
+    to : 'fE9UtlB5Jqk:APA91bEDXrY32R83Z1jp1w0pOlj-fTr-pc8x5qskNt7tl0p6Vo47agVJtsqxzthUQxJYXmal40DOUHo_pTYIk8H4_xCIemkvkwVTGxnDWOr_oK0TF82pj6ntfYKnpiVub0giv1Wpxbcq',
+    // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
+    notification: {
+        title: "test",
+        body: "messages",
+    },
+  };
+
+  fcm.send(message, function(err, response) {
+    if (err) {
+        console.error('Push메시지 발송에 실패했습니다.');
+        console.log(err);
+        return false;
+    }
+
+    console.log('Push메시지가 발송되었습니다.');
+    console.log(response);
+  });
 })
 
 module.exports = router;
