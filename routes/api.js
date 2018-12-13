@@ -1974,7 +1974,7 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
     sid = req.user.id;
   }
 
-  db.query('UPDATE item SET saleprice = ?, itemcount = ?, starttime = ?, endtime = ? WHERE iid = ? AND sid = ?;',[saleprice, itemcount, starttime, endtime, oid, iid, sid], function(error, results){
+  db.query('UPDATE item SET saleprice = ?, itemcount = ?, starttime = ?, endtime = ? WHERE iid = ? AND sid = ?;',[saleprice, itemcount, starttime, endtime, iid, sid], function(error, results){
     if (error){
       console.log(error);
       res.json(result);
