@@ -52,6 +52,10 @@ var multer = require('multer')
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
 var CryptoPasswd = require('../lib/passwordSecret');
+
+var schedule = require('node-schedule');
+var key_word = require('../lib/key_word');
+
 var FCM = require('fcm-node');
 
 /** Firebase(구글 개발자 사이트)에서 발급받은 서버키 */
@@ -1942,5 +1946,48 @@ router.post('/order/state/update',  passport.authenticate('jwt', { session: fals
     res.json(result);
   })
 })
+
+
+var rule = new schedule.RecurrenceRule();
+rule.hour = 15;
+var job = schedule.scheduleJob(rule, function() {
+  db.query(key_word, function(error, results) {
+    if(error){
+      return false;
+    }
+
+    var regTokens = "";
+    var names = "";
+    var messages = "";
+    for (var i = 0; i < results.length; i++) {
+      regTokens = results[i].fcm_token;
+      names = results[i].name + "님!";
+      categoryNames = results[i].category_name;
+      messages = results[i].category_name + "이 땡기지 않나요?"
+      message = {
+        // 수신대상
+        to : regTokens,
+        // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
+        notification: {
+            title: names,
+            body: messages,
+        },
+      };
+  
+      fcm.send(message, function(err, response) {
+        if (err) {
+            console.error('Push메시지 발송에 실패했습니다.');
+            console.log(err);
+            return false;
+        }
+    
+        console.log('Push메시지가 발송되었습니다.');
+        console.log(response);
+      });
+    }
+    
+  })
+})
+
 
 module.exports = router;

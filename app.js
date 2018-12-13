@@ -6,6 +6,11 @@ var logger = require('morgan');
 var jwt = require('jsonwebtoken');
 var _ = require("lodash");
 var bodyParser = require('body-parser');
+
+
+var schedule = require('node-schedule');
+
+var key_word = require('./lib/key_word');
 var session = require('./lib/session')
 var db = require('./lib/db');
 
@@ -14,6 +19,8 @@ var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api')
 
 var authRouter = require('./routes/auth');
+
+
 
 var app = express();
 
