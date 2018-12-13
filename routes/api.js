@@ -1947,6 +1947,49 @@ router.post('/order/state/update',  passport.authenticate('jwt', { session: fals
   })
 })
 
+// Item UPDATE API
+// Method : POST
+// Headers : Authorization (sid)
+// Params : sale_price, count, start_time, endtime, iid
+// URL : /api/order/state/update
+// Item UPDATE API
+router.post('/item/update',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+  var post = req.body;
+  var sid = "";
+  var saleprice = post.sele_price;
+  var itemcount = post.count;
+  var starttime = post.start_time;
+  var endtime = post.end_time;
+  var iid = post.iid;
+
+  var result = {
+    success : false
+  }
+
+  if (! (req.user.permission === 'supplier' ||
+          req.user.permission === 'admin')){
+    res.json(result);
+    return false;
+  } else {
+    sid = req.user.id;
+  }
+
+  db.query('UPDATE item SET saleprice = ?, itemcount = ?, starttime = ?, endtime = ? WHERE iid = ? AND sid = ?;',[saleprice, itemcount, starttime, endtime, oid, iid, sid], function(error, results){
+    if (error){supplierId
+      console.log(error);
+      res.json(result);
+      return false;
+    }
+    
+    if (results.affectedRows <= 0) {
+      res.json(result);
+      return false;
+    }
+
+    result['success'] = true;
+    res.json(result);
+  })
+})
 
 var rule = new schedule.RecurrenceRule();
 rule.hour = 15;

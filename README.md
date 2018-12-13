@@ -455,6 +455,13 @@ enter [localhost]:3000/api
 - Return : json file 
 - Example : { success : true } or { success : false }
 
+### **/item/update** 
+- *Method : POST* 
+- Headers : Authorization (sid)
+- Params : sale_price, count, start_time, endtime, iid
+- URL : [server-name]/api/order/state/update 
+- Return : json file 
+- Example : { success : true } or { success : false }
 ## Slack
 
 ddib-backend.slack.com
