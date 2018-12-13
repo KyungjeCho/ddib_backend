@@ -75,7 +75,7 @@ function item_decrease() {
         console.log(1);
 
         console.log(results[i].saleprice, results[i].leastprice);
-        var sale_price =  (results[i].saleprice + results[i].leastprice) / 2;
+        var sale_price =  ((results[i].saleprice + results[i].leastprice) / 2.0) / 100 * 100;
 
         console.log(sale_price);
         db.query('UPDATE item SET saleprice = ?, sale_step = ?, original_item_count = ? WHERE iid = ?;', [sale_price, 1, results[i].itemcount, results[i].iid], function (error2, resutls2){
