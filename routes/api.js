@@ -1975,7 +1975,7 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
   }
 
   db.query('UPDATE item SET saleprice = ?, itemcount = ?, starttime = ?, endtime = ? WHERE iid = ? AND sid = ?;',[saleprice, itemcount, starttime, endtime, oid, iid, sid], function(error, results){
-    if (error){supplierId
+    if (error){
       console.log(error);
       res.json(result);
       return false;
@@ -1992,8 +1992,8 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
 })
 
 var rule = new schedule.RecurrenceRule();
-rule.hour = 15;
-var job = schedule.scheduleJob(rule, function() {
+rule.hour = 17;
+var job = schedule.scheduleJob(rule, 'Asia/Seoul', function() {
   db.query(key_word, function(error, results) {
     if(error){
       return false;
@@ -2032,5 +2032,10 @@ var job = schedule.scheduleJob(rule, function() {
   })
 })
 
+var rule1 = new schedule.RecurrenceRule();
+rule1.hour = 18;
+var job1 = schedule.scheduleJob(rule1, 'Asia/Seoul', function() {
+  console.log(1);
+}
 
 module.exports = router;
