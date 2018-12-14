@@ -1991,6 +1991,7 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
   })
 })
 
+/*
 var rule = new schedule.RecurrenceRule();
 rule.hour = 13;
 rule.minute = 0;
@@ -2035,5 +2036,6 @@ var job = schedule.scheduleJob(rule, function() {
     
   })
 })
+*/
 
 module.exports = router;
