@@ -1,5 +1,9 @@
 # DDIB BACKEND
 
+<p>the Grand Prize at the 2018 Sejong Capstone Contest.</p>
+
+<p> 2018 세종 캡스톤 경진대회 최우수상 작 </p>
+
 ## author : KJ
 
 ## 설치
@@ -128,4 +132,9 @@ enter [localhost]:3000/api
 ## Slack
 
 ddib-backend.slack.com
+
+
+## Contributer 
+- *KJ*
+- *Junnu*
 
