@@ -34,10 +34,11 @@ npm install로 코드에서 요구하는 미들웨어를 설치한다.
 npm install
 ```
 데이터베이스 템플릿을 이용하여 데이터베이스 코드를 작성한다.
-비밀번호 암호화 키를 작성하기 위해 passwordSecrete.js를 만들어 사용자가 암호화 키를 입력한다.
+비밀번호 암호화 키를 작성하기 위해 password_secrete.js를 만들어 사용자가 암호화 키를 입력한다.
+passport 에서 사용할 비밀키를 입력합니다.
 ```
 cp ./lib/db.template.js ./lib/db.js
-cp ./lib/passwordSecret.template.js ./lib/passwordSecret.js 
+cp ./lib/password_secret.template.js ./lib/password_secret.js 
 cp ./lib/passport.template.js ./lib/passport.js
 ```
 gedit이나 vi(m) 이나 다른 ide로 ./lib/db.js 파일을 수정한다.
@@ -57,9 +58,9 @@ db.connect();
 
 module.exports = db;
 ```
-텍스트 에디터나 다른 ide로 ./lib/passwordSecret.js 파일을 수정한다.
+텍스트 에디터나 다른 ide로 ./lib/password_secret.js 파일을 수정한다.
 
-USE text editor to rewrite ./lib/passwordSecret.js
+USE text editor to rewrite ./lib/password_secret.js
 ```
 var CryptoPasswd = {
     secret : '', // <- 암호화 키 입력

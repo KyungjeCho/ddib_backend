@@ -12,7 +12,7 @@ var jwt = require('jsonwebtoken');
 
 var db = require('../lib/db')
 var jwtOptions = require('../lib/passport')
-var CryptoPasswd = require('../lib/passwordSecret')
+var CryptoPasswd = require('../lib/password_secret')
 
 var router = express.Router();
 

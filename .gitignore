@@ -83,7 +83,7 @@ lib/session.js
 sessions/*
 public/images/*
 lib/passport.js
-lib/passwordSecret.js
+lib/password_secret.js
 sessions/*
 public/images/*
 ddib-fcm.json

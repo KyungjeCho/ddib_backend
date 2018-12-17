@@ -51,7 +51,7 @@ var multer = require('multer')
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
-var CryptoPasswd = require('../lib/passwordSecret');
+var CryptoPasswd = require('../lib/password_secret');
 
 var schedule = require('node-schedule');
 var key_word = require('../lib/key_word');
@@ -64,8 +64,6 @@ var serverKey = require('../ddib-fcm.json');
 
 /** 아래는 푸시메시지 발송절차 */
 var fcm = new FCM(serverKey);
-
-var auth = require('../lib/auth')
 
 var router = express.Router();
 
