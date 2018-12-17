@@ -38,6 +38,7 @@ npm install
 ```
 cp ./lib/db.template.js ./lib/db.js
 cp ./lib/passwordSecret.template.js ./lib/passwordSecret.js 
+cp ./lib/passport.template.js ./lib/passport.js
 ```
 gedit이나 vi(m) 이나 다른 ide로 ./lib/db.js 파일을 수정한다.
 
@@ -56,6 +57,9 @@ db.connect();
 
 module.exports = db;
 ```
+텍스트 에디터나 다른 ide로 ./lib/passwordSecret.js 파일을 수정한다.
+
+USE text editor to rewrite ./lib/passwordSecret.js
 ```
 var CryptoPasswd = {
     secret : '', // <- 암호화 키 입력
@@ -75,6 +79,20 @@ var CryptoPasswd = {
 
 module.exports = CryptoPasswd;
 ```
+텍스트 에디터나 다른 ide로 ./lib/passport.js 파일을 수정한다.
+
+USE text editor to rewrite ./lib/passport.js
+```
+var passportJWT = require("passport-jwt");
+
+var ExtractJwt = passportJWT.ExtractJwt;
+
+jwtOptions = {}
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+jwtOptions.secretOrKey = ''; //Input your token key. And copy this file. finnaly, rename this file to passport.js
+
+module.exports = jwtOptions;
+```
 서버 시작하기 위해 돌린다. window cmd로는 DEBUG=를 할 수 없다.
 ```
 DEBUG=ddib:* npm start
@@ -89,7 +107,7 @@ nodemon bin/www
 enter [localhost]:3000/api
 
 카테고리 api를 테스트한다.
- localhost:3000/api/category
+localhost:3000/api/
 
 ## API
 

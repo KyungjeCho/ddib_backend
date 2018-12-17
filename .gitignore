@@ -86,3 +86,4 @@ lib/passport.js
 lib/passwordSecret.js
 sessions/*
 public/images/*
+ddib-fcm.json

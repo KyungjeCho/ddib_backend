@@ -23,7 +23,6 @@ var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
 var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
-  // usually this would be a database call:
 
   if (jwt_payload.permission === "customer") {
     db.query('SELECT * FROM customer WHERE cid = ?', [jwt_payload.id], function(error, user) {
@@ -76,6 +75,11 @@ router.use(bodyParser.urlencoded({
   extended: true
 }));
 
+// Customer Login API
+// Method : POST
+// Params : cid, passwd
+// URL : /auth/login/supplier
+// Return : ID, name, token, success
 router.post("/login/customer", function(req, res) {
   var result = {
     success : false
@@ -193,45 +197,11 @@ router.post("/login/supplier", function(req, res) {
   });
 });
 
-/*
-router.post('/login/customer', function(request, response){
-    var post = request.body;
-    var cid = post.cid;
-    var password = post.passwd;
-
-    if (auth.isOwner(request, response)){
-        response.send("Already logined");
-        return false;
-    }
-
-    db.query(`SELECT * FROM customer WHERE cid=? AND passwd=?;`, [cid, password], function(error, result){
-        if(error)
-            throw error;
-
-        if(result.length > 0){
-            request.session.is_logined = true;
-            request.session.nickname = result[0].name;
-            request.session.is_id = result[0].cid;
-            request.session.save(function() {
-                response.send("Welcome!");
-            });
-        }
-        else {
-            response.send("Who?");
-        }
-    })
-})
-*/
-
 router.get('/logout/customer', function(request, response){
     
     request.logout();
-    // request.session.destroy(function(error) {
-    //     response.send("Logout!");
-    // })
-    // request.session.save(function(){
-    //     response.send("Logout!");
-    // })
+
+    // TODO : delete fcm_token
 
     response.send("logout!");
 })
