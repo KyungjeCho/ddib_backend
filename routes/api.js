@@ -42,12 +42,13 @@
 // Modified Date : 2018.11.22
 // Author : KJ
 // Wishlist HISTORY API 추가
+//
+// Modified Date : 2018.12.18
+// Author : KJ
+// Clean Up
 
 var express = require('express');
-var bodyParser = require('body-parser')
-var passport = require("passport") 
-
-var multer = require('multer')
+var passport = require("passport")
 
 var hello = require('../api/hello.json')
 var db = require('../lib/db')
@@ -58,36 +59,22 @@ var key_word = require('../lib/key_word');
 
 var FCM = require('fcm-node');
 
-/** Firebase(구글 개발자 사이트)에서 발급받은 서버키 */
-
+/* Server Key issued from Firebase*/
 var serverKey = require('../ddib-fcm.json');
-
-/** 아래는 푸시메시지 발송절차 */
 var fcm = new FCM(serverKey);
 
 var router = express.Router();
 
-var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'public/images' + req.url + '/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, req.user.id + Date.now() + file.originalname)
-    }
-})
-
-var upload = multer({ storage: storage })
-
 /* GET api home page. */
-router.get('/', function(req, res, next) {
-  res.send(hello);
+router.get('/', function (req, res, next) {
+  res.json(hello);
 });
 
 // Customer Sign Up API
 // Method : POST
 // URL : /api/sign_up/customer
 // 회원가입 API
-router.post('/sign_up/customer', function(req, res, next) {
+router.post('/sign_up/customer', function (req, res, next) {
   var post = req.body;
   var cid = post.cid;
   var passwd = post.passwd;
@@ -108,20 +95,20 @@ router.post('/sign_up/customer', function(req, res, next) {
   var passwdError = false;
 
   // 1. 아이디 중복 체크
-  db.query('SELECT * FROM customer WHERE cid = ?;', [cid], function(error, user){
+  db.query('SELECT * FROM customer WHERE cid = ?;', [cid], function (error, user) {
 
     if (error) {
       throw error;
     }
-    
+
     if (user.length <= 0) {
 
       // 2. 아이디 패스워드 유효 체크 
-      
-      var regID = /^\d{3}-\d{3,4}-\d{4}$/;
-      var regPasswd = /^[a-z0-9_]{8,20}$/; 
 
-      if (!regID.test(cid)){
+      var regID = /^\d{3}-\d{3,4}-\d{4}$/;
+      var regPasswd = /^[a-z0-9_]{8,20}$/;
+
+      if (!regID.test(cid)) {
         idError = true;
       }
       if (!regPasswd.test(passwd)) {
@@ -134,20 +121,20 @@ router.post('/sign_up/customer', function(req, res, next) {
         res.send(result);
         return false;
       }
-      
+
       passwd = CryptoPasswd.create(passwd);
-      
+
       db.query(`INSERT INTO customer 
       (cid, passwd, name, address, latitude, longitude) VALUES 
       (?, ?, ?, ?, ?, ?);`, [cid, passwd, name, address, latitude, longitude],
-      function(error, user){
-        if (error) {
+        function (error, user) {
+          if (error) {
+            res.json(result);
+            return false;
+          }
+          result['success'] = true;
           res.json(result);
-          return false;
-        }
-        result['success'] = true;
-        res.json(result);
-      });
+        });
 
     } else {
       res.json(result);
@@ -160,7 +147,7 @@ router.post('/sign_up/customer', function(req, res, next) {
 // Params : sid, passwd, rname, address, dlprice, latitude, longitude
 // URL : /api/sign_up/supplier
 // 가맹업주 회원가입 API
-router.post('/sign_up/supplier', function(req, res, next) {
+router.post('/sign_up/supplier', function (req, res, next) {
   var post = req.body;
   var sid = post.sid;
   var passwd = post.passwd;
@@ -181,7 +168,7 @@ router.post('/sign_up/supplier', function(req, res, next) {
   var passwdError = false;
 
   // 1. 아이디 중복 체크
-  db.query('SELECT * FROM supplier WHERE sid = ?;', [sid], function(error1, user1){
+  db.query('SELECT * FROM supplier WHERE sid = ?;', [sid], function (error1, user1) {
 
     if (error1) {
       throw error1;
@@ -190,11 +177,11 @@ router.post('/sign_up/supplier', function(req, res, next) {
     if (user1.length <= 0) {
 
       // 2. 아이디 패스워드 유효 체크 
-      
-      var regID = /^\d{3}-\d{3,4}-\d{4}$/;
-      var regPasswd = /^[a-z0-9_]{8,20}$/; 
 
-      if (!regID.test(sid)){
+      var regID = /^\d{3}-\d{3,4}-\d{4}$/;
+      var regPasswd = /^[a-z0-9_]{8,20}$/;
+
+      if (!regID.test(sid)) {
         idError = true;
       }
       if (!regPasswd.test(passwd)) {
@@ -207,36 +194,36 @@ router.post('/sign_up/supplier', function(req, res, next) {
         res.send(result);
         return false;
       }
-      
+
       passwd = CryptoPasswd.create(passwd);
-      
+
       db.query(`INSERT INTO supplier 
       (sid, passwd, rname, address, dlprice, latitude, longitude) VALUES 
       (?, ?, ?, ?, ?, ? ,?);`, [sid, passwd, rname, address, dlprice, latitude, longitude],
-      function(error2, user2){
-        if (error2) {
-          res.json(result);
-          return false;
-        }
+        function (error2, user2) {
+          if (error2) {
+            res.json(result);
+            return false;
+          }
 
-        result['success'] = true;
-        res.json(result);
-      });
+          result['success'] = true;
+          res.json(result);
+        });
     } else {
       res.json(result);
     }
   })
 })
 
-router.post('/customer', function(req, res, next){
+router.post('/customer', function (req, res, next) {
   var post = req.body;
   var id = post.cid;
   var passwd = post.passwd;
 
-  db.query(`SELECT * FROM customer WHERE cid = ? AND passwd = ?;`, [id, passwd], function(error, customer) {
+  db.query(`SELECT * FROM customer WHERE cid = ? AND passwd = ?;`, [id, passwd], function (error, customer) {
     if (error)
       throw error;
-    
+
     var customer_json = {
       ID: customer[0].cid,
       passwd: customer[0].passwd,
@@ -252,10 +239,10 @@ router.post('/customer', function(req, res, next){
 // Method : GET
 // URL : /api/supplier
 // 모든 가맹업주를 반환하는 API
-router.get('/supplier', function(req, res, next){
+router.get('/supplier', function (req, res, next) {
 
-  db.query(`SELECT * FROM supplier;`, function(error, supplier) {
-    if (error){
+  db.query(`SELECT * FROM supplier;`, function (error, supplier) {
+    if (error) {
       res.json([]);
       return false;
     }
@@ -283,16 +270,16 @@ router.get('/supplier', function(req, res, next){
 // Method : GET
 // URL : /api/order_history/customer
 // 고객의 주문 내역 제공 api
-router.get("/order_history/customer", passport.authenticate('jwt', { session: false }), function(req, res){
+router.get("/order_history/customer", passport.authenticate('jwt', { session: false }), function (req, res) {
   var cid = "";
 
   var result = {
-    success : false
+    success: false
   }
-  if (! (req.user.permission === 'customer' ||
-          req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.send([]);
-    return false; 
+    return false;
   } else {
     cid = req.user.id;
   }
@@ -312,47 +299,47 @@ FROM
   INNER JOIN ddib.\`order\` B ON A.gid = B.gid) C
       INNER JOIN
   ddib.item D ON C.iid = D.iid
-ORDER BY orderdate DESC;`, [cid], function(error, results) {
-    if (error) {
-      res.status(501).json([]);
-    }
+ORDER BY orderdate DESC;`, [cid], function (error, results) {
+      if (error) {
+        res.status(501).json([]);
+      }
 
-    var orders = [];
+      var orders = [];
 
-    for (var i = 0; i < results.length; i++){
-      orders[i] = {
-        gid : results[i].gid,
-        cid : results[i].cid,
-        order_date : results[i].orderdate,
-        payment : results[i].payment,
-        oid : results[i].oid,
-        iid : results[i].iid,
-        order_state : results[i].orderstate,
-        time : results[i].time,
-        sid : results[i].sid,
-        name : results[i].name,
-        cateid : results[i].cateid,
-        sale_price : results[i].saleprice,
-        image_path : results[i].image.toString('utf-8'),
-        amount : results[i].amount
-      };
-    }
+      for (var i = 0; i < results.length; i++) {
+        orders[i] = {
+          gid: results[i].gid,
+          cid: results[i].cid,
+          order_date: results[i].orderdate,
+          payment: results[i].payment,
+          oid: results[i].oid,
+          iid: results[i].iid,
+          order_state: results[i].orderstate,
+          time: results[i].time,
+          sid: results[i].sid,
+          name: results[i].name,
+          cateid: results[i].cateid,
+          sale_price: results[i].saleprice,
+          image_path: results[i].image.toString('utf-8'),
+          amount: results[i].amount
+        };
+      }
 
-    res.json(orders);
-  })
+      res.json(orders);
+    })
 });
 
 // Supplier Order history API
 // Method : GET
 // URL : /api/order_history/supplier
 // 고객의 주문 내역 제공 api
-router.get("/order_history/supplier", passport.authenticate('jwt', { session: false }), function(req, res){
+router.get("/order_history/supplier", passport.authenticate('jwt', { session: false }), function (req, res) {
   var sid = "";
 
-  if (! (req.user.permission === 'supplier' ||
-          req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'supplier' ||
+    req.user.permission === 'admin')) {
     res.send([]);
-    return false; 
+    return false;
   } else {
     sid = req.user.id;
   }
@@ -371,95 +358,42 @@ FROM
       sid = ?) A
   INNER JOIN ddib.order B ON A.iid = B.iid) C
       INNER JOIN
-  ddib.order_group D ON C.gid = D.gid ORDER BY D.orderdate DESC;`, [sid], function(error, results) {
-    if (error) {
-      res.status(501).json([]);
-    }
+  ddib.order_group D ON C.gid = D.gid ORDER BY D.orderdate DESC;`, [sid], function (error, results) {
+      if (error) {
+        res.status(501).json([]);
+      }
 
-    var orders = [];
+      var orders = [];
 
-    for (var i = 0; i < results.length; i++){
-      orders[i] = {
-        oid : results[i].oid,
-        iid : results[i].iid,
-        amount : results[i].amount,
-        order_state : results[i].orderstate,
-        time : results[i].time,
-        gid : results[i].gid, 
-        name  : results[i].name,
-        sale_price : results[i].saleprice,
-        cid : results[i].cid,
-        order_date : results[i].orderdate,
-        payment : results[i].payment
-      };
-    }
+      for (var i = 0; i < results.length; i++) {
+        orders[i] = {
+          oid: results[i].oid,
+          iid: results[i].iid,
+          amount: results[i].amount,
+          order_state: results[i].orderstate,
+          time: results[i].time,
+          gid: results[i].gid,
+          name: results[i].name,
+          sale_price: results[i].saleprice,
+          cid: results[i].cid,
+          order_date: results[i].orderdate,
+          payment: results[i].payment
+        };
+      }
 
-    res.json(orders);
-  })
+      res.json(orders);
+    })
 });
 
-// Category API
-// Method : GET
-// URL : /api/category
-// 모든 카테고리를 반환하는 API
-router.get('/category', function(req, res, next){
+var category_router = require('./apis/category')
 
-  db.query('SELECT * FROM category;', function(error, categorys){
-    if (error)
-      throw error;
-    
-    var category_json = {};
-    var results = [];
-    
-    var i = 0;
-    while (i < categorys.length)
-    {
-      results[i] = {
-        ID : categorys[i].cateid,
-        name : categorys[i].name
-      }
-      i++;
-    }
-
-    //category_json['results'] = results;
-    res.json(results);
-  })
-})
-
-// Category POST API
-// Method : POST
-// Parameters : name, token
-// URL : /api/category
-// 카테고리 등록 api
-router.post('/category', passport.authenticate('jwt', { session: false }), function(req, res, next){
-  var body = req.body;
-  var name = body.name;
-
-  var result = {
-    success : false
-  };
-  if (req.user.permission !== 'admin') {
-    result['permission'] = false;
-    res.send(result);
-    return false;
-  }
-  db.query('INSERT INTO category (name) VALUES (?);', [name], function(error, categorys){
-    if (error) {
-      res.status(501).send({message:"Server Error"});
-      return false;
-    }
-
-    result['success'] = true;
-
-    res.json(result);
-  })
-})
+router.use('/category', category_router);
 
 // Shopping Cart Hisotry API
 // Method : GET
 // URL : /api/shopping_cart_history
 // 유저의 모든 장바구니를 반환하는 API
-router.get('/shopping_cart_history',passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.get('/shopping_cart_history', passport.authenticate('jwt', { session: false }), function (req, res, next) {
 
   var result = [];
 
@@ -484,36 +418,35 @@ FROM
   WHERE
       cid = ?) A
       INNER JOIN
-  ddib.item B ON A.iid = B.iid;`, [cid], function(error, results){
-    if (error) {
-      res.send([]);
-    }
-
-    if (results.length <= 0) {
-      res.send([]);
-    }
-    var result = [];
-    
-    var i = 0;
-    while (i < results.length)
-    {
-      result[i] = {
-        ItemID : results[i].iid,
-        Amount : results[i].amount,
-        name : results[i].name,
-        sale_price : results[i].saleprice,
-        start_time : results[i].starttime,
-        end_time : results[i].endtime,
-        deliverable : results[i].deliverable,
-        sid : results[i].sid,
-        category_id : results[i].cateid,
-        image_path : results[i].image.toString('utf-8'),
-        item_count : results[i].itemcount
+  ddib.item B ON A.iid = B.iid;`, [cid], function (error, results) {
+      if (error) {
+        res.send([]);
       }
-      i++;
-    }
-    res.json(result);
-  })
+
+      if (results.length <= 0) {
+        res.send([]);
+      }
+      var result = [];
+
+      var i = 0;
+      while (i < results.length) {
+        result[i] = {
+          ItemID: results[i].iid,
+          Amount: results[i].amount,
+          name: results[i].name,
+          sale_price: results[i].saleprice,
+          start_time: results[i].starttime,
+          end_time: results[i].endtime,
+          deliverable: results[i].deliverable,
+          sid: results[i].sid,
+          category_id: results[i].cateid,
+          image_path: results[i].image.toString('utf-8'),
+          item_count: results[i].itemcount
+        }
+        i++;
+      }
+      res.json(result);
+    })
 })
 
 // Want_to_buy DELETE API
@@ -522,17 +455,17 @@ FROM
 // Parameters : cateid
 // URL : /api/wtb/delete
 // 삽니다 삭제 api
-router.post('/wtb/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/wtb/delete', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var cateid = post.cateid;
 
   var result = {
-    success : false
+    success: false
   }
 
-  if(! (req.user.permission === 'customer' ||
-        req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
@@ -540,20 +473,20 @@ router.post('/wtb/delete', passport.authenticate('jwt', { session: false }), fun
   }
 
   db.query(`DELETE FROM want_to_buy WHERE cid = ? AND cateid = ?;`,
-  [cid, cateid], function(error, results){
-    if (error) {
-      res.json(result);
-      return false;
-    }
-    
-    if (results.affectedRows <= 0){
-      res.json(result);
-      return false;
-    };
-    
-    result['success'] = true;
-    res.send(result);
-  })
+    [cid, cateid], function (error, results) {
+      if (error) {
+        res.json(result);
+        return false;
+      }
+
+      if (results.affectedRows <= 0) {
+        res.json(result);
+        return false;
+      };
+
+      result['success'] = true;
+      res.send(result);
+    })
 })
 
 
@@ -563,7 +496,7 @@ router.post('/wtb/delete', passport.authenticate('jwt', { session: false }), fun
 // iid, amount, time는 order 정보들로 1;2;3;4;5; 처럼 ;를 이용하여 구분한다.
 // URL : /api/order
 // 주문 등록 api
-router.post('/order', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/order', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var payment = post.payment;
@@ -573,7 +506,7 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
   var length = post.length;
 
   var result = {
-    success : false
+    success: false
   }
 
   // iid amount time params 크기가 틀리면 false 반환 
@@ -586,28 +519,28 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
   if (iids.length < 1) {
     iids = iids.slice(0, iids.length - 1);
   }
-  
+
   if ((iid_length !== amount_length) ||
-      (amount_length !== time_length)) {
+    (amount_length !== time_length)) {
     res.json(result);
     return false;
   }
 
-  if (!(req.user.permission === 'customer' || 
-        req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
     cid = req.user.id;
   }
-  
-  db.query('CALL InsertOrders(?, ?, ?, ?, ?, ?);', [cid, payment, iid, amount, time, length], function(error, results) {
+
+  db.query('CALL InsertOrders(?, ?, ?, ?, ?, ?);', [cid, payment, iid, amount, time, length], function (error, results) {
     if (error) {
       res.json(result);
       return false;
     }
 
-    if (!( results[1][0].MYSQL_ERROR === null)) {
+    if (!(results[1][0].MYSQL_ERROR === null)) {
       res.json(result);
       return false;
     }
@@ -618,30 +551,30 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
 
   console.log(iids);
   for (var i = 0; i < iids.length; i++) {
-    db.query('SELECT A.fcm_token FROM supplier A INNER JOIN item B ON A.sid = B.sid WHERE B.iid = ? AND A.fcm_token is not null;', [iids[i]], function(error, results) {
+    db.query('SELECT A.fcm_token FROM supplier A INNER JOIN item B ON A.sid = B.sid WHERE B.iid = ? AND A.fcm_token is not null;', [iids[i]], function (error, results) {
       if (error) {
         return false;
       }
       console.log(results[0].fcm_token);
-      if (results.length > 0){
+      if (results.length > 0) {
         message = {
           // 수신대상
-          to : results[0].fcm_token,
+          to: results[0].fcm_token,
           // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
           notification: {
-              title: "음식 주문이 들어왔습니다!",
-              body: "음식 주문이 올라왔어요! 확인해 주세요",
-              sound: "default"
+            title: "음식 주문이 들어왔습니다!",
+            body: "음식 주문이 올라왔어요! 확인해 주세요",
+            sound: "default"
           },
         };
-  
-        fcm.send(message, function(err, response) {
+
+        fcm.send(message, function (err, response) {
           if (err) {
-              console.error('Push메시지 발송에 실패했습니다.');
-              console.log(err);
-              return false;
+            console.error('Push메시지 발송에 실패했습니다.');
+            console.log(err);
+            return false;
           }
-      
+
           console.log('Push메시지가 발송되었습니다.');
           console.log(response);
         });
@@ -656,7 +589,7 @@ router.post('/order', passport.authenticate('jwt', { session: false }), function
 // Parameters : name, cateid, rawprice, saleprice, context, image, views, starttime, endtime, deliverable, count
 // URL : /api/item
 // 음식 등록 api
-router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.single('image'),*/ function(req, res, next){
+router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.single('image'),*/ function (req, res, next) {
   var post = req.body;
   var sid = "";
   var name = post.name;
@@ -673,7 +606,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
   var leastprice = post.leastprice;
 
   var result = {
-    success : false
+    success: false
   }
 
   if (!image) {
@@ -682,8 +615,8 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
     return false;
   }
 
-  if(! (req.user.permission == 'supplier' || 
-        req.user.permission == 'admin')) {
+  if (!(req.user.permission == 'supplier' ||
+    req.user.permission == 'admin')) {
     console.log(1);
     res.json(result);
     return false;
@@ -695,94 +628,94 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
   db.query(`INSERT INTO item 
   (sid, name, cateid, rawprice, saleprice, context, starttime, endtime, deliverable, itemcount, image, timesale, leastprice, original_item_count) 
   VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-  [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image, timesale, leastprice, count],
-  function(error, results){
-    if (error){
-      console.log(error);
-      res.json(result);
-      return false;
-    }
-
-    var message = {};
-    db.query('SELECT * FROM want_to_buy A INNER JOIN customer B ON A.cid = B.cid WHERE A.cateid = ? AND A.min_price <= ? AND ? <= A.max_price;',[category_id, sale_price, sale_price], function(error2, results2) {
-      if (error2) {
-        console.log(error2);
+    [sid, name, category_id, raw_price, sale_price, context, start_time, end_time, deliverable, count, image, timesale, leastprice, count],
+    function (error, results) {
+      if (error) {
+        console.log(error);
         res.json(result);
         return false;
       }
-      var regTokens = [];
-      for (var i = 0; i < results2.length; i++) {
-        if (results2[i].fcm_token){
-          regTokens[i] = results2[i].fcm_token;
+
+      var message = {};
+      db.query('SELECT * FROM want_to_buy A INNER JOIN customer B ON A.cid = B.cid WHERE A.cateid = ? AND A.min_price <= ? AND ? <= A.max_price;', [category_id, sale_price, sale_price], function (error2, results2) {
+        if (error2) {
+          console.log(error2);
+          res.json(result);
+          return false;
         }
-      }
-      if (regTokens.length > 0){
-        message = {
-          // 수신대상
-          registration_ids: regTokens,
-          // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
-          notification: {
+        var regTokens = [];
+        for (var i = 0; i < results2.length; i++) {
+          if (results2[i].fcm_token) {
+            regTokens[i] = results2[i].fcm_token;
+          }
+        }
+        if (regTokens.length > 0) {
+          message = {
+            // 수신대상
+            registration_ids: regTokens,
+            // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
+            notification: {
               title: "삽니다!",
               body: "삽니다!에 등록하신 카테고리로 새 음식이 올라왔어요!",
-              
-          },
-        };
-  
-        fcm.send(message, function(err, response) {
-          if (err) {
+
+            },
+          };
+
+          fcm.send(message, function (err, response) {
+            if (err) {
               console.error('Push메시지 발송에 실패했습니다.');
               console.log(err);
               return false;
-          }
-      
-          console.log('Push메시지가 발송되었습니다.');
-          console.log(response);
-        });
-      }
-    });
-    
-    db.query('SELECT * FROM favorites A INNER JOIN customer B ON A.cid = B.cid WHERE A.sid = ?;',[sid], function(error2, results2) {
-      if (error2) {
-        console.log(error2);
-        res.json(result);
-        return false;
-      }
+            }
 
-      var regTokens = [];
-      for (var i = 0; i < results2.length; i++) {
-        if (results2[i].fcm_token){
-          regTokens[i] = results2[i].fcm_token;
+            console.log('Push메시지가 발송되었습니다.');
+            console.log(response);
+          });
         }
-      }
+      });
 
-      if (regTokens.length > 0) {
-        message = {
-          // 수신대상
-          registration_ids: regTokens,
-          // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
-          notification: {
+      db.query('SELECT * FROM favorites A INNER JOIN customer B ON A.cid = B.cid WHERE A.sid = ?;', [sid], function (error2, results2) {
+        if (error2) {
+          console.log(error2);
+          res.json(result);
+          return false;
+        }
+
+        var regTokens = [];
+        for (var i = 0; i < results2.length; i++) {
+          if (results2[i].fcm_token) {
+            regTokens[i] = results2[i].fcm_token;
+          }
+        }
+
+        if (regTokens.length > 0) {
+          message = {
+            // 수신대상
+            registration_ids: regTokens,
+            // App이 실행중이지 않을 때 상태바 알림으로 등록할 내용
+            notification: {
               title: "즐겨찾기!",
               body: "즐겨찾기!에 등록하신 식당에서 새 음식이 올라왔어요!",
-              
-          },
-        };
-  
-        fcm.send(message, function(err, response) {
-          if (err) {
+
+            },
+          };
+
+          fcm.send(message, function (err, response) {
+            if (err) {
               console.error('Push메시지 발송에 실패했습니다.');
               return false;
-          }
-      
-          console.log('Push메시지가 발송되었습니다.');
-          console.log(response);
-        });
-      }
-      
-    })
+            }
 
-    result['success'] = true;
-    res.json(result);
-  })
+            console.log('Push메시지가 발송되었습니다.');
+            console.log(response);
+          });
+        }
+
+      })
+
+      result['success'] = true;
+      res.json(result);
+    })
 })
 
 // Review Post API
@@ -791,7 +724,7 @@ router.post('/item', passport.authenticate('jwt', { session: false }), /*upload.
 // Parameters : iid, score, text
 // URL : /api/review
 // 리뷰 등록 api
-router.post('/review', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/review', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var iid = post.iid;
@@ -799,11 +732,11 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
   var text = post.text;
 
   var result = {
-    success : false
+    success: false
   }
-  
-  if(! (req.user.permission == 'customer' || 
-        req.user.permission == 'admin')) {
+
+  if (!(req.user.permission == 'customer' ||
+    req.user.permission == 'admin')) {
     res.json(result);
     return false;
   }
@@ -811,14 +744,14 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
     cid = req.user.id;
   }
 
-  db.query('SELECT * FROM \`order\` A WHERE A.iid = ?',[iid], function (error2, results2) {
+  db.query('SELECT * FROM \`order\` A WHERE A.iid = ?', [iid], function (error2, results2) {
     if (error2) {
       console.log(error2);
       res.json(result);
       return false;
     }
 
-    if (results2.length <= 0){
+    if (results2.length <= 0) {
       console.log('주문한 음식이 아니다')
       res.json(result);
       return false;
@@ -827,47 +760,17 @@ router.post('/review', passport.authenticate('jwt', { session: false }), functio
     db.query(`INSERT INTO review 
   (cid, iid, score, text) 
   VALUES (?, ?, ?, ?);`,
-  [cid, iid, score, text],
-  function(error, results){
-    if (error){
-      console.log(error2);
-      res.json(result);
-      return false;
-    }
+      [cid, iid, score, text],
+      function (error, results) {
+        if (error) {
+          console.log(error2);
+          res.json(result);
+          return false;
+        }
 
-    result['success'] = true;
-    res.json(result);
-  })
-  })
-})
-
-// Category Detail API
-// Method : GET
-// URL : /api/category/detail/:CategoryID
-// 한 카테고리를 반환하는 API
-router.get('/category/detail/:CategoryID', function(req, res, next){
-  var cateid = req.params.CategoryID;
-
-  db.query('SELECT * FROM category WHERE cateid = ?;', [cateid], function(error, categorys){
-    if (error){
-      res.json([])
-      return false;
-    }
-      
-    
-    var results = [];
-    
-    var i = 0;
-    while (i < categorys.length)
-    {
-      results[i] = {
-        ID : categorys[i].cateid,
-        name : categorys[i].name
-
-      }
-      i++;
-    }
-    res.json(results);
+        result['success'] = true;
+        res.json(result);
+      })
   })
 })
 
@@ -875,61 +778,61 @@ router.get('/category/detail/:CategoryID', function(req, res, next){
 // Method : GET
 // URL : /api/review/:ItemID
 // 리뷰 api
-router.get('/review/:ItemID', function(req, res, next){
+router.get('/review/:ItemID', function (req, res, next) {
   var iid = req.params.ItemID;
 
   var result = [];
 
   db.query(`SELECT * FROM review WHERE iid = ?;`,
-  [iid],
-  function(error, results){
-    if (error){
-      res.json([]);
-      return false;
-    }
-
-    for (var i = 0; i < results.length; i++) {
-      result[i] = {
-        category_id : results[i].cid,
-        item_id : results[i].iid,
-        score : results[i].score,
-        text : results[i].text,
-        date : results[i].date
+    [iid],
+    function (error, results) {
+      if (error) {
+        res.json([]);
+        return false;
       }
-    }
-    res.json(result);
-  })
+
+      for (var i = 0; i < results.length; i++) {
+        result[i] = {
+          category_id: results[i].cid,
+          item_id: results[i].iid,
+          score: results[i].score,
+          text: results[i].text,
+          date: results[i].date
+        }
+      }
+      res.json(result);
+    })
 })
 
 // Review Custoemr ID GET API
 // Method : GET
 // URL : /api/review/customer/:CusotmerID
 // 리뷰 api
-router.get('/review/customer/:CustomerID', function(req, res, next){
+router.get('/review/customer/:CustomerID', function (req, res, next) {
   var cid = req.params.CustomerID;
 
   var result = [];
 
   db.query(`SELECT A.*, B.name FROM review A INNER JOIN item B ON A.iid = B.iid WHERE cid = ? ORDER BY A.\`date\` DESC;`,
-  [cid],
-  function(error, results){
-    if (error){
-      res.json([]);
-      return false;
-    }
-
-    for (var i = 0; i < results.length; i++) {
-      result[i] = {
-        category_id : results[i].cid,
-        item_id : results[i].iid,
-        score : results[i].score,
-        text : results[i].text,
-        date : results[i].date,
-        itemName : results[i].name
+    [cid],
+    function (error, results) {
+      if (error) {
+        res.json([]);
+        return false;
       }
-    }
-    res.json(result);
-  })
+
+      for (var i = 0; i < results.length; i++) {
+        result[i] = {
+          category_id: results[i].cid,
+          item_id: results[i].iid,
+          score: results[i].score,
+          text: results[i].text,
+          date: results[i].date,
+          itemName: results[i].name
+        }
+      }
+      res.json(result);
+    })
 })
 
 // Want_to_buy API
@@ -938,16 +841,16 @@ router.get('/review/customer/:CustomerID', function(req, res, next){
 // Parameters : cateid, min_price, max_price
 // URL : /api/wtb
 // 삽니다 등록 api
-router.post('/wtb', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/wtb', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var cateid = post.cateid;
   var min_price = post.min_price;
   var max_price = post.max_price;
 
-  if(! (req.user.permission === 'customer' ||
-        req.user.permission === 'admin')){
-    res.send( { success : false });
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
+    res.send({ success: false });
     return false;
   }
   else {
@@ -955,14 +858,14 @@ router.post('/wtb', passport.authenticate('jwt', { session: false }), function(r
   }
 
   db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
-  [cid, cateid, min_price, max_price], function(error, result){
-    if (error) {
-      res.json ( { success : false } );
-      return false;
-    }
-    
-    res.send({ success : true });
-  })
+    [cid, cateid, min_price, max_price], function (error, result) {
+      if (error) {
+        res.json({ success: false });
+        return false;
+      }
+
+      res.send({ success: true });
+    })
 })
 
 // Want To Buy API
@@ -971,11 +874,11 @@ router.post('/wtb', passport.authenticate('jwt', { session: false }), function(r
 // URL : /api/wtb
 // Return : 유저의 삽니다 목록 or "Pls login!"
 // 유저의 삽니다 목록 API
-router.get('/wtb', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.get('/wtb', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var cid = "";
 
-  if(! (req.user.permission === 'customer' ||
-        req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json([]);
     return false;
   }
@@ -986,26 +889,25 @@ router.get('/wtb', passport.authenticate('jwt', { session: false }), function(re
   // wtb 테이블과 category 테이블을 조인하여 카테고리 이름을 얻는다.
   // HACK: 조인문은 느리다. 일단 인덱스를 걸었지만 더 빠르게 구현하기
   db.query(`SELECT wtb.*, cate.name FROM want_to_buy wtb INNER JOIN category cate ON wtb.cateid = cate.cateid WHERE wtb.cid = ?;`,
-  [cid], function(error, wtbs){
-    if (error)
-      throw error;
+    [cid], function (error, wtbs) {
+      if (error)
+        throw error;
 
-    var results = [];
-      
-    var i = 0;
-    while (i < wtbs.length)
-    {
-      results[i] = {
-        cateID : wtbs[i].cateid,
-        cateName : wtbs[i].name,
-        minPrice : wtbs[i].min_price,
-        maxPrice : wtbs[i].max_price
+      var results = [];
+
+      var i = 0;
+      while (i < wtbs.length) {
+        results[i] = {
+          cateID: wtbs[i].cateid,
+          cateName: wtbs[i].name,
+          minPrice: wtbs[i].min_price,
+          maxPrice: wtbs[i].max_price
+        }
+        i++;
       }
-      i++;
-    }
 
-    res.json(results);
-  })
+      res.json(results);
+    })
 })
 
 
@@ -1015,17 +917,17 @@ router.get('/wtb', passport.authenticate('jwt', { session: false }), function(re
 // Parameters : sid
 // URL : /api/favorites
 // 즐겨찾기 등록 api
-router.post('/favorites', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/favorites', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var sid = post.sid;
   var cid = "";
 
   var result = {
-    message : 'false'
+    message: 'false'
   };
 
-  if(!(req.user.permission === "customer" ||
-    req.user.permission === "admin")){
+  if (!(req.user.permission === "customer" ||
+    req.user.permission === "admin")) {
     res.json(result);
     return false;
   } else {
@@ -1033,29 +935,29 @@ router.post('/favorites', passport.authenticate('jwt', { session: false }), func
   }
 
   db.query('SELECT * FROM favorites WHERE cid = ? AND sid = ?;',
-  [cid, sid], function (error1, results1) {
-    if (error1) {
-      res.json(result);
-      return false;
-    }
+    [cid, sid], function (error1, results1) {
+      if (error1) {
+        res.json(result);
+        return false;
+      }
 
-    if (results1 <= 0) { 
-      db.query(`INSERT INTO favorites (cid, sid) VALUES (?, ?);`,
-      [cid, sid], function(error2, results){
-        if (error2) {
-          res.send(result);
-          return false;
-        }
-        
-        result['message'] = 'success';
-        res.send(result);
-      })
-    } else {
-      result['message'] = 'duplicate';
-      res.json(result);
-      return false;
-    }
-  })
+      if (results1 <= 0) {
+        db.query(`INSERT INTO favorites (cid, sid) VALUES (?, ?);`,
+          [cid, sid], function (error2, results) {
+            if (error2) {
+              res.send(result);
+              return false;
+            }
+
+            result['message'] = 'success';
+            res.send(result);
+          })
+      } else {
+        result['message'] = 'duplicate';
+        res.json(result);
+        return false;
+      }
+    })
 })
 
 // wishlist POST API
@@ -1063,17 +965,17 @@ router.post('/favorites', passport.authenticate('jwt', { session: false }), func
 // Parameters : iid
 // URL : /api/wishlist
 // 찜 등록 api
-router.post('/wishlist', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/wishlist', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var iid = post.iid;
 
   var result = {
-    message : 'false'
+    message: 'false'
   }
 
-  if(!(req.user.permission === 'customer' ||
-        req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
@@ -1081,29 +983,29 @@ router.post('/wishlist', passport.authenticate('jwt', { session: false }), funct
   }
 
   db.query('SELECT * FROM wishlist WHERE cid = ? AND iid = ?;',
-  [cid, iid], function(error, results1) {
-    if (error) {
-      res.json(result);
-      return false;
-    }
-    
-    if (results1 <= 0) {
-      db.query(`INSERT INTO wishlist (cid, iid) VALUES (?, ?);`,
-      [cid, iid], function(error, results2){
-        if (error) {
-          res.json(result);
-          return false;
-        }
-    
-        result['message'] = 'success';
+    [cid, iid], function (error, results1) {
+      if (error) {
         res.json(result);
-      })
-    } else {
-      result['message'] = 'duplicate';
-      res.json(result);
-      return false;
-    }
-  })
+        return false;
+      }
+
+      if (results1 <= 0) {
+        db.query(`INSERT INTO wishlist (cid, iid) VALUES (?, ?);`,
+          [cid, iid], function (error, results2) {
+            if (error) {
+              res.json(result);
+              return false;
+            }
+
+            result['message'] = 'success';
+            res.json(result);
+          })
+      } else {
+        result['message'] = 'duplicate';
+        res.json(result);
+        return false;
+      }
+    })
 });
 
 // Shopping Cart Post API
@@ -1112,14 +1014,14 @@ router.post('/wishlist', passport.authenticate('jwt', { session: false }), funct
 // Parameters : iid, amount
 // URL : /api/shopping_cart
 // 장바구니 등록 api
-router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var iid = post.iid;
   var amount = post.amount;
 
   var result = {
-    message : 'false'
+    message: 'false'
   }
 
   if (!(iid && amount)) {
@@ -1127,8 +1029,8 @@ router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), 
     return false;
   }
 
-  if(!( req.user.permission === 'customer' ||
-        req.user.permission === 'admin' )) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
@@ -1136,29 +1038,29 @@ router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), 
   }
 
   db.query('SELECT * FROM shopping_cart WHERE cid = ? AND iid = ?',
-  [cid, iid], function(error1, results1) {
-    if (error1) {
-      res.json(result);
-
-      return false;
-    }
-    if (results1 <= 0) {
-      db.query(`INSERT INTO shopping_cart (cid, iid, amount) VALUES (?, ?, ? );`,
-      [cid, iid, amount], function(error2, results2){
-        if (error2) {
-          res.json(result);
-          return false;
-        }
-    
-        result['message'] = 'success';
+    [cid, iid], function (error1, results1) {
+      if (error1) {
         res.json(result);
-      })
-    } else {
-      result['message'] = 'duplicate';
-      res.json(result);
-      return false;
-    }
-  })
+
+        return false;
+      }
+      if (results1 <= 0) {
+        db.query(`INSERT INTO shopping_cart (cid, iid, amount) VALUES (?, ?, ? );`,
+          [cid, iid, amount], function (error2, results2) {
+            if (error2) {
+              res.json(result);
+              return false;
+            }
+
+            result['message'] = 'success';
+            res.json(result);
+          })
+      } else {
+        result['message'] = 'duplicate';
+        res.json(result);
+        return false;
+      }
+    })
 })
 
 // Item Detail Page API
@@ -1181,22 +1083,22 @@ router.post('/shopping_cart', passport.authenticate('jwt', { session: false }), 
 //    imagePath : image.
 //    itemCount : count
 //}
-router.get('/item/detail/:itemID', function(req, res, next) {
+router.get('/item/detail/:itemID', function (req, res, next) {
   var itemId = req.params.itemID;
   var itemDetailJson = {};
-  db.query(`SELECT * FROM item WHERE iid = ?;`, [itemId], function(error, item) { 
+  db.query(`SELECT * FROM item WHERE iid = ?;`, [itemId], function (error, item) {
     if (error) {
-      res.json({ success : false });
+      res.json({ success: false });
       return false;
     }
 
     if (item.length <= 0) {
-      res.json({ success : false });
+      res.json({ success: false });
       return false;
     }
-    db.query('UPDATE item SET views = ? WHERE iid = ?;', [item[0].views + 1, item[0].iid], function(error, result) {
+    db.query('UPDATE item SET views = ? WHERE iid = ?;', [item[0].views + 1, item[0].iid], function (error, result) {
       if (error) {
-        res.json({ success : false })
+        res.json({ success: false })
         return false;
       }
     })
@@ -1240,7 +1142,7 @@ router.get('/item/detail/:itemID', function(req, res, next) {
 //    itemCount : count,
 //    avg_review_score : review
 //}, ... ]
-router.get('/item/list/:sort', function(req, res, next) {
+router.get('/item/list/:sort', function (req, res, next) {
 
   var result = [];
 
@@ -1251,13 +1153,13 @@ router.get('/item/list/:sort', function(req, res, next) {
   } else if (req.params.sort === '1') { // 최신 음식 순
     sql = sql + 'ORDER BY starttime DESC, endtime DESC;';
   } else if (req.params.sort === '2') { // 싼 가격 순
-    sql = sql + 'ORDER BY saleprice ASC;'; 
+    sql = sql + 'ORDER BY saleprice ASC;';
   } else if (req.params.sort === '3') { // 비싼 가격 순
     sql = sql + 'ORDER BY saleprice DESC';
   } else {
     // Nothing
   }
-  db.query(sql, function(error, item) {
+  db.query(sql, function (error, item) {
     if (error) {
       res.json([]);
       return false;
@@ -1269,25 +1171,25 @@ router.get('/item/list/:sort', function(req, res, next) {
     }
     for (var i = 0; i < item.length; i++) {
       result[i] = {
-        success : true,
-        iid : item[i].iid,
-        itemName : item[i].name,
-        rawPrice : item[i].rawprice,
-        salePrice : item[i].saleprice,
-        context : item[i].context,
-        views : item[i].views,
-        startTime : item[i].starttime,
-        endTime : item[i].endtime,
-        deliverable : item[i].deliverable,
-        supplierId : item[i].sid,
-        categoryId : item[i].cateid,
-        imagePath : item[i].image.toString('utf-8'),
-        itemCount : item[i].itemcount,
-        restaurant_name : item[i].rname,
-        avg_review_score : item[i].avg_score
+        success: true,
+        iid: item[i].iid,
+        itemName: item[i].name,
+        rawPrice: item[i].rawprice,
+        salePrice: item[i].saleprice,
+        context: item[i].context,
+        views: item[i].views,
+        startTime: item[i].starttime,
+        endTime: item[i].endtime,
+        deliverable: item[i].deliverable,
+        supplierId: item[i].sid,
+        categoryId: item[i].cateid,
+        imagePath: item[i].image.toString('utf-8'),
+        itemCount: item[i].itemcount,
+        restaurant_name: item[i].rname,
+        avg_review_score: item[i].avg_score
+      }
     }
-  }
-  res.json(result);
+    res.json(result);
   })
 })
 
@@ -1312,7 +1214,7 @@ router.get('/item/list/:sort', function(req, res, next) {
 //    imagePath : image.
 //    itemCount : count
 //}
-router.post('/item/search', function(req, res, next) {
+router.post('/item/search', function (req, res, next) {
   var name = req.body.name;
   var category_id = req.body.cateid;
   var supplier_id = req.body.sid;
@@ -1342,7 +1244,7 @@ router.post('/item/search', function(req, res, next) {
     format = [category_id, supplier_id];
   } else if (name) {
     format_sql = 'name LIKE ? ';
-    format= ['%' + name + '%'];
+    format = ['%' + name + '%'];
   } else if (category_id) {
     format_sql = 'cateid = ? ';
     format = [category_id];
@@ -1356,36 +1258,36 @@ router.post('/item/search', function(req, res, next) {
 
   sql = sql + format_sql + 'ORDER BY views DESC;';
 
-  db.query(sql, format ,function(error, item) { 
+  db.query(sql, format, function (error, item) {
     if (error) {
       res.json([]);
       return false;
     }
-    
+
     for (var i = 0; i < item.length; i++) {
 
       result[i] = {
-        success : true,
-        iid : item[i].iid,
-        itemName : item[i].name,
-        rawPrice : item[i].rawprice,
-        salePrice : item[i].saleprice,
-        context : item[i].context,
-        views : item[i].views + 1,
-        startTime : item[i].starttime,
-        endTime : item[i].endtime,
-        deliverable : item[i].deliverable,
-        supplierId : item[i].sid,
-        categoryId : item[i].cateid,
-        imagePath : item[i].image.toString('utf-8'),
-        itemCount : item[i].itemcount,
-        restaurant_name : item[i].rname
+        success: true,
+        iid: item[i].iid,
+        itemName: item[i].name,
+        rawPrice: item[i].rawprice,
+        salePrice: item[i].saleprice,
+        context: item[i].context,
+        views: item[i].views + 1,
+        startTime: item[i].starttime,
+        endTime: item[i].endtime,
+        deliverable: item[i].deliverable,
+        supplierId: item[i].sid,
+        categoryId: item[i].cateid,
+        imagePath: item[i].image.toString('utf-8'),
+        itemCount: item[i].itemcount,
+        restaurant_name: item[i].rname
       }
     }
     res.json(result);
   })
 })
-  
+
 
 // All Item Search Page API
 // Method : POST
@@ -1408,7 +1310,7 @@ router.post('/item/search', function(req, res, next) {
 //    imagePath : image.
 //    itemCount : count
 //}
-router.post('/item/search/all', function(req, res, next) {
+router.post('/item/search/all', function (req, res, next) {
   var name = req.body.name;
 
   name = '%' + name + '%';
@@ -1417,32 +1319,32 @@ router.post('/item/search/all', function(req, res, next) {
 
   var sql = 'select * from (select A.*, B.name as CategoryName, C.rname as RestaurantName from ddib.item A, ddib.category B, ddib.supplier C WHERE A.cateid = B.cateid AND A.sid = C.sid ) D WHERE name like ? OR CategoryName like ? OR RestaurantName like ? ';
 
-  sql = sql +  'ORDER BY views DESC;';
+  sql = sql + 'ORDER BY views DESC;';
 
-  db.query(sql, [name, name, name],function(error, item) { 
+  db.query(sql, [name, name, name], function (error, item) {
     if (error) {
       res.json([]);
       console.log(error)
       return false;
     }
-    
+
     for (var i = 0; i < item.length; i++) {
 
       result[i] = {
-        success : true,
-        iid : item[i].iid,
-        itemName : item[i].name,
-        rawPrice : item[i].rawprice,
-        salePrice : item[i].saleprice,
-        context : item[i].context,
-        views : item[0].views + 1,
-        startTime : item[0].starttime,
-        endTime : item[0].endtime,
-        deliverable : item[0].deliverable,
-        supplierId : item[0].sid,
-        categoryId : item[0].cateid,
-        imagePath : item[0].image.toString('utf-8'),
-        itemCount : item[0].itemcount
+        success: true,
+        iid: item[i].iid,
+        itemName: item[i].name,
+        rawPrice: item[i].rawprice,
+        salePrice: item[i].saleprice,
+        context: item[i].context,
+        views: item[0].views + 1,
+        startTime: item[0].starttime,
+        endTime: item[0].endtime,
+        deliverable: item[0].deliverable,
+        supplierId: item[0].sid,
+        categoryId: item[0].cateid,
+        imagePath: item[0].image.toString('utf-8'),
+        itemCount: item[0].itemcount
       }
     }
     res.json(result);
@@ -1454,7 +1356,7 @@ router.post('/item/search/all', function(req, res, next) {
 // HEADERS : Authorization
 // URL : /api/alarm
 // 알람 서비스 
-router.get('/alarm', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.get('/alarm', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var cid = req.user.id;
 
   // 안드로이드로 보낼 json 객체 선언
@@ -1471,45 +1373,44 @@ FROM
     order_group
 WHERE
     cid = ?) A
-INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, max_orderdate desc) C inner join item D on C.iid = D.iid limit 1;`, [cid], function(error, items) {
-  if (error)
-    throw error;
-  // 구매한 적이 있을 경우
-  if (items.length > 0) {
+INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, max_orderdate desc) C inner join item D on C.iid = D.iid limit 1;`, [cid], function (error, items) {
+      if (error)
+        throw error;
+      // 구매한 적이 있을 경우
+      if (items.length > 0) {
 
-    item['success'] = true;
-    item['id'] = items[0].iid;
-    item['sid'] = items[0].sid;
-    item['name'] = items[0].name; 
+        item['success'] = true;
+        item['id'] = items[0].iid;
+        item['sid'] = items[0].sid;
+        item['name'] = items[0].name;
 
-    res.json(item);
-  }
-  // 구매한 적이 없는 경우
-  else {
+        res.json(item);
+      }
+      // 구매한 적이 없는 경우
+      else {
 
-    // 최근 제일 많이 팔린 제품 찾는 데이터베이스 쿼리
-    db.query(`select D.* from (select date(orderdate) as orderdate_date, iid, sum(amount) from
-      \`order\` A inner join order_group B on A.gid = B.gid group by orderdate_date, iid order by 1 desc, 3 desc limit 1) C inner join item D on C.iid = D.iid;`, function(error, items) {
-        if (error)
-          throw error;
-        
-        if (items.length > 0)
-        {
-          item['success'] = true;
-          item['id'] = items[0].iid;
-          item['sid'] = items[0].sid;
-          item['name'] = items[0].name; 
-          
-          res.json(item);
-        }
+        // 최근 제일 많이 팔린 제품 찾는 데이터베이스 쿼리
+        db.query(`select D.* from (select date(orderdate) as orderdate_date, iid, sum(amount) from
+      \`order\` A inner join order_group B on A.gid = B.gid group by orderdate_date, iid order by 1 desc, 3 desc limit 1) C inner join item D on C.iid = D.iid;`, function (error, items) {
+            if (error)
+              throw error;
 
-        // 실패할 경우
-        else {
-          res.json(item);
-        }
-      })
-    }
-  })
+            if (items.length > 0) {
+              item['success'] = true;
+              item['id'] = items[0].iid;
+              item['sid'] = items[0].sid;
+              item['name'] = items[0].name;
+
+              res.json(item);
+            }
+
+            // 실패할 경우
+            else {
+              res.json(item);
+            }
+          })
+      }
+    })
 })
 
 // FAQ POST API
@@ -1517,37 +1418,37 @@ INNER JOIN \`order\` B ON A.gid = B.gid group by iid order by sum_amount desc, m
 // Parameters : token, question, answer
 // URL : /api/faq
 // FAQ 등록 api
-router.post('/faq', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/faq', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var question = post.question;
   var answer = post.answer;
 
   var result = {
-    success : false
+    success: false
   }
 
-  if (!( question && answer)) {
+  if (!(question && answer)) {
     res.json(result);
     return false;
   }
   // 권한 admin
-  if(req.user.permission !== 'admin'){
+  if (req.user.permission !== 'admin') {
     result['permssion'] = false;
     res.json(result);
     return false;
   }
 
   db.query(`INSERT INTO faq (question, answer) VALUES (? ,?);`,
-  [question, answer], function(error, results){
-    if (error) {
-      result['error'] = true;
-      res.status(501).send(result);
-      return false;
-    }
+    [question, answer], function (error, results) {
+      if (error) {
+        result['error'] = true;
+        res.status(501).send(result);
+        return false;
+      }
 
-    result['success'] = true;
-    res.send(result);
-  })
+      result['success'] = true;
+      res.send(result);
+    })
 })
 
 // Shopping Cart Update API
@@ -1555,62 +1456,62 @@ router.post('/faq', passport.authenticate('jwt', { session: false }), function(r
 // Parameters : amount, iid
 // URL : /api/shopping_cart/update
 // 장바구니 업데이트 api
-router.post('/shopping_cart/update', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/shopping_cart/update', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var amount = post.amount;
   var iid = post.iid;
 
   var result = {
-    success : false
+    success: false
   }
   // 무조건 입력
   if (!(iid && amount)) {
     res.json(result);
     return false;
   }
-  
+
   // amount가 0 이하일 경우
   if (amount <= 0) {
     res.json(result);
     return false;
   }
 
-  if(!(req.user.permission === 'customer'|| 
-        req.user.permission === 'admin')){
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
     cid = req.user.id;
   }
-  
-  db.query(`SELECT * FROM shopping_cart WHERE cid = ? AND iid = ?;`,
-            [cid, iid],
-            function(error, results) {
-    if(error) {
-      res.json(result);
-      return false;
-    }
 
-    if (results.length <= 0) {
-      res.json(result);
-      return false;
-    } else {
-      db.query(`UPDATE shopping_cart 
+  db.query(`SELECT * FROM shopping_cart WHERE cid = ? AND iid = ?;`,
+    [cid, iid],
+    function (error, results) {
+      if (error) {
+        res.json(result);
+        return false;
+      }
+
+      if (results.length <= 0) {
+        res.json(result);
+        return false;
+      } else {
+        db.query(`UPDATE shopping_cart 
       SET 
           amount = ?
       WHERE
-          iid = ? AND cid = ?;`, [amount, iid, cid], function(error, results) {
-        if(error) {
-          res.json(result);
-          return false;
-        }
-    
-        result['success'] = true;
-        res.json(result);
-      })
-    }
-  })
+          iid = ? AND cid = ?;`, [amount, iid, cid], function (error, results) {
+            if (error) {
+              res.json(result);
+              return false;
+            }
+
+            result['success'] = true;
+            res.json(result);
+          })
+      }
+    })
 })
 
 // Shopping Cart DELETE API
@@ -1618,22 +1519,22 @@ router.post('/shopping_cart/update', passport.authenticate('jwt', { session: fal
 // Parameters : iid
 // URL : /api/shopping_cart/delete
 // 장바구니 삭제 api
-router.post('/shopping_cart/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/shopping_cart/delete', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var iid = post.iid;
 
   var result = {
-    success : false
+    success: false
   }
-  
+
   if (!iid) {
     res.json(result);
     return false;
   }
 
-  if(!(req.user.permission === 'customer' ||
-        req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
@@ -1641,30 +1542,30 @@ router.post('/shopping_cart/delete', passport.authenticate('jwt', { session: fal
   }
 
   db.query(`DELETE FROM shopping_cart WHERE cid = ? AND iid = ?;`,
-  [cid, iid], function(error, results){
-    if (error) {
-      res.json(result);
-      return false;
-    }
+    [cid, iid], function (error, results) {
+      if (error) {
+        res.json(result);
+        return false;
+      }
 
-    if (results.affectedRows > 0) {
-      result['success'] = true;
-    }
-    
-    res.send(result);
-  })
+      if (results.affectedRows > 0) {
+        result['success'] = true;
+      }
+
+      res.send(result);
+    })
 })
 
 // Supplier Detail Item API
 // Method : GET
 // URL : /api/supplier/detail/item/:ItemID
 // 아이템을 이용하여 가맹업주 정보 제공하는 API
-router.get('/supplier/detail/item/:ItemID', function(req, res, next){
+router.get('/supplier/detail/item/:ItemID', function (req, res, next) {
   var iid = req.params.ItemID;
   var sid = "";
 
   // HACK : how about joining two table such as `item` and `supplier`
-  db.query('SELECT sid FROM item WHERE iid = ?;', [iid], function(error, results) {
+  db.query('SELECT sid FROM item WHERE iid = ?;', [iid], function (error, results) {
     if (error) {
       res.json([]);
       return false;
@@ -1677,23 +1578,22 @@ router.get('/supplier/detail/item/:ItemID', function(req, res, next){
 
     sid = results[0].sid;
 
-    db.query('SELECT * FROM supplier WHERE sid = ?;',[sid], function(error, supplier){
+    db.query('SELECT * FROM supplier WHERE sid = ?;', [sid], function (error, supplier) {
       if (error) {
         res.json([]);
         return false;
       }
-      
+
       var result = [];
-      
-      for(var i = 0; i < supplier.length; i++)
-      {
+
+      for (var i = 0; i < supplier.length; i++) {
         result[i] = {
-          ID : supplier[i].sid,
-          rname : supplier[i].rname,
-          latitude : supplier[i].latitude,
-          longitude : supplier[i].longitude,
-          address : supplier[i].address,
-          dlprice : supplier[i].dlprice
+          ID: supplier[i].sid,
+          rname: supplier[i].rname,
+          latitude: supplier[i].latitude,
+          longitude: supplier[i].longitude,
+          address: supplier[i].address,
+          dlprice: supplier[i].dlprice
         }
       }
 
@@ -1701,7 +1601,7 @@ router.get('/supplier/detail/item/:ItemID', function(req, res, next){
     })
   })
 
-  
+
 })
 
 // Wishlist DELETE API
@@ -1709,22 +1609,22 @@ router.get('/supplier/detail/item/:ItemID', function(req, res, next){
 // Parameters : iid
 // URL : /api/wishlist/delete
 // 찜 삭제 api
-router.post('/wishlist/delete', passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/wishlist/delete', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var cid = "";
   var iid = post.iid;
 
   var result = {
-    success : false
+    success: false
   }
 
-  if (! iid) {
+  if (!iid) {
     res.send(result);
     return false;
   }
 
-  if(! (req.user.permission === 'customer' ||
-        req.user.permission === 'admin')){
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.send(result);
     return false;
   } else {
@@ -1732,31 +1632,31 @@ router.post('/wishlist/delete', passport.authenticate('jwt', { session: false })
   }
 
   db.query(`DELETE FROM wishlist WHERE cid = ? AND iid = ?;`,
-  [cid, iid], function(error, results){
-    if (error) {
-      res.send(result);
-      return false;
-    }
+    [cid, iid], function (error, results) {
+      if (error) {
+        res.send(result);
+        return false;
+      }
 
-    if (results.affectedRows <= 0) {
+      if (results.affectedRows <= 0) {
+        res.send(result);
+        return false;
+      }
+
+      result['success'] = true;
       res.send(result);
-      return false;
-    }
-    
-    result['success'] = true;
-    res.send(result);
-  })
+    })
 })
 
 // Wishlist HISTORY API
 // Method : GET
 // URL : /api/wishlist/history
 // 고객의 찜 목록 반환 API
-router.get('/wishlist/history',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.get('/wishlist/history', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var cid = "";
 
-  if (! (req.user.permission === 'customer' ||
-        req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json([]);
     return false;
   } else {
@@ -1783,32 +1683,32 @@ FROM
   WHERE
       cid = ?) A
       INNER JOIN
-  ddib.item B ON A.iid = B.iid;`, [cid], function(error, wishlists){
-    if (error) {
-      res.json([]);
-      return false;
-    }
-    
-    var result = [];
-    for (var i = 0; i < wishlists.length; i++) {
-      result[i] = {
-        customer_id : wishlists[i].cid,
-        item_id : wishlists[i].iid,
-        supplier_id : wishlists[i].sid,
-        name : wishlists[i].name,
-        category_id : wishlists[i].cateid,
-        sale_price : wishlists[i].saleprice,
-        image_path : wishlists[i].image.toString('utf-8'),
-        views : wishlists[i].views,
-        start_time : wishlists[i].starttime,
-        end_time : wishlists[i].endtime,
-        deliverable : wishlists[i].deliverable,
-        item_count : wishlists[i].itemcount
+  ddib.item B ON A.iid = B.iid;`, [cid], function (error, wishlists) {
+      if (error) {
+        res.json([]);
+        return false;
       }
-    }
 
-    res.json(result);
-  })
+      var result = [];
+      for (var i = 0; i < wishlists.length; i++) {
+        result[i] = {
+          customer_id: wishlists[i].cid,
+          item_id: wishlists[i].iid,
+          supplier_id: wishlists[i].sid,
+          name: wishlists[i].name,
+          category_id: wishlists[i].cateid,
+          sale_price: wishlists[i].saleprice,
+          image_path: wishlists[i].image.toString('utf-8'),
+          views: wishlists[i].views,
+          start_time: wishlists[i].starttime,
+          end_time: wishlists[i].endtime,
+          deliverable: wishlists[i].deliverable,
+          item_count: wishlists[i].itemcount
+        }
+      }
+
+      res.json(result);
+    })
 })
 
 // favorites HISTORY API
@@ -1816,12 +1716,12 @@ FROM
 // Headers : Authorization
 // URL : /api/favorites/history
 // 즐겨찾기 히스토리 API 
-router.get('/favorites/history', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.get('/favorites/history', passport.authenticate('jwt', { session: false }), function (req, res, next) {
 
   var cid = "";
 
-  if (! (req.user.permission === 'customer' ||
-          req.user.permission === 'admin')) {
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json([]);
     return false;
   } else {
@@ -1829,29 +1729,29 @@ router.get('/favorites/history', passport.authenticate('jwt', { session: false }
   }
 
   db.query(`
-  select A.cid, B.* from ddib.favorites A inner join ddib.supplier B on A.sid = B.sid WHERE A.cid = ?; `, [cid], function(error, results) {
+  select A.cid, B.* from ddib.favorites A inner join ddib.supplier B on A.sid = B.sid WHERE A.cid = ?; `, [cid], function (error, results) {
 
-    if (error) {
-      res.json([]);
-      return false;
-    }
-
-    var result = [];
-
-    for (var i = 0; i < results.length; i++) {
-      result[i] = {
-        customer_ID : results[i].cid,
-        supplier_ID : results[i].sid,
-        restaurant_name : results[i].rname,
-        address : results[i].address,
-        dlprice : results[i].dlprice,
-        latitude : results[i].latitude,
-        longitude : results[i].longitude
+      if (error) {
+        res.json([]);
+        return false;
       }
-    }
 
-    res.json(result);
-  })
+      var result = [];
+
+      for (var i = 0; i < results.length; i++) {
+        result[i] = {
+          customer_ID: results[i].cid,
+          supplier_ID: results[i].sid,
+          restaurant_name: results[i].rname,
+          address: results[i].address,
+          dlprice: results[i].dlprice,
+          latitude: results[i].latitude,
+          longitude: results[i].longitude
+        }
+      }
+
+      res.json(result);
+    })
 })
 
 // Favorites DELETE API
@@ -1860,12 +1760,12 @@ router.get('/favorites/history', passport.authenticate('jwt', { session: false }
 // Params : sid
 // URL : /api/favorites/delete
 // 즐겨찾기 삭제 API
-router.post('/favorites/delete',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/favorites/delete', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var sid = req.body.sid;
   var cid = "";
 
   var result = {
-    success : false
+    success: false
   }
 
   if (!sid) {
@@ -1873,20 +1773,20 @@ router.post('/favorites/delete',  passport.authenticate('jwt', { session: false 
     return false;
   }
 
-  if (! (req.user.permission === 'customer' ||
-          req.user.permission === 'admin')){
+  if (!(req.user.permission === 'customer' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
     cid = req.user.id;
   }
 
-  db.query('DELETE FROM favorites WHERE cid = ? AND sid = ?;',[cid, sid], function(error, results){
-    if (error){
+  db.query('DELETE FROM favorites WHERE cid = ? AND sid = ?;', [cid, sid], function (error, results) {
+    if (error) {
       res.json(result);
       return false;
     }
-    
+
     if (results.affectedRows <= 0) {
       res.json(result);
       return false;
@@ -1902,7 +1802,7 @@ router.post('/favorites/delete',  passport.authenticate('jwt', { session: false 
 // Params : oid, state ['waiting', 'cooking', 'delivery', 'complement']
 // URL : /api/order/state/update
 // Order state UPDATE API
-router.post('/order/state/update',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/order/state/update', passport.authenticate('jwt', { session: false }), function (req, res, next) {
 
   var states = ['waiting', 'cooking', 'delivery', 'complement'];
 
@@ -1911,30 +1811,30 @@ router.post('/order/state/update',  passport.authenticate('jwt', { session: fals
   var oid = req.body.oid;
 
   var result = {
-    success : false
+    success: false
   }
-  
+
   if (states.indexOf(state) === -1) {
-    
+
     res.json(result);
     return false;
   }
 
-  if (! (req.user.permission === 'supplier' ||
-          req.user.permission === 'admin')){
+  if (!(req.user.permission === 'supplier' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
     sid = req.user.id;
   }
 
-  db.query('UPDATE \`order\` SET orderstate = ? WHERE oid = ?;',[state, oid], function(error, results){
-    if (error){
+  db.query('UPDATE \`order\` SET orderstate = ? WHERE oid = ?;', [state, oid], function (error, results) {
+    if (error) {
       console.log(error);
       res.json(result);
       return false;
     }
-    
+
     if (results.affectedRows <= 0) {
       res.json(result);
       return false;
@@ -1951,7 +1851,7 @@ router.post('/order/state/update',  passport.authenticate('jwt', { session: fals
 // Params : sale_price, count, start_time, endtime, iid
 // URL : /api/order/state/update
 // Item UPDATE API
-router.post('/item/update',  passport.authenticate('jwt', { session: false }), function(req, res, next){
+router.post('/item/update', passport.authenticate('jwt', { session: false }), function (req, res, next) {
   var post = req.body;
   var sid = "";
   var saleprice = post.sale_price;
@@ -1961,24 +1861,24 @@ router.post('/item/update',  passport.authenticate('jwt', { session: false }), f
   var iid = post.iid;
 
   var result = {
-    success : false
+    success: false
   }
 
-  if (! (req.user.permission === 'supplier' ||
-          req.user.permission === 'admin')){
+  if (!(req.user.permission === 'supplier' ||
+    req.user.permission === 'admin')) {
     res.json(result);
     return false;
   } else {
     sid = req.user.id;
   }
 
-  db.query('UPDATE item SET saleprice = ?, itemcount = ?, starttime = ?, endtime = ? WHERE iid = ? AND sid = ?;',[saleprice, itemcount, starttime, endtime, iid, sid], function(error, results){
-    if (error){
+  db.query('UPDATE item SET saleprice = ?, itemcount = ?, starttime = ?, endtime = ? WHERE iid = ? AND sid = ?;', [saleprice, itemcount, starttime, endtime, iid, sid], function (error, results) {
+    if (error) {
       console.log(error);
       res.json(result);
       return false;
     }
-    
+
     if (results.affectedRows <= 0) {
       res.json(result);
       return false;

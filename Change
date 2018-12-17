@@ -1,0 +1,6 @@
+- 2018.12.18
+- Author
+
+/category POST 반환값에서 더이상 permission 키는 출력하지 않습니다.
+/category POST INSERT 쿼리가 에러가 날 경우 반환값에서 message 키는 출력하지 않습니다. 대신 success : false 를 출력합니다.
+

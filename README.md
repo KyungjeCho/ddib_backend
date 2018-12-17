@@ -118,6 +118,12 @@ localhost:3000/api/
 - Return : json file including all category
 - Example : [{ID: ,name: }, ...]
 
+### **/category** 
+- *Method : POST* 
+- URL : [server-name]/api/category 
+- Return : { success : true } or { success : false }
+- Example : { success : true }
+
 ### **/wishlist** 
 - *Method : POST* 
 - Params : iid
