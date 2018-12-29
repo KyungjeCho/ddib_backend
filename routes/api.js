@@ -387,11 +387,13 @@ FROM
 
 var category_router = require('./apis/category')
 var wishlist_router = require('./apis/wishlist')
-var favorites_router = require('./apis/favorites.js')
+var favorites_router = require('./apis/favorites')
+var wtb_router = require('./apis/wtb')
 
 router.use('/category', category_router);
 router.use('/wishlist', wishlist_router);
 router.use('/favorites', favorites_router);
+router.use('/wtb', wtb_router);
 
 // Shopping Cart Hisotry API
 // Method : GET
@@ -452,47 +454,6 @@ FROM
       res.json(result);
     })
 })
-
-// Want_to_buy DELETE API
-// Method : POST
-// Headers : Authorization
-// Parameters : cateid
-// URL : /api/wtb/delete
-// 삽니다 삭제 api
-router.post('/wtb/delete', passport.authenticate('jwt', { session: false }), function (req, res, next) {
-  var post = req.body;
-  var cid = "";
-  var cateid = post.cateid;
-
-  var result = {
-    success: false
-  }
-
-  if (!(req.user.permission === 'customer' ||
-    req.user.permission === 'admin')) {
-    res.json(result);
-    return false;
-  } else {
-    cid = req.user.id;
-  }
-
-  db.query(`DELETE FROM want_to_buy WHERE cid = ? AND cateid = ?;`,
-    [cid, cateid], function (error, results) {
-      if (error) {
-        res.json(result);
-        return false;
-      }
-
-      if (results.affectedRows <= 0) {
-        res.json(result);
-        return false;
-      };
-
-      result['success'] = true;
-      res.send(result);
-    })
-})
-
 
 // Order POST API
 // Method : POST
@@ -836,81 +797,6 @@ router.get('/review/customer/:CustomerID', function (req, res, next) {
         }
       }
       res.json(result);
-    })
-})
-
-// Want_to_buy API
-// Method : POST
-// Headers : Authorization
-// Parameters : cateid, min_price, max_price
-// URL : /api/wtb
-// 삽니다 등록 api
-router.post('/wtb', passport.authenticate('jwt', { session: false }), function (req, res, next) {
-  var post = req.body;
-  var cid = "";
-  var cateid = post.cateid;
-  var min_price = post.min_price;
-  var max_price = post.max_price;
-
-  if (!(req.user.permission === 'customer' ||
-    req.user.permission === 'admin')) {
-    res.send({ success: false });
-    return false;
-  }
-  else {
-    cid = req.user.id;
-  }
-
-  db.query(`INSERT INTO want_to_buy (cid, cateid, min_price, max_price) VALUES (?, ?, ? ,?);`,
-    [cid, cateid, min_price, max_price], function (error, result) {
-      if (error) {
-        res.json({ success: false });
-        return false;
-      }
-
-      res.send({ success: true });
-    })
-})
-
-// Want To Buy API
-// Method : GET
-// Headers : Authorization
-// URL : /api/wtb
-// Return : 유저의 삽니다 목록 or "Pls login!"
-// 유저의 삽니다 목록 API
-router.get('/wtb', passport.authenticate('jwt', { session: false }), function (req, res, next) {
-  var cid = "";
-
-  if (!(req.user.permission === 'customer' ||
-    req.user.permission === 'admin')) {
-    res.json([]);
-    return false;
-  }
-  else {
-    cid = req.user.id;
-  }
-
-  // wtb 테이블과 category 테이블을 조인하여 카테고리 이름을 얻는다.
-  // HACK: 조인문은 느리다. 일단 인덱스를 걸었지만 더 빠르게 구현하기
-  db.query(`SELECT wtb.*, cate.name FROM want_to_buy wtb INNER JOIN category cate ON wtb.cateid = cate.cateid WHERE wtb.cid = ?;`,
-    [cid], function (error, wtbs) {
-      if (error)
-        throw error;
-
-      var results = [];
-
-      var i = 0;
-      while (i < wtbs.length) {
-        results[i] = {
-          cateID: wtbs[i].cateid,
-          cateName: wtbs[i].name,
-          minPrice: wtbs[i].min_price,
-          maxPrice: wtbs[i].max_price
-        }
-        i++;
-      }
-
-      res.json(results);
     })
 })
 
