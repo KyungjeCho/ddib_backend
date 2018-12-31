@@ -4,14 +4,14 @@
 
 var express = require('express');
 var passport = require("passport");
+var firebase = require('firebase-admin')
 
 var db = require('../../lib/db');
 
-var FCM = require('fcm-node');
-
-/* Server Key issued from Firebase*/
-var serverKey = require('../../ddib-fcm.json');
-var fcm = new FCM(serverKey);
+// 잠재적 문제가 있음 : 알람 전송 테스트 필요
+if (!firebase.apps.length) {
+    firebase.initializeApp({});
+ }
 
 var router = express.Router();
 

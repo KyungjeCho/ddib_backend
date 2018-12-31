@@ -13,6 +13,7 @@
     "express": "~4.16.0",
     "express-session": "^1.15.6",
     "fcm-node": "^1.3.0",
+    "firebase": "^5.7.2",
     "http-errors": "~1.6.2",
     "iconv": "^2.3.1",
     "jade": "^1.11.0",
